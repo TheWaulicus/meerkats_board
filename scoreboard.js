@@ -185,24 +185,56 @@ function resetTimer() {
 document.addEventListener('DOMContentLoaded', function() {
   const timerDisplay = document.getElementById("timerDisplay");
   if (timerDisplay) {
-    timerDisplay.addEventListener("input", function (e) {
-      const val = e.target.value.replace(/[^0-9:]/g, "");
-      const parts = val.split(":");
-      let min = parseInt(parts[0], 10) || 0;
-      let sec = parseInt(parts[1], 10) || 0;
-      
-      // Clamp values
-      min = Math.min(99, Math.max(0, min));
-      sec = Math.min(59, Math.max(0, sec));
-      
-      timerSeconds = min * 60 + sec;
-      hasPlayedEndBuzzers = false;
-      lastBeepSecond = -1;
-      updateTimerDisplay();
-      saveStateToFirestore();
+    // Allow free editing while typing
+    timerDisplay.addEventListener("focus", function (e) {
+      // Select all on focus for easy editing
+      e.target.select();
+    });
+    
+    // Process on blur (when user clicks away)
+    timerDisplay.addEventListener("blur", function (e) {
+      parseAndSetTimer(e.target.value);
+    });
+    
+    // Process on Enter key
+    timerDisplay.addEventListener("keydown", function (e) {
+      if (e.key === "Enter") {
+        e.target.blur(); // Trigger blur event
+      }
     });
   }
 });
+
+/**
+ * Parse timer input and update timer state
+ * @param {string} value - Timer input value
+ */
+function parseAndSetTimer(value) {
+  const val = value.replace(/[^0-9:]/g, "");
+  const parts = val.split(":");
+  
+  let min = 0;
+  let sec = 0;
+  
+  if (parts.length === 1) {
+    // If only one number, treat as minutes
+    min = parseInt(parts[0], 10) || 0;
+  } else if (parts.length === 2) {
+    // MM:SS format
+    min = parseInt(parts[0], 10) || 0;
+    sec = parseInt(parts[1], 10) || 0;
+  }
+  
+  // Clamp values
+  min = Math.min(99, Math.max(0, min));
+  sec = Math.min(59, Math.max(0, sec));
+  
+  timerSeconds = min * 60 + sec;
+  hasPlayedEndBuzzers = false;
+  lastBeepSecond = -1;
+  updateTimerDisplay();
+  saveStateToFirestore();
+}
 
 // ============================================================================
 // PERIOD MANAGEMENT
