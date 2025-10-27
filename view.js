@@ -19,6 +19,22 @@ let teamState = {
 let leagueName = "League";
 let leagueLogo = "";
 
+// Visibility settings
+let visibilitySettings = {
+  showPeriodControl: true,
+  showPeriodView: true,
+  showTimerControl: true,
+  showTimerView: true,
+  showScoresControl: true,
+  showScoresView: true,
+  showTeamLogosControl: true,
+  showTeamLogosView: true,
+  showTeamNamesControl: true,
+  showTeamNamesView: true,
+  showLeagueControl: true,
+  showLeagueView: true
+};
+
 // Timer display update interval for smooth countdown
 let displayInterval = null;
 let lastSyncTime = Date.now();
@@ -106,6 +122,38 @@ function updateDisplayInfo() {
  */
 function updateTheme(theme) {
   document.body.setAttribute('data-theme', theme || 'dark');
+}
+
+/**
+ * Apply visibility settings to the view
+ */
+function applyVisibilitySettings() {
+  const scoreboard = document.querySelector('.scoreboard');
+  if (!scoreboard) return;
+  
+  // Remove all visibility classes first
+  scoreboard.classList.remove(
+    'hide-period-control', 'hide-period-view',
+    'hide-timer-control', 'hide-timer-view',
+    'hide-scores-control', 'hide-scores-view',
+    'hide-team-logos-control', 'hide-team-logos-view',
+    'hide-team-names-control', 'hide-team-names-view',
+    'hide-league-control', 'hide-league-view'
+  );
+  
+  // Apply visibility classes based on settings
+  if (!visibilitySettings.showPeriodControl) scoreboard.classList.add('hide-period-control');
+  if (!visibilitySettings.showPeriodView) scoreboard.classList.add('hide-period-view');
+  if (!visibilitySettings.showTimerControl) scoreboard.classList.add('hide-timer-control');
+  if (!visibilitySettings.showTimerView) scoreboard.classList.add('hide-timer-view');
+  if (!visibilitySettings.showScoresControl) scoreboard.classList.add('hide-scores-control');
+  if (!visibilitySettings.showScoresView) scoreboard.classList.add('hide-scores-view');
+  if (!visibilitySettings.showTeamLogosControl) scoreboard.classList.add('hide-team-logos-control');
+  if (!visibilitySettings.showTeamLogosView) scoreboard.classList.add('hide-team-logos-view');
+  if (!visibilitySettings.showTeamNamesControl) scoreboard.classList.add('hide-team-names-control');
+  if (!visibilitySettings.showTeamNamesView) scoreboard.classList.add('hide-team-names-view');
+  if (!visibilitySettings.showLeagueControl) scoreboard.classList.add('hide-league-control');
+  if (!visibilitySettings.showLeagueView) scoreboard.classList.add('hide-league-view');
 }
 
 // ============================================================================
@@ -201,6 +249,12 @@ function loadStateFromSnapshot(snapshot) {
   // Update theme
   const theme = state.theme || "dark";
   updateTheme(theme);
+  
+  // Update visibility settings
+  if (state.visibilitySettings) {
+    visibilitySettings = state.visibilitySettings;
+    applyVisibilitySettings();
+  }
 }
 
 // ============================================================================
@@ -217,6 +271,7 @@ function initializeView() {
   updateTimerDisplay();
   updatePhaseDisplay();
   updateDisplayInfo();
+  applyVisibilitySettings();
   
   // Set up Firebase listener
   if (window.SCOREBOARD_DOC) {

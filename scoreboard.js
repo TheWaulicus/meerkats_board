@@ -20,6 +20,22 @@ let teamState = {
 let leagueName = "League";
 let leagueLogo = "";
 
+// Visibility settings
+let visibilitySettings = {
+  showPeriodControl: true,
+  showPeriodView: true,
+  showTimerControl: true,
+  showTimerView: true,
+  showScoresControl: true,
+  showScoresView: true,
+  showTeamLogosControl: true,
+  showTeamLogosView: true,
+  showTeamNamesControl: true,
+  showTeamNamesView: true,
+  showLeagueControl: true,
+  showLeagueView: true
+};
+
 // Flag to prevent feedback loops during Firebase sync
 let isLocalUpdate = false;
 
@@ -341,6 +357,20 @@ function toggleSettings(show) {
     document.getElementById("teamANameInput").value = teamState.A.name;
     document.getElementById("teamBNameInput").value = teamState.B.name;
     
+    // Populate visibility checkboxes
+    document.getElementById("showPeriodControl").checked = visibilitySettings.showPeriodControl;
+    document.getElementById("showPeriodView").checked = visibilitySettings.showPeriodView;
+    document.getElementById("showTimerControl").checked = visibilitySettings.showTimerControl;
+    document.getElementById("showTimerView").checked = visibilitySettings.showTimerView;
+    document.getElementById("showScoresControl").checked = visibilitySettings.showScoresControl;
+    document.getElementById("showScoresView").checked = visibilitySettings.showScoresView;
+    document.getElementById("showTeamLogosControl").checked = visibilitySettings.showTeamLogosControl;
+    document.getElementById("showTeamLogosView").checked = visibilitySettings.showTeamLogosView;
+    document.getElementById("showTeamNamesControl").checked = visibilitySettings.showTeamNamesControl;
+    document.getElementById("showTeamNamesView").checked = visibilitySettings.showTeamNamesView;
+    document.getElementById("showLeagueControl").checked = visibilitySettings.showLeagueControl;
+    document.getElementById("showLeagueView").checked = visibilitySettings.showLeagueView;
+    
     lastFocusedElement = document.activeElement;
     modal.style.display = "flex";
     modal.setAttribute("aria-hidden", "false");
@@ -389,6 +419,38 @@ function toggleSettings(show) {
 }
 
 /**
+ * Apply visibility settings to the scoreboard
+ */
+function applyVisibilitySettings() {
+  const scoreboard = document.querySelector('.scoreboard');
+  if (!scoreboard) return;
+  
+  // Remove all visibility classes first
+  scoreboard.classList.remove(
+    'hide-period-control', 'hide-period-view',
+    'hide-timer-control', 'hide-timer-view',
+    'hide-scores-control', 'hide-scores-view',
+    'hide-team-logos-control', 'hide-team-logos-view',
+    'hide-team-names-control', 'hide-team-names-view',
+    'hide-league-control', 'hide-league-view'
+  );
+  
+  // Apply visibility classes based on settings
+  if (!visibilitySettings.showPeriodControl) scoreboard.classList.add('hide-period-control');
+  if (!visibilitySettings.showPeriodView) scoreboard.classList.add('hide-period-view');
+  if (!visibilitySettings.showTimerControl) scoreboard.classList.add('hide-timer-control');
+  if (!visibilitySettings.showTimerView) scoreboard.classList.add('hide-timer-view');
+  if (!visibilitySettings.showScoresControl) scoreboard.classList.add('hide-scores-control');
+  if (!visibilitySettings.showScoresView) scoreboard.classList.add('hide-scores-view');
+  if (!visibilitySettings.showTeamLogosControl) scoreboard.classList.add('hide-team-logos-control');
+  if (!visibilitySettings.showTeamLogosView) scoreboard.classList.add('hide-team-logos-view');
+  if (!visibilitySettings.showTeamNamesControl) scoreboard.classList.add('hide-team-names-control');
+  if (!visibilitySettings.showTeamNamesView) scoreboard.classList.add('hide-team-names-view');
+  if (!visibilitySettings.showLeagueControl) scoreboard.classList.add('hide-league-control');
+  if (!visibilitySettings.showLeagueView) scoreboard.classList.add('hide-league-view');
+}
+
+/**
  * Apply settings from modal
  */
 function applySettings() {
@@ -411,6 +473,23 @@ function applySettings() {
     teamState.B.name = teamBNameValue;
     document.getElementById("teamBName").textContent = teamState.B.name;
   }
+  
+  // Update visibility settings
+  visibilitySettings.showPeriodControl = document.getElementById("showPeriodControl").checked;
+  visibilitySettings.showPeriodView = document.getElementById("showPeriodView").checked;
+  visibilitySettings.showTimerControl = document.getElementById("showTimerControl").checked;
+  visibilitySettings.showTimerView = document.getElementById("showTimerView").checked;
+  visibilitySettings.showScoresControl = document.getElementById("showScoresControl").checked;
+  visibilitySettings.showScoresView = document.getElementById("showScoresView").checked;
+  visibilitySettings.showTeamLogosControl = document.getElementById("showTeamLogosControl").checked;
+  visibilitySettings.showTeamLogosView = document.getElementById("showTeamLogosView").checked;
+  visibilitySettings.showTeamNamesControl = document.getElementById("showTeamNamesControl").checked;
+  visibilitySettings.showTeamNamesView = document.getElementById("showTeamNamesView").checked;
+  visibilitySettings.showLeagueControl = document.getElementById("showLeagueControl").checked;
+  visibilitySettings.showLeagueView = document.getElementById("showLeagueView").checked;
+  
+  // Apply visibility settings
+  applyVisibilitySettings();
   
   // Handle logo uploads
   const leagueLogoInput = document.getElementById("leagueLogoInput");
@@ -532,6 +611,20 @@ function getDefaultState() {
     leagueName: "League",
     leagueLogo: "",
     theme: "dark",
+    visibilitySettings: {
+      showPeriodControl: true,
+      showPeriodView: true,
+      showTimerControl: true,
+      showTimerView: true,
+      showScoresControl: true,
+      showScoresView: true,
+      showTeamLogosControl: true,
+      showTeamLogosView: true,
+      showTeamNamesControl: true,
+      showTeamNamesView: true,
+      showLeagueControl: true,
+      showLeagueView: true
+    },
     lastUpdate: firebase.firestore.FieldValue.serverTimestamp()
   };
 }
@@ -552,6 +645,7 @@ function saveStateToFirestore() {
     leagueName,
     leagueLogo,
     theme: document.body.getAttribute('data-theme') || 'dark',
+    visibilitySettings: visibilitySettings,
     lastUpdate: firebase.firestore.FieldValue.serverTimestamp()
   };
   
@@ -621,6 +715,12 @@ function loadStateFromSnapshot(snapshot) {
       document.body.setAttribute('data-theme', newTheme);
       updateThemeIcons(newTheme);
     }
+    
+    // Update visibility settings
+    if (state.visibilitySettings) {
+      visibilitySettings = state.visibilitySettings;
+      applyVisibilitySettings();
+    }
   }
   
   isLocalUpdate = false;
@@ -654,6 +754,7 @@ function initializeApp() {
   // Initialize display
   updateTimerDisplay();
   updatePhaseDisplay();
+  applyVisibilitySettings();
   
   // Set up Firebase listener
   if (window.SCOREBOARD_DOC) {

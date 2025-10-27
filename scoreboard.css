@@ -471,6 +471,13 @@ body {
   cursor: pointer;
 }
 
+.settings-checkbox {
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+  accent-color: var(--accent-primary);
+}
+
 .settings-save {
   width: 100%;
   background: var(--accent-primary);
@@ -586,6 +593,56 @@ body {
 
 .view-mode .score-btn {
   display: none;
+}
+
+/* Visibility Control Classes */
+.hide-period-control:not(.view-mode) .period-label,
+.hide-period-control:not(.view-mode) .period-btn {
+  display: none !important;
+}
+
+.hide-period-view.view-mode .period-label {
+  display: none !important;
+}
+
+.hide-timer-control:not(.view-mode) .timer-outline {
+  display: none !important;
+}
+
+.hide-timer-view.view-mode .timer-outline {
+  display: none !important;
+}
+
+.hide-scores-control:not(.view-mode) .scores-section {
+  display: none !important;
+}
+
+.hide-scores-view.view-mode .scores-section {
+  display: none !important;
+}
+
+.hide-team-logos-control:not(.view-mode) .team-logo {
+  display: none !important;
+}
+
+.hide-team-logos-view.view-mode .team-logo {
+  display: none !important;
+}
+
+.hide-team-names-control:not(.view-mode) .team-name {
+  display: none !important;
+}
+
+.hide-team-names-view.view-mode .team-name {
+  display: none !important;
+}
+
+.hide-league-control:not(.view-mode) .league-info {
+  display: none !important;
+}
+
+.hide-league-view.view-mode .league-info {
+  display: none !important;
 }
 
 /* Accessibility enhancements */
