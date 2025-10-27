@@ -87,22 +87,46 @@ function playBeep(frequency = 800, duration = 200, volume = 0.3) {
 }
 
 /**
- * Play a buzzer sound (lower frequency, longer duration)
+ * Play a traditional hockey buzzer sound (low, loud, harsh)
  */
 function playBuzzer() {
-  playBeep(200, 500, 0.5);
+  try {
+    const ctx = initAudioContext();
+    const oscillator = ctx.createOscillator();
+    const gainNode = ctx.createGain();
+    
+    oscillator.connect(gainNode);
+    gainNode.connect(ctx.destination);
+    
+    // Hockey horn frequency - low and powerful (similar to arena horns)
+    oscillator.frequency.setValueAtTime(110, ctx.currentTime); // Low A note
+    oscillator.frequency.exponentialRampToValueAtTime(100, ctx.currentTime + 1.2); // Slight drop
+    oscillator.type = 'sawtooth'; // Harsh, buzzer-like sound
+    
+    // Volume envelope - loud and sustained
+    gainNode.gain.setValueAtTime(0, ctx.currentTime);
+    gainNode.gain.linearRampToValueAtTime(0.6, ctx.currentTime + 0.05); // Quick attack
+    gainNode.gain.setValueAtTime(0.6, ctx.currentTime + 1.0); // Sustain
+    gainNode.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 1.2); // Decay
+    
+    oscillator.start(ctx.currentTime);
+    oscillator.stop(ctx.currentTime + 1.2);
+  } catch (error) {
+    console.warn('Buzzer playback failed:', error);
+  }
 }
 
 /**
- * Play the end-of-period sequence (3 buzzers)
+ * Play the end-of-period sequence (3 hockey buzzers)
  */
 function playEndSequence() {
   if (hasPlayedEndBuzzers) return;
   hasPlayedEndBuzzers = true;
   
+  // Three long hockey horn blasts
   playBuzzer();
-  setTimeout(() => playBuzzer(), 600);
-  setTimeout(() => playBuzzer(), 1200);
+  setTimeout(() => playBuzzer(), 1400);
+  setTimeout(() => playBuzzer(), 2800);
 }
 
 /**
@@ -152,6 +176,12 @@ function updateTimerDisplay() {
 function startTimer() {
   if (timerRunning) return;
   
+  // Don't start if timer is at 0
+  if (timerSeconds === 0) {
+    console.log("Timer is at 0:00. Reset timer before starting.");
+    return;
+  }
+  
   // Initialize audio context on first user interaction
   initAudioContext();
   
@@ -165,8 +195,10 @@ function startTimer() {
       updateTimerDisplay();
       saveStateToFirestore();
     } else {
+      // Timer reached 0:00
       checkMinuteBeep(); // Play end sequence
-      stopTimer();
+      stopTimer(); // Stop the timer
+      updateTimerDisplay();
       saveStateToFirestore();
     }
   }, 1000);
