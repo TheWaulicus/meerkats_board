@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Meerkats Board - Hockey Scoreboard Display View">
+  <title>Meerkats Board - Display</title>
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&family=Orbitron:wght@900&display=swap" rel="stylesheet">
+  
+  <!-- Styles -->
+  <link rel="stylesheet" href="scoreboard.css">
+  
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+</head>
+<body data-theme="dark" class="view-mode">
+  
+  <!-- Main Scoreboard (Display Only) -->
+  <div class="scoreboard">
+
+    <!-- Timer Block -->
+    <div class="timer-block">
+      <!-- Period Display -->
+      <div class="timer-controls">
+        <span class="period-label" id="periodLabel">Period 1</span>
+      </div>
+
+      <!-- Timer Display (Read-only) -->
+      <div class="timer-outline">
+        <div class="timer-display" id="timerDisplay">20:00</div>
+        <span id="timerLiveRegion" class="visually-hidden" aria-live="polite">Timer set to 20 minutes</span>
+      </div>
+    </div>
+
+    <!-- Scores Section -->
+    <div class="scores-section">
+      <!-- Home Team (Team A) -->
+      <div class="team-score">
+        <img src="" alt="Home Team Logo" class="team-logo" id="teamALogo" onerror="this.onerror=null;this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'200\' height=\'200\' viewBox=\'0 0 200 200\'><rect width=\'200\' height=\'200\' rx=\'32\' fill=\'%23e3e9f4\'/><text x=\'50%\' y=\'54%\' text-anchor=\'middle\' font-size=\'80\' fill=\'%2399aabb\' font-family=\'Arial, sans-serif\' dy=\'.3em\'>H</text></svg>'" />
+        <span class="team-name" id="teamAName">Home Team</span>
+        <div class="score-row">
+          <span class="score-value" id="teamAScore">0</span>
+        </div>
+      </div>
+
+      <!-- League Info (Center) -->
+      <div class="league-info">
+        <img src="" alt="League Logo" class="league-logo" id="leagueLogo" onerror="this.onerror=null;this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'90\' height=\'90\' viewBox=\'0 0 90 90\'><rect width=\'90\' height=\'90\' rx=\'12\' fill=\'%23e3e9f4\'/><text x=\'50%\' y=\'54%\' text-anchor=\'middle\' font-size=\'40\' fill=\'%2399aabb\' font-family=\'Arial, sans-serif\' dy=\'.3em\'>L</text></svg>'" />
+        <span class="league-name" id="leagueName">League</span>
+      </div>
+
+      <!-- Away Team (Team B) -->
+      <div class="team-score">
+        <img src="" alt="Away Team Logo" class="team-logo" id="teamBLogo" onerror="this.onerror=null;this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'200\' height=\'200\' viewBox=\'0 0 200 200\'><rect width=\'200\' height=\'200\' rx=\'32\' fill=\'%23e3e9f4\'/><text x=\'50%\' y=\'54%\' text-anchor=\'middle\' font-size=\'80\' fill=\'%2399aabb\' font-family=\'Arial, sans-serif\' dy=\'.3em\'>A</text></svg>'" />
+        <span class="team-name" id="teamBName">Away Team</span>
+        <div class="score-row">
+          <span class="score-value" id="teamBScore">0</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Firebase Config -->
+  <script src="firebase-config.js"></script>
+  
+  <!-- View-only Logic -->
+  <script src="view.js"></script>
+
+</body>
+</html>

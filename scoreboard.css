@@ -1,0 +1,615 @@
+/* Meerkats Board - Hockey Scoreboard Styles */
+
+/* CSS Variables for Theming */
+:root {
+  /* Dark theme (default) */
+  --bg-primary: #1a1d22;
+  --bg-secondary: #23272b;
+  --bg-tertiary: #181c20;
+  --bg-quaternary: #1e2328;
+  --text-primary: #eaf6ff;
+  --text-secondary: #a2b6cc;
+  --text-muted: #c3d2e2;
+  --accent-primary: #0af2ff;
+  --accent-secondary: #ffc857;
+  --accent-danger: #ff2a2a;
+  --border-color: #0af2ff44;
+  --shadow-color: #000a;
+  --shadow-accent: #0af2ff22;
+}
+
+[data-theme="light"] {
+  /* Light theme */
+  --bg-primary: #f8fafc;
+  --bg-secondary: #ffffff;
+  --bg-tertiary: #f1f5f9;
+  --bg-quaternary: #e2e8f0;
+  --text-primary: #1e293b;
+  --text-secondary: #334155;
+  --text-muted: #475569;
+  --accent-primary: #0284c7;
+  --accent-secondary: #b91c1c;
+  --accent-danger: #dc2626;
+  --border-color: #0284c744;
+  --shadow-color: #0000001a;
+  --shadow-accent: #0284c722;
+}
+
+/* Global Styles */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+  background: linear-gradient(135deg, var(--bg-primary) 60%, var(--bg-secondary) 100%);
+  margin: 0;
+  padding: 0;
+  color: var(--text-primary);
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.3s ease, color 0.3s ease;
+}
+
+/* Accessibility - Screen reader only */
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Main Scoreboard Container */
+.scoreboard {
+  width: 98vw;
+  min-height: 90vh;
+  max-width: 1600px;
+  margin: 0 auto;
+  background: linear-gradient(135deg, var(--bg-secondary) 80%, var(--bg-secondary) 100%);
+  border-radius: 18px;
+  box-shadow: 0 8px 40px var(--shadow-color), 0 1.5px 0 var(--border-color) inset;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  position: relative;
+  transition: background 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Header Controls (Theme Toggle, Settings) */
+.header-controls {
+  position: absolute;
+  top: 18px;
+  right: 18px;
+  display: flex;
+  gap: 12px;
+  z-index: 10;
+}
+
+.theme-toggle,
+.settings-open {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--accent-primary);
+  padding: 8px;
+  border-radius: 8px;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.theme-toggle:hover,
+.settings-open:hover {
+  background: var(--shadow-accent);
+  color: var(--text-primary);
+}
+
+.theme-toggle:focus,
+.settings-open:focus {
+  outline: 2px solid var(--accent-primary);
+  outline-offset: 2px;
+}
+
+.theme-icon {
+  display: none;
+  width: 24px;
+  height: 24px;
+}
+
+.theme-icon.active {
+  display: block;
+}
+
+/* Timer Block */
+.timer-block {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 18px;
+  background: linear-gradient(135deg, var(--bg-tertiary) 80%, var(--bg-secondary) 100%);
+  border-radius: 18px;
+  box-shadow: 0 0 32px 4px var(--border-color), 0 2px 12px var(--shadow-color) inset;
+  padding: 32px;
+  border: 2.5px solid var(--accent-primary);
+  transition: background 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+}
+
+/* Period Controls */
+.timer-controls {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.period-label {
+  font-size: 1.3em;
+  font-weight: 800;
+  color: var(--text-primary);
+  letter-spacing: 0.08em;
+  text-shadow: 0 2px 8px var(--shadow-accent), 0 1px 0 var(--shadow-color);
+  margin: 0 8px;
+  text-transform: uppercase;
+}
+
+/* Timer Display */
+.timer-outline {
+  border: 4px solid var(--accent-primary);
+  border-radius: 18px;
+  padding: 18px 48px;
+  background: linear-gradient(135deg, var(--bg-secondary) 80%, var(--bg-quaternary) 100%);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-width: 220px;
+  min-height: 90px;
+  box-shadow: 0 0 32px 8px var(--shadow-accent), 0 2px 12px var(--shadow-color) inset,
+    0 0 0 8px var(--shadow-accent) inset;
+  transition: all 0.3s ease;
+}
+
+.timer-display {
+  font-family: "Orbitron", "Share Tech Mono", "Courier New", Courier, monospace;
+  font-size: 4.2rem;
+  font-weight: 900;
+  width: auto;
+  min-width: 180px;
+  text-align: center;
+  border: none;
+  background: transparent;
+  outline: none;
+  color: var(--text-primary);
+  text-shadow: 0 0 16px var(--accent-primary), 0 0 8px var(--text-primary), 0 2px 8px var(--shadow-color);
+  letter-spacing: 0.08em;
+  transition: color 0.2s, text-shadow 0.2s;
+}
+
+.timer-display:focus {
+  outline: 2px solid var(--accent-secondary);
+  outline-offset: 4px;
+  border-radius: 8px;
+}
+
+/* Buttons */
+.timer-btn,
+.score-btn,
+.period-btn,
+.settings-save,
+.settings-close,
+.reset-all-btn {
+  border-radius: 10px;
+  border: 2px solid var(--accent-primary);
+  background: linear-gradient(135deg, var(--bg-secondary) 80%, var(--bg-tertiary) 100%);
+  color: var(--text-primary);
+  font-size: 1.15em;
+  font-weight: 700;
+  padding: 12px 24px;
+  min-width: 56px;
+  min-height: 48px;
+  box-shadow: 0 2px 8px var(--shadow-accent), 0 1px 0 var(--shadow-color) inset;
+  cursor: pointer;
+  outline: none;
+  transition: background 0.18s, border 0.18s, color 0.18s, box-shadow 0.18s, transform 0.1s;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: inherit;
+}
+
+.timer-btn:hover,
+.score-btn:hover,
+.period-btn:hover,
+.settings-save:hover,
+.settings-close:hover {
+  background: var(--shadow-accent);
+  color: var(--accent-primary);
+  border-color: var(--text-primary);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px var(--shadow-accent);
+}
+
+.timer-btn:active,
+.score-btn:active,
+.period-btn:active {
+  transform: translateY(0);
+  box-shadow: 0 1px 4px var(--shadow-accent);
+}
+
+.timer-btn:focus,
+.score-btn:focus,
+.period-btn:focus,
+.settings-save:focus,
+.settings-close:focus {
+  outline: 2px solid var(--accent-secondary);
+  outline-offset: 2px;
+}
+
+/* Reset All Button - Danger Style */
+.reset-all-btn {
+  background: linear-gradient(135deg, var(--accent-danger) 80%, #cc0000 100%);
+  color: #fff;
+  border: 2px solid var(--accent-danger);
+  box-shadow: 0 2px 8px #ff2a2a33, 0 1px 0 var(--shadow-color) inset;
+}
+
+.reset-all-btn:hover {
+  background: #fff;
+  color: var(--accent-danger);
+  border-color: var(--accent-danger);
+  box-shadow: 0 4px 12px #ff2a2a66;
+}
+
+/* Scores Section */
+.scores-section {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: flex-start;
+  gap: 60px;
+  margin: 24px 0;
+  width: 100%;
+  max-width: 1200px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.team-score {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+.team-logo {
+  width: 200px;
+  height: 200px;
+  border-radius: 32px;
+  object-fit: contain;
+  background: var(--bg-tertiary);
+  border: 2.5px solid var(--accent-primary);
+  box-shadow: 0 0 32px var(--shadow-accent);
+  transition: all 0.3s ease;
+}
+
+.team-name {
+  font-size: 2em;
+  font-weight: 900;
+  color: var(--text-primary);
+  text-align: center;
+  text-shadow: 0 2px 8px var(--shadow-accent);
+  margin-bottom: 8px;
+}
+
+.score-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+}
+
+.score-value {
+  font-size: 4em;
+  font-weight: 900;
+  min-width: 100px;
+  text-align: center;
+  color: var(--text-primary);
+  text-shadow: 0 2px 16px var(--accent-primary), 0 1px 0 var(--shadow-color);
+}
+
+/* League Info (Center) */
+.league-info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 12px;
+  min-width: 120px;
+  padding-top: 20px;
+}
+
+.league-logo {
+  width: 90px;
+  height: 90px;
+  border-radius: 12px;
+  background: var(--bg-tertiary);
+  object-fit: contain;
+  border: 2px solid var(--accent-primary);
+  box-shadow: 0 0 16px var(--shadow-accent);
+  transition: all 0.3s ease;
+}
+
+.league-name {
+  font-size: 1.4em;
+  font-weight: 700;
+  color: var(--text-primary);
+  letter-spacing: 0.04em;
+  text-shadow: 0 2px 8px var(--shadow-accent);
+  text-align: center;
+}
+
+/* Settings Modal */
+.settings-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  animation: fadeIn 0.2s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.settings-content {
+  background: var(--bg-secondary);
+  border-radius: 14px;
+  padding: 32px 24px 24px 24px;
+  min-width: 400px;
+  max-width: 90vw;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 8px 32px var(--shadow-color);
+  position: relative;
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
+  animation: slideIn 0.3s ease;
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateY(-20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.settings-content h2 {
+  margin-bottom: 24px;
+  font-size: 1.8em;
+  color: var(--text-primary);
+  text-align: center;
+}
+
+.settings-close {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: none;
+  border: none;
+  font-size: 2em;
+  color: var(--text-secondary);
+  cursor: pointer;
+  padding: 4px 8px;
+  line-height: 1;
+  transition: color 0.2s;
+}
+
+.settings-close:hover {
+  color: var(--accent-danger);
+}
+
+.settings-section {
+  margin-bottom: 20px;
+}
+
+.settings-section label {
+  display: block;
+  margin-bottom: 6px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  font-size: 0.95em;
+}
+
+.settings-input,
+.settings-file {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  font-size: 1em;
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+  transition: border-color 0.2s, box-shadow 0.2s;
+  font-family: inherit;
+}
+
+.settings-input:focus,
+.settings-file:focus {
+  outline: none;
+  border-color: var(--accent-primary);
+  box-shadow: 0 0 0 3px var(--shadow-accent);
+}
+
+.settings-file {
+  padding: 8px;
+  cursor: pointer;
+}
+
+.settings-save {
+  width: 100%;
+  background: var(--accent-primary);
+  color: var(--bg-secondary);
+  border: none;
+  margin-top: 12px;
+  font-size: 1.2em;
+  padding: 14px;
+}
+
+.settings-save:hover {
+  background: var(--text-primary);
+  color: var(--accent-primary);
+}
+
+/* Responsive Design */
+@media (max-width: 900px) {
+  .scores-section {
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+
+  .league-info {
+    order: -1;
+  }
+
+  .team-logo {
+    width: 150px;
+    height: 150px;
+  }
+
+  .score-value {
+    font-size: 3em;
+  }
+}
+
+@media (max-width: 600px) {
+  .scoreboard {
+    width: 100vw;
+    min-height: 100vh;
+    border-radius: 0;
+    padding: 16px;
+  }
+
+  .timer-block {
+    padding: 20px 16px;
+  }
+
+  .timer-display {
+    font-size: 3rem;
+    min-width: 140px;
+  }
+
+  .timer-outline {
+    padding: 12px 24px;
+    min-height: 70px;
+  }
+
+  .team-logo {
+    width: 120px;
+    height: 120px;
+  }
+
+  .league-logo {
+    width: 70px;
+    height: 70px;
+  }
+
+  .score-value {
+    font-size: 2.5em;
+    min-width: 80px;
+  }
+
+  .team-name {
+    font-size: 1.5em;
+  }
+
+  .league-name {
+    font-size: 1.1em;
+  }
+
+  .timer-btn,
+  .score-btn,
+  .period-btn {
+    font-size: 1em;
+    padding: 10px 16px;
+    min-height: 44px;
+  }
+
+  .settings-content {
+    min-width: 0;
+    width: 95vw;
+    padding: 24px 16px;
+  }
+
+  .header-controls {
+    top: 12px;
+    right: 12px;
+  }
+}
+
+/* View Mode Specific Styles */
+.view-mode .header-controls,
+.view-mode .timer-controls,
+.view-mode .reset-all-btn {
+  display: none;
+}
+
+.view-mode .timer-display {
+  pointer-events: none;
+  user-select: none;
+}
+
+.view-mode .score-btn {
+  display: none;
+}
+
+/* Accessibility enhancements */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Print styles */
+@media print {
+  .header-controls,
+  .timer-controls,
+  .score-btn,
+  .reset-all-btn {
+    display: none !important;
+  }
+
+  .scoreboard {
+    box-shadow: none;
+    border: 1px solid #000;
+  }
+}

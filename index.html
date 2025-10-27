@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Meerkats Board - Hockey Scoreboard Control Interface">
+  <title>Meerkats Board - Control</title>
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&family=Orbitron:wght@900&display=swap" rel="stylesheet">
+  
+  <!-- Styles -->
+  <link rel="stylesheet" href="scoreboard.css">
+  
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+</head>
+<body data-theme="dark">
+  
+  <!-- Settings Modal -->
+  <div id="settingsModal" class="settings-modal" style="display: none" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="settingsHeading">
+    <div class="settings-content">
+      <button id="settingsCloseButton" class="settings-close" onclick="toggleSettings(false)" type="button" aria-label="Close settings">
+        &times;
+      </button>
+      <h2 id="settingsHeading">Settings</h2>
+      <form id="settingsForm" onsubmit="event.preventDefault(); applySettings();">
+        
+        <div class="settings-section">
+          <label for="leagueNameInput">League Name</label>
+          <input type="text" id="leagueNameInput" class="settings-input" placeholder="Enter league name" />
+        </div>
+        
+        <div class="settings-section">
+          <label for="leagueLogoInput">League Logo</label>
+          <input type="file" accept="image/*" id="leagueLogoInput" class="settings-file" />
+        </div>
+        
+        <div class="settings-section">
+          <label for="teamANameInput">Home Team Name</label>
+          <input type="text" id="teamANameInput" class="settings-input" placeholder="Enter home team name" />
+        </div>
+        
+        <div class="settings-section">
+          <label for="teamALogoInput">Home Team Logo</label>
+          <input type="file" accept="image/*" id="teamALogoInput" class="settings-file" />
+        </div>
+        
+        <div class="settings-section">
+          <label for="teamBNameInput">Away Team Name</label>
+          <input type="text" id="teamBNameInput" class="settings-input" placeholder="Enter away team name" />
+        </div>
+        
+        <div class="settings-section">
+          <label for="teamBLogoInput">Away Team Logo</label>
+          <input type="file" accept="image/*" id="teamBLogoInput" class="settings-file" />
+        </div>
+        
+        <button type="submit" class="settings-save">Save Settings</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Main Scoreboard -->
+  <div class="scoreboard">
+    
+    <!-- Header Controls -->
+    <div class="header-controls">
+      <button id="themeToggleButton" class="theme-toggle" onclick="toggleTheme()" title="Toggle Light/Dark Mode" aria-label="Toggle light or dark theme" aria-pressed="false" type="button">
+        <svg class="theme-icon sun-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="5"/>
+          <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
+        </svg>
+        <svg class="theme-icon moon-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+        </svg>
+      </button>
+      
+      <button id="settingsOpenButton" class="settings-open" onclick="toggleSettings(true)" title="Settings" aria-label="Open settings" type="button">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="3" />
+          <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 8 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 5 15.4a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 8a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 8 4.6a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09c0 .66.39 1.25 1 1.51a1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09c-.66 0-1.25.39-1.51 1z"/>
+        </svg>
+      </button>
+    </div>
+
+    <!-- Timer Block -->
+    <div class="timer-block">
+      <!-- Period Controls -->
+      <div class="timer-controls">
+        <button class="timer-btn period-btn" onclick="changePeriod(-1)" aria-label="Decrease period">-</button>
+        <span class="period-label" id="periodLabel">Period 1</span>
+        <button class="timer-btn period-btn" onclick="changePeriod(1)" aria-label="Increase period">+</button>
+        <button class="timer-btn period-btn" onclick="advancePhase()" aria-label="Advance game phase" type="button">Advance Phase</button>
+      </div>
+
+      <!-- Timer Display -->
+      <div class="timer-outline">
+        <input type="text" id="timerDisplay" class="timer-display" value="20:00" maxlength="5" aria-describedby="timerLiveRegion" />
+        <span id="timerLiveRegion" class="visually-hidden" aria-live="polite">Timer set to 20 minutes</span>
+      </div>
+
+      <!-- Timer Controls -->
+      <div class="timer-controls">
+        <button class="timer-btn" onclick="startTimer()" aria-label="Start timer">Start</button>
+        <button class="timer-btn" onclick="stopTimer()" aria-label="Stop timer">Stop</button>
+        <button class="timer-btn" onclick="resetTimer()" aria-label="Reset timer">Reset</button>
+      </div>
+
+      <!-- Reset All -->
+      <div style="margin-top: 12px;">
+        <button class="timer-btn reset-all-btn" onclick="resetAll()" aria-label="Reset all scoreboard data">Reset All</button>
+      </div>
+    </div>
+
+    <!-- Scores Section -->
+    <div class="scores-section">
+      <!-- Home Team (Team A) -->
+      <div class="team-score">
+        <img src="" alt="Home Team Logo" class="team-logo" id="teamALogo" onerror="this.onerror=null;this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'200\' height=\'200\' viewBox=\'0 0 200 200\'><rect width=\'200\' height=\'200\' rx=\'32\' fill=\'%23e3e9f4\'/><text x=\'50%\' y=\'54%\' text-anchor=\'middle\' font-size=\'80\' fill=\'%2399aabb\' font-family=\'Arial, sans-serif\' dy=\'.3em\'>H</text></svg>'" />
+        <span class="team-name" id="teamAName">Home Team</span>
+        <div class="score-row">
+          <button class="score-btn" onclick="updateScore('A', -1)" aria-label="Decrease home team score">-</button>
+          <span class="score-value" id="teamAScore">0</span>
+          <button class="score-btn" onclick="updateScore('A', 1)" aria-label="Increase home team score">+</button>
+        </div>
+      </div>
+
+      <!-- League Info (Center) -->
+      <div class="league-info">
+        <img src="" alt="League Logo" class="league-logo" id="leagueLogo" onerror="this.onerror=null;this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'90\' height=\'90\' viewBox=\'0 0 90 90\'><rect width=\'90\' height=\'90\' rx=\'12\' fill=\'%23e3e9f4\'/><text x=\'50%\' y=\'54%\' text-anchor=\'middle\' font-size=\'40\' fill=\'%2399aabb\' font-family=\'Arial, sans-serif\' dy=\'.3em\'>L</text></svg>'" />
+        <span class="league-name" id="leagueName">League</span>
+      </div>
+
+      <!-- Away Team (Team B) -->
+      <div class="team-score">
+        <img src="" alt="Away Team Logo" class="team-logo" id="teamBLogo" onerror="this.onerror=null;this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'200\' height=\'200\' viewBox=\'0 0 200 200\'><rect width=\'200\' height=\'200\' rx=\'32\' fill=\'%23e3e9f4\'/><text x=\'50%\' y=\'54%\' text-anchor=\'middle\' font-size=\'80\' fill=\'%2399aabb\' font-family=\'Arial, sans-serif\' dy=\'.3em\'>A</text></svg>'" />
+        <span class="team-name" id="teamBName">Away Team</span>
+        <div class="score-row">
+          <button class="score-btn" onclick="updateScore('B', -1)" aria-label="Decrease away team score">-</button>
+          <span class="score-value" id="teamBScore">0</span>
+          <button class="score-btn" onclick="updateScore('B', 1)" aria-label="Increase away team score">+</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Firebase Config -->
+  <script src="firebase-config.js"></script>
+  
+  <!-- Scoreboard Logic -->
+  <script src="scoreboard.js"></script>
+
+</body>
+</html>
