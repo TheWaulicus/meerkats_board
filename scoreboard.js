@@ -59,12 +59,30 @@ function initAudioContext() {
 }
 
 /**
- * Play a beep sound using Web Audio API
+ * Play a beep sound (file or synthesized)
  * @param {number} frequency - Frequency in Hz
  * @param {number} duration - Duration in milliseconds
  * @param {number} volume - Volume (0-1)
  */
 function playBeep(frequency = 800, duration = 200, volume = 0.3) {
+  // Try to play custom minute beep if available
+  if (frequency === 1000 && minuteBeepAudio && minuteBeepAudio.src) {
+    const audioClone = minuteBeepAudio.cloneNode();
+    audioClone.volume = volume;
+    audioClone.play().catch(() => {
+      playSynthesizedBeep(frequency, duration, volume);
+    });
+    return;
+  }
+  
+  // Otherwise use synthesized beep
+  playSynthesizedBeep(frequency, duration, volume);
+}
+
+/**
+ * Synthesized beep using Web Audio API
+ */
+function playSynthesizedBeep(frequency, duration, volume) {
   try {
     const ctx = initAudioContext();
     const oscillator = ctx.createOscillator();
@@ -86,10 +104,58 @@ function playBeep(frequency = 800, duration = 200, volume = 0.3) {
   }
 }
 
+// Audio file cache
+let buzzerAudio = null;
+let minuteBeepAudio = null;
+
 /**
- * Play a traditional hockey buzzer sound (low, loud, harsh)
+ * Load audio files if available, otherwise use synthesized sounds
+ */
+function loadAudioFiles() {
+  // Try to load hockey buzzer audio file
+  buzzerAudio = new Audio();
+  buzzerAudio.src = 'sounds/hockey-buzzer.mp3';
+  buzzerAudio.volume = 0.7;
+  
+  // Fallback if file doesn't exist
+  buzzerAudio.addEventListener('error', () => {
+    console.log('Custom buzzer audio not found, using synthesized sound');
+    buzzerAudio = null;
+  });
+  
+  // Try to load minute beep audio file (optional)
+  minuteBeepAudio = new Audio();
+  minuteBeepAudio.src = 'sounds/minute-beep.mp3';
+  minuteBeepAudio.volume = 0.3;
+  
+  minuteBeepAudio.addEventListener('error', () => {
+    console.log('Custom minute beep not found, using synthesized sound');
+    minuteBeepAudio = null;
+  });
+}
+
+/**
+ * Play a traditional hockey buzzer sound (file or synthesized)
  */
 function playBuzzer() {
+  // Try to play audio file first
+  if (buzzerAudio && buzzerAudio.src) {
+    const audioClone = buzzerAudio.cloneNode();
+    audioClone.volume = 0.7;
+    audioClone.play().catch(err => {
+      console.warn('Audio file playback failed, using synthesized sound:', err);
+      playSynthesizedBuzzer();
+    });
+  } else {
+    // Fallback to synthesized buzzer
+    playSynthesizedBuzzer();
+  }
+}
+
+/**
+ * Synthesized hockey buzzer using Web Audio API
+ */
+function playSynthesizedBuzzer() {
   try {
     const ctx = initAudioContext();
     const oscillator = ctx.createOscillator();
@@ -782,6 +848,9 @@ function initializeApp() {
   
   // Initialize theme
   initializeTheme();
+  
+  // Load custom audio files if available
+  loadAudioFiles();
   
   // Initialize display
   updateTimerDisplay();
