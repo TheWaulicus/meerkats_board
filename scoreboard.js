@@ -6,7 +6,7 @@
 // ============================================================================
 
 let timerInterval = null;
-let timerSeconds = 20 * 60; // Default 20 minutes
+let timerSeconds = 18 * 60; // Default 18 minutes (standard hockey period)
 let timerRunning = false;
 let period = 1;
 let gamePhase = "REG"; // REG, OT, SO
@@ -292,11 +292,11 @@ function stopTimer() {
 }
 
 /**
- * Reset the timer to default (20:00)
+ * Reset the timer to default (18:00)
  */
 function resetTimer() {
   stopTimer();
-  timerSeconds = 20 * 60;
+  timerSeconds = 18 * 60;
   hasPlayedEndBuzzers = false;
   lastBeepSecond = -1;
   updateTimerDisplay();
@@ -702,7 +702,7 @@ function initializeTheme() {
  */
 function getDefaultState() {
   return {
-    timerSeconds: 20 * 60,
+    timerSeconds: 18 * 60,
     timerRunning: false,
     period: 1,
     gamePhase: "REG",

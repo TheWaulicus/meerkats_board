@@ -5,7 +5,7 @@
 // STATE MANAGEMENT (Read-only)
 // ============================================================================
 
-let timerSeconds = 20 * 60;
+let timerSeconds = 18 * 60;
 let timerRunning = false;
 let period = 1;
 let gamePhase = "REG"; // REG, OT, SO
