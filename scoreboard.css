@@ -142,7 +142,9 @@ body {
   box-shadow: 0 0 32px 4px var(--border-color), 0 2px 12px var(--shadow-color) inset;
   padding: 32px;
   border: 2.5px solid var(--accent-primary);
-  transition: background 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+  transition: all 0.3s ease;
+  flex: 1;
+  min-height: 200px;
 }
 
 /* Period Controls */
@@ -178,11 +180,12 @@ body {
   box-shadow: 0 0 32px 8px var(--shadow-accent), 0 2px 12px var(--shadow-color) inset,
     0 0 0 8px var(--shadow-accent) inset;
   transition: all 0.3s ease;
+  flex: 1;
 }
 
 .timer-display {
   font-family: "Orbitron", "Share Tech Mono", "Courier New", Courier, monospace;
-  font-size: 4.2rem;
+  font-size: clamp(3rem, 8vw, 6rem);
   font-weight: 900;
   width: auto;
   min-width: 180px;
@@ -193,7 +196,7 @@ body {
   color: var(--text-primary);
   text-shadow: 0 0 16px var(--accent-primary), 0 0 8px var(--text-primary), 0 2px 8px var(--shadow-color);
   letter-spacing: 0.08em;
-  transition: color 0.2s, text-shadow 0.2s;
+  transition: all 0.3s ease;
 }
 
 .timer-display:focus {
@@ -282,6 +285,8 @@ body {
   max-width: 1200px;
   margin-left: auto;
   margin-right: auto;
+  transition: all 0.3s ease;
+  flex: 1;
 }
 
 .team-score {
@@ -504,13 +509,18 @@ body {
     order: -1;
   }
 
-  .team-logo {
-    width: 150px;
-    height: 150px;
+  /* Timer remains prominent on tablets */
+  .timer-display {
+    font-size: clamp(3.5rem, 10vw, 5rem);
   }
-
+  
+  /* Scores scale down but remain visible */
   .score-value {
-    font-size: 3em;
+    font-size: clamp(2.5em, 8vw, 4em);
+  }
+  
+  .team-name {
+    font-size: clamp(1.3em, 4vw, 1.8em);
   }
 }
 
@@ -526,37 +536,26 @@ body {
     padding: 20px 16px;
   }
 
+  /* Timer stays LARGE even on mobile */
   .timer-display {
-    font-size: 3rem;
-    min-width: 140px;
+    font-size: clamp(2.5rem, 12vw, 4rem);
   }
 
   .timer-outline {
     padding: 12px 24px;
-    min-height: 70px;
   }
 
-  .team-logo {
-    width: 120px;
-    height: 120px;
-  }
-
-  .league-logo {
-    width: 70px;
-    height: 70px;
-  }
-
+  /* Scale other elements appropriately */
   .score-value {
-    font-size: 2.5em;
-    min-width: 80px;
+    font-size: clamp(2em, 8vw, 3em);
   }
 
   .team-name {
-    font-size: 1.5em;
+    font-size: clamp(1.2em, 5vw, 1.5em);
   }
 
   .league-name {
-    font-size: 1.1em;
+    font-size: clamp(0.9em, 3vw, 1.1em);
   }
 
   .timer-btn,
@@ -576,6 +575,12 @@ body {
   .header-controls {
     top: 12px;
     right: 12px;
+  }
+  
+  /* Timer-only mode on mobile = MASSIVE */
+  .scoreboard.hide-scores-control.hide-period-control:not(.view-mode) .timer-display,
+  .scoreboard.hide-scores-view.hide-period-view.view-mode .timer-display {
+    font-size: clamp(4rem, 18vw, 8rem);
   }
 }
 
@@ -643,6 +648,122 @@ body {
 
 .hide-league-view.view-mode .league-info {
   display: none !important;
+}
+
+/* Dynamic Scaling Based on Visible Elements */
+
+/* When only timer is visible - make it HUGE */
+.scoreboard.hide-scores-control:not(.view-mode) .timer-block,
+.scoreboard.hide-scores-view.view-mode .timer-block {
+  min-height: 60vh;
+}
+
+.scoreboard.hide-scores-control:not(.view-mode) .timer-display,
+.scoreboard.hide-scores-view.view-mode .timer-display {
+  font-size: clamp(6rem, 15vw, 12rem);
+}
+
+.scoreboard.hide-scores-control:not(.view-mode) .timer-outline,
+.scoreboard.hide-scores-view.view-mode .timer-outline {
+  padding: 40px 80px;
+  min-height: 180px;
+}
+
+/* When period is hidden, give more space to timer */
+.scoreboard.hide-period-control:not(.view-mode) .timer-display,
+.scoreboard.hide-period-view.view-mode .timer-display {
+  font-size: clamp(4rem, 10vw, 8rem);
+}
+
+.scoreboard.hide-period-control:not(.view-mode) .timer-outline,
+.scoreboard.hide-period-view.view-mode .timer-outline {
+  padding: 32px 64px;
+  min-height: 140px;
+}
+
+/* When scores visible but other elements hidden, scale appropriately */
+.scoreboard.hide-team-logos-control:not(.view-mode) .score-value,
+.scoreboard.hide-team-logos-view.view-mode .score-value {
+  font-size: 5em;
+}
+
+.scoreboard.hide-team-names-control:not(.view-mode) .score-value,
+.scoreboard.hide-team-names-view.view-mode .score-value {
+  font-size: 5em;
+}
+
+/* When both logos and names hidden, make scores massive */
+.scoreboard.hide-team-logos-control.hide-team-names-control:not(.view-mode) .score-value,
+.scoreboard.hide-team-logos-view.hide-team-names-view.view-mode .score-value {
+  font-size: 6em;
+  min-width: 150px;
+}
+
+/* When league hidden, redistribute space */
+.scoreboard.hide-league-control:not(.view-mode) .scores-section,
+.scoreboard.hide-league-view.view-mode .scores-section {
+  grid-template-columns: 1fr 1fr;
+  gap: 80px;
+}
+
+.scoreboard.hide-league-control:not(.view-mode) .league-info,
+.scoreboard.hide-league-view.view-mode .league-info {
+  display: none;
+}
+
+/* Period label scaling when visible */
+.period-label {
+  font-size: clamp(1.2em, 2.5vw, 1.6em);
+  transition: all 0.3s ease;
+}
+
+/* Scale team elements when visible */
+.team-logo {
+  width: clamp(120px, 20vw, 200px);
+  height: clamp(120px, 20vw, 200px);
+  transition: all 0.3s ease;
+}
+
+.team-name {
+  font-size: clamp(1.5em, 3vw, 2.2em);
+  transition: all 0.3s ease;
+}
+
+.score-value {
+  font-size: clamp(3em, 6vw, 5em);
+  min-width: clamp(80px, 15vw, 120px);
+  transition: all 0.3s ease;
+}
+
+/* League scaling */
+.league-logo {
+  width: clamp(60px, 10vw, 90px);
+  height: clamp(60px, 10vw, 90px);
+  transition: all 0.3s ease;
+}
+
+.league-name {
+  font-size: clamp(1em, 2vw, 1.4em);
+  transition: all 0.3s ease;
+}
+
+/* Timer-only mode (ultimate prominence) */
+.scoreboard.hide-scores-control.hide-period-control:not(.view-mode) .timer-display,
+.scoreboard.hide-scores-view.hide-period-view.view-mode .timer-display {
+  font-size: clamp(8rem, 20vw, 16rem);
+}
+
+.scoreboard.hide-scores-control.hide-period-control:not(.view-mode) .timer-outline,
+.scoreboard.hide-scores-view.hide-period-view.view-mode .timer-outline {
+  padding: 60px 120px;
+  min-height: 250px;
+  border-width: 6px;
+}
+
+.scoreboard.hide-scores-control.hide-period-control:not(.view-mode) .timer-block,
+.scoreboard.hide-scores-view.hide-period-view.view-mode .timer-block {
+  min-height: 70vh;
+  justify-content: center;
 }
 
 /* Accessibility enhancements */
