@@ -692,7 +692,7 @@ function updateThemeIcons(theme) {
     moonIcons.forEach(icon => icon.classList.remove('active'));
   } else {
     sunIcons.forEach(icon => icon.classList.remove('active'));
-    moonIcons.forEach(icon => moonIcon.classList.add('active'));
+    moonIcons.forEach(icon => icon.classList.add('active'));
   }
 }
 
