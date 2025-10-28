@@ -338,7 +338,7 @@ body {
 .timer-outline {
   border: 4px solid var(--accent-primary);
   border-radius: 20px;
-  padding: 18px 48px;
+  padding: 24px 48px;
   background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-tertiary) 100%);
   display: flex;
   justify-content: center;
@@ -355,6 +355,7 @@ body {
     inset 0 2px 8px var(--shadow-color);
   transition: all 0.3s ease;
   position: relative;
+  overflow: hidden;
 }
 
 [data-theme="dark"] .timer-outline {
@@ -374,24 +375,29 @@ body {
 
 .timer-display {
   font-family: "Orbitron", "Share Tech Mono", "Courier New", Courier, monospace;
-  font-size: clamp(6rem, 14vw, 12rem);
+  font-size: clamp(5rem, 12vw, 10rem);
   font-weight: 900;
   width: 100%;
+  max-width: 100%;
   text-align: center;
   border: none;
   background: transparent;
   outline: none;
   color: var(--text-primary);
-  letter-spacing: 0.08em;
+  letter-spacing: 0.05em;
   transition: all 0.3s ease;
+  line-height: 1;
+  overflow: hidden;
+  text-overflow: clip;
 }
 
 [data-theme="dark"] .timer-display {
   text-shadow: 
-    0 0 15px var(--glow-primary),
-    0 0 30px var(--glow-secondary),
-    0 0 5px var(--text-primary),
+    0 0 12px var(--glow-primary),
+    0 0 24px var(--glow-secondary),
+    0 0 4px var(--text-primary),
     0 4px 12px var(--shadow-color);
+  filter: drop-shadow(0 0 8px var(--glow-primary));
 }
 
 [data-theme="light"] .timer-display {
@@ -716,12 +722,13 @@ body {
 
   /* Timer remains prominent on tablets */
   .timer-display {
-    font-size: clamp(6rem, 16vw, 10rem);
+    font-size: clamp(5rem, 14vw, 9rem);
+    letter-spacing: 0.04em;
   }
   
   .timer-outline {
     max-width: 95%;
-    padding: 20px 40px;
+    padding: 22px 40px;
   }
   
   /* Scores scale down but remain visible */
@@ -748,11 +755,12 @@ body {
 
   /* Timer stays LARGE even on mobile */
   .timer-display {
-    font-size: clamp(5rem, 18vw, 8rem);
+    font-size: clamp(4rem, 16vw, 7rem);
+    letter-spacing: 0.03em;
   }
 
   .timer-outline {
-    padding: 20px 24px;
+    padding: 20px 20px;
     max-width: 95%;
     width: fit-content;
     border-width: 3px;
@@ -793,13 +801,14 @@ body {
   /* Timer-only mode on mobile = MASSIVE */
   .scoreboard.hide-scores-control.hide-period-control:not(.view-mode) .timer-display,
   .view-mode .scoreboard.hide-scores-view.hide-period-view .timer-display {
-    font-size: clamp(8rem, 26vw, 14rem);
+    font-size: clamp(6rem, 22vw, 12rem);
+    letter-spacing: 0.03em;
   }
   
   .scoreboard.hide-scores-control.hide-period-control:not(.view-mode) .timer-outline,
   .view-mode .scoreboard.hide-scores-view.hide-period-view .timer-outline {
-    padding: 50px 24px;
-    max-width: 95%;
+    padding: 40px 20px;
+    max-width: 92%;
     border-width: 3px;
   }
 }
@@ -880,26 +889,28 @@ body {
 
 .scoreboard.hide-scores-control:not(.view-mode) .timer-display,
 .view-mode .scoreboard.hide-scores-view .timer-display {
-  font-size: clamp(12rem, 24vw, 22rem);
+  font-size: clamp(10rem, 20vw, 18rem);
+  letter-spacing: 0.04em;
 }
 
 .scoreboard.hide-scores-control:not(.view-mode) .timer-outline,
 .view-mode .scoreboard.hide-scores-view .timer-outline {
-  padding: 50px 70px;
-  max-width: 90%;
+  padding: 50px 60px;
+  max-width: 88%;
   min-height: 200px;
 }
 
 /* When period is hidden, give more space to timer */
 .scoreboard.hide-period-control:not(.view-mode) .timer-display,
 .view-mode .scoreboard.hide-period-view .timer-display {
-  font-size: clamp(7rem, 16vw, 14rem);
+  font-size: clamp(6rem, 14vw, 12rem);
+  letter-spacing: 0.04em;
 }
 
 .scoreboard.hide-period-control:not(.view-mode) .timer-outline,
 .view-mode .scoreboard.hide-period-view .timer-outline {
-  padding: 40px 56px;
-  max-width: 90%;
+  padding: 36px 52px;
+  max-width: 88%;
   min-height: 160px;
 }
 
@@ -972,12 +983,13 @@ body {
 /* Timer-only mode (ultimate prominence) */
 .scoreboard.hide-scores-control.hide-period-control:not(.view-mode) .timer-display,
 .view-mode .scoreboard.hide-scores-view.hide-period-view .timer-display {
-  font-size: clamp(14rem, 30vw, 28rem);
+  font-size: clamp(12rem, 26vw, 24rem);
+  letter-spacing: 0.04em;
 }
 
 .scoreboard.hide-scores-control.hide-period-control:not(.view-mode) .timer-outline,
 .view-mode .scoreboard.hide-scores-view.hide-period-view .timer-outline {
-  padding: 70px 90px;
+  padding: 60px 70px;
   max-width: 85%;
   min-height: 280px;
   border-width: 5px;
