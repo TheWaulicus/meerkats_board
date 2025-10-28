@@ -156,15 +156,23 @@ function loadAudioFiles() {
  * Play a traditional hockey buzzer sound (file or synthesized)
  */
 function playBuzzer() {
+  console.log('playBuzzer called. buzzerAudio:', buzzerAudio, 'src:', buzzerAudio?.src);
+  
   // Try to play audio file first
-  if (buzzerAudio && buzzerAudio.src) {
+  if (buzzerAudio && buzzerAudio.src && buzzerAudio.src.includes('hockey-buzzer')) {
     const audioClone = buzzerAudio.cloneNode();
     audioClone.volume = 0.7;
-    audioClone.play().catch(err => {
-      console.warn('Audio file playback failed, using synthesized sound:', err);
+    
+    console.log('Attempting to play WAV file:', audioClone.src);
+    
+    audioClone.play().then(() => {
+      console.log('✅ WAV file playing successfully!');
+    }).catch(err => {
+      console.warn('❌ Audio file playback failed, using synthesized sound:', err);
       playSynthesizedBuzzer();
     });
   } else {
+    console.log('Fallback: No audio file loaded, using synthesized buzzer');
     // Fallback to synthesized buzzer
     playSynthesizedBuzzer();
   }
