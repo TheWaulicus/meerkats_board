@@ -209,7 +209,8 @@ function loadStateFromSnapshot(snapshot) {
   const state = snapshot.data();
   
   // Update timer state
-  const newTimerSeconds = state.timerSeconds || 20 * 60;
+  // Don't use fallback for timerSeconds - it could be 0
+  const newTimerSeconds = (state.timerSeconds !== undefined) ? state.timerSeconds : 18 * 60;
   const newTimerRunning = state.timerRunning || false;
   
   // Only update if there's a significant change (avoid jitter)
