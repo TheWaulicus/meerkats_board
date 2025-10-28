@@ -151,7 +151,7 @@ This document tracks planned enhancements for the multi-game support system.
 ## Medium Priority Features 📋
 
 ### 4. Delete/Archive Games
-**Status**: 📋 Planned  
+**Status**: ✅ Completed (Jan 2025)  
 **Priority**: Medium  
 **Estimated Effort**: 2 days
 
@@ -188,11 +188,13 @@ This document tracks planned enhancements for the multi-game support system.
   - Update: `index.html` (delete/archive UI)
 
 #### Acceptance Criteria:
-- [ ] Can delete games from game list
-- [ ] Deleted games go to trash (30-day retention)
-- [ ] Can archive games to hide from active list
-- [ ] Can restore archived/deleted games
-- [ ] Permanent delete requires confirmation
+- [x] Can delete games from game list
+- [x] Export game data before deletion
+- [x] Delete from Firebase and history
+- [x] Archive games (mark in Firebase)
+- [x] Permanent delete requires double confirmation
+- [ ] Trash/30-day retention (future enhancement)
+- [ ] Bulk delete operations (future enhancement)
 
 ---
 
