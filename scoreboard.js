@@ -780,7 +780,10 @@ function loadStateFromSnapshot(snapshot) {
   
   if (!isLocalUpdate) {
     // Update local state from remote
-    timerSeconds = state.timerSeconds || 20 * 60;
+    // Don't use fallback for timerSeconds - it could be 0
+    if (state.timerSeconds !== undefined) {
+      timerSeconds = state.timerSeconds;
+    }
     period = state.period || 1;
     gamePhase = state.gamePhase || "REG";
     
