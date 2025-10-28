@@ -118,10 +118,18 @@ function loadAudioFiles() {
   // Try WAV format first
   buzzerAudio.src = 'sounds/hockey-buzzer.wav';
   buzzerAudio.volume = 0.7;
+  buzzerAudio.preload = 'auto';
+  
+  console.log('Loading buzzer audio from:', buzzerAudio.src);
+  
+  // Success handler
+  buzzerAudio.addEventListener('canplaythrough', () => {
+    console.log('✅ Hockey buzzer WAV loaded successfully!');
+  }, { once: true });
   
   // Fallback to MP3 if WAV doesn't exist
-  buzzerAudio.addEventListener('error', () => {
-    console.log('WAV buzzer not found, trying MP3...');
+  buzzerAudio.addEventListener('error', (e) => {
+    console.log('WAV buzzer error, trying MP3...', e);
     buzzerAudio.src = 'sounds/hockey-buzzer.mp3';
     buzzerAudio.addEventListener('error', () => {
       console.log('Custom buzzer audio not found, using synthesized sound');
