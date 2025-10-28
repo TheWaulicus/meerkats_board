@@ -206,19 +206,19 @@ function playEndSequence() {
 }
 
 /**
- * Check if we should play a minute beep
+ * Check if we should play a minute beep or end buzzer
  */
 function checkMinuteBeep() {
   if (!timerRunning) return;
   
-  // Play beep at every 60-second mark (except at 0)
+  // Play buzzer at every 60-second mark (except at 0)
   if (timerSeconds > 0 && timerSeconds % 60 === 0 && timerSeconds !== lastBeepSecond) {
     lastBeepSecond = timerSeconds;
-    playBeep(1000, 150, 0.25);
+    playBuzzer(); // Play the same hockey buzzer every minute
   }
   
   // Play end sequence when timer reaches 0
-  if (timerSeconds === 0) {
+  if (timerSeconds === 0 && !hasPlayedEndBuzzers) {
     playEndSequence();
   }
 }
@@ -267,13 +267,13 @@ function startTimer() {
   timerInterval = setInterval(() => {
     if (timerSeconds > 0) {
       timerSeconds--;
-      checkMinuteBeep(); // Check for audio alarms
       updateTimerDisplay();
+      checkMinuteBeep(); // Check for audio alarms AFTER decrementing
       saveStateToFirestore();
     } else {
-      // Timer reached 0:00
+      // Timer reached 0:00 - STOP HERE
+      stopTimer(); // Stop the timer immediately
       checkMinuteBeep(); // Play end sequence
-      stopTimer(); // Stop the timer
       updateTimerDisplay();
       saveStateToFirestore();
     }
