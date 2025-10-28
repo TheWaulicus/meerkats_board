@@ -199,10 +199,10 @@ function playEndSequence() {
   if (hasPlayedEndBuzzers) return;
   hasPlayedEndBuzzers = true;
   
-  // Three hockey horn blasts with 1 second gaps
+  // Three hockey horn blasts with 1.5 second gaps
   playBuzzer();
-  setTimeout(() => playBuzzer(), 1000);
-  setTimeout(() => playBuzzer(), 2000);
+  setTimeout(() => playBuzzer(), 1500);
+  setTimeout(() => playBuzzer(), 3000);
 }
 
 /**
@@ -271,11 +271,14 @@ function startTimer() {
       checkMinuteBeep(); // Check for audio alarms AFTER decrementing
       saveStateToFirestore();
     } else {
-      // Timer reached 0:00 - STOP HERE
-      stopTimer(); // Stop the timer immediately
+      // Timer reached 0:00 - STOP COMPLETELY
+      clearInterval(timerInterval); // Clear the interval immediately
+      timerInterval = null;
+      timerRunning = false; // Set running flag to false
       checkMinuteBeep(); // Play end sequence
-      updateTimerDisplay();
-      saveStateToFirestore();
+      updateTimerDisplay(); // Update display to show 0:00
+      saveStateToFirestore(); // Save stopped state to Firebase
+      return; // Exit the interval callback
     }
   }, 1000);
   
