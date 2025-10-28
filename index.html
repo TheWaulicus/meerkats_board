@@ -47,9 +47,22 @@
           <button class="timer-btn" onclick="copyControlLink()" title="Copy control link" style="flex: 1;">📋 Control</button>
           <button class="timer-btn" onclick="copyDisplayLink()" title="Copy display link" style="flex: 1;">📺 Display</button>
         </div>
-        <button class="timer-btn" onclick="toggleQRSection()" style="width: 100%; background: var(--accent-secondary);">
-          📱 Show QR Codes
-        </button>
+        <div style="display: flex; gap: 8px; align-items: center;">
+          <button class="timer-btn" onclick="toggleShortUrlsSection()" style="flex: 1; background: var(--success-color);">
+            🔗 Get Short Links
+          </button>
+          <button class="timer-btn" onclick="toggleQRSection()" style="flex: 1; background: var(--accent-secondary);">
+            📱 QR Codes
+          </button>
+        </div>
+      </div>
+      
+      <!-- Short URLs Section (Initially Hidden) -->
+      <div class="settings-section" id="shortUrlsSection" style="display: none;">
+        <label>🔗 Short Links (via TinyURL)</label>
+        <div id="shortUrlsContainer">
+          <!-- Short URLs will be generated here -->
+        </div>
       </div>
       
       <!-- QR Codes Section (Initially Hidden) -->
@@ -437,6 +450,9 @@
   
   <!-- Game Cleanup -->
   <script src="game-cleanup.js"></script>
+  
+  <!-- URL Shortener -->
+  <script src="url-shortener.js"></script>
   
   <!-- Scoreboard Logic -->
   <script src="scoreboard.js"></script>
