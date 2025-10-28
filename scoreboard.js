@@ -199,10 +199,10 @@ function playEndSequence() {
   if (hasPlayedEndBuzzers) return;
   hasPlayedEndBuzzers = true;
   
-  // Three hockey horn blasts with 0.75 second gaps
+  // Three hockey horn blasts with 1 second gaps
   playBuzzer();
-  setTimeout(() => playBuzzer(), 750);
-  setTimeout(() => playBuzzer(), 1500);
+  setTimeout(() => playBuzzer(), 1000);
+  setTimeout(() => playBuzzer(), 2000);
 }
 
 /**
