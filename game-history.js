@@ -138,6 +138,38 @@ function removeFromHistory(gameId) {
 }
 
 /**
+ * Mark game as archived in history
+ * @param {string} gameId - Game ID to archive
+ */
+function markAsArchived(gameId) {
+  const history = getGameHistory();
+  const game = history.find(g => g.gameId === gameId);
+  
+  if (game) {
+    game.archived = true;
+    game.archivedDate = Date.now();
+    saveGameHistory(history);
+    console.log('Game marked as archived in history:', gameId);
+  }
+}
+
+/**
+ * Unmark game as archived in history
+ * @param {string} gameId - Game ID to restore
+ */
+function unmarkAsArchived(gameId) {
+  const history = getGameHistory();
+  const game = history.find(g => g.gameId === gameId);
+  
+  if (game) {
+    delete game.archived;
+    delete game.archivedDate;
+    saveGameHistory(history);
+    console.log('Game unmarked as archived in history:', gameId);
+  }
+}
+
+/**
  * Get recent games (last N games accessed)
  * @param {number} limit - Number of games to return
  * @returns {GameHistoryEntry[]} Recent games
@@ -279,6 +311,8 @@ if (typeof window !== 'undefined') {
     updateGameName,
     toggleFavorite,
     removeFromHistory,
+    markAsArchived,
+    unmarkAsArchived,
     getRecentGames,
     getFavoriteGames,
     searchGames,

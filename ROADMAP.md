@@ -197,7 +197,7 @@ This document tracks planned enhancements for the multi-game support system.
 ---
 
 ### 5. QR Code Generation
-**Status**: 📋 Planned  
+**Status**: ✅ Completed (Jan 2025)  
 **Priority**: Medium  
 **Estimated Effort**: 1 day
 
@@ -233,11 +233,11 @@ This document tracks planned enhancements for the multi-game support system.
   - Update: `scoreboard.css` (QR code styling)
 
 #### Acceptance Criteria:
-- [ ] QR codes generate instantly
-- [ ] Separate QR for control and display
-- [ ] Can download QR as image
-- [ ] QR codes work reliably when scanned
-- [ ] Print-friendly layout option
+- [x] QR codes generate instantly
+- [x] Separate QR for control and display
+- [x] Can download QR as image
+- [x] QR codes work reliably when scanned
+- [x] Print-friendly layout option
 
 ---
 

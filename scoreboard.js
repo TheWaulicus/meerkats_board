@@ -1168,15 +1168,51 @@ function toggleFavoriteGame(gameId) {
 }
 
 /**
- * Remove game from history
+ * Remove game from history (with option to delete from Firebase)
  */
 function removeGameFromHistory(gameId) {
-  if (confirm('Remove this game from your history?')) {
+  const currentGameId = window.GameManager ? window.GameManager.getCurrentGameId() : 'main';
+  
+  // Can't delete main game
+  if (gameId === 'main') {
+    alert('Cannot delete the main game');
+    return;
+  }
+  
+  // Show delete options
+  const options = [
+    'Remove from history only (keeps data in Firebase)',
+    'Delete completely from Firebase and history',
+    'Cancel'
+  ];
+  
+  const choice = prompt(
+    `Delete "${gameId}"?\n\n` +
+    '1. Remove from history only\n' +
+    '2. Delete completely (cannot undo)\n' +
+    '3. Cancel\n\n' +
+    'Enter 1, 2, or 3:'
+  );
+  
+  if (choice === '1') {
+    // Remove from history only
     if (window.GameHistory) {
       window.GameHistory.removeFromHistory(gameId);
       loadRecentGamesList();
     }
+  } else if (choice === '2') {
+    // Delete completely
+    if (window.GameCleanup) {
+      window.GameCleanup.deleteGameCompletely(gameId).then(success => {
+        if (success) {
+          loadRecentGamesList();
+        }
+      });
+    } else {
+      alert('Game cleanup module not loaded');
+    }
   }
+  // choice === '3' or anything else: cancel
 }
 
 /**
@@ -1300,6 +1336,18 @@ function downloadQRCode(containerId, filename) {
 function printQRCodes() {
   if (window.QRGenerator) {
     window.QRGenerator.printQRCodes();
+  }
+}
+
+/**
+ * Export current game data as JSON
+ */
+function exportCurrentGame() {
+  const gameId = window.GameManager ? window.GameManager.getCurrentGameId() : 'main';
+  if (window.GameCleanup) {
+    window.GameCleanup.downloadGameData(gameId);
+  } else {
+    alert('Game cleanup module not loaded');
   }
 }
 

@@ -109,8 +109,11 @@
         </div>
       </div>
       
-      <!-- Reset Game -->
+      <!-- Game Actions -->
       <div class="settings-section" style="border-top: 2px solid var(--border); padding-top: 16px;">
+        <button class="timer-btn" onclick="exportCurrentGame()" style="width: 100%; margin-bottom: 8px;">
+          💾 Export Game Data
+        </button>
         <button class="timer-btn" onclick="showResetModal()" style="background: var(--error-color); width: 100%;">
           🔄 Reset Game
         </button>
@@ -429,6 +432,9 @@
   
   <!-- QR Code Generator -->
   <script src="qr-generator.js"></script>
+  
+  <!-- Game Cleanup -->
+  <script src="game-cleanup.js"></script>
   
   <!-- Scoreboard Logic -->
   <script src="scoreboard.js"></script>
