@@ -1,51 +1,72 @@
-# Meerkats Board - Hockey Scoreboard
+# 🏒 Meerkats Board - Hockey Scoreboard
 
-A modern, simplified web-based hockey scoreboard with dual interfaces: a control panel for operators and a display-only viewing interface. Features real-time Firebase synchronization and audio alarms.
+A professional web-based hockey scoreboard with dual interfaces and real-time synchronization. Perfect for hockey rinks, tournaments, and practice sessions.
 
-## 🎯 Features
+**Live Demo**: [thewaulicus.github.io/meerkats_board](https://thewaulicus.github.io/meerkats_board/)
 
-### Core Functionality
-- **Configurable Timer**: Set custom time, start/stop/reset controls
-- **Audio Alarms**: 
-  - Beep every minute during countdown
-  - Three buzzer sounds when timer reaches zero
-- **Score Tracking**: Simple score management for two teams (no penalties or shots)
-- **Period Management**: Track periods, overtime, and shootout
-- **Team Customization**: Edit team names and upload logos
-- **League Branding**: Custom league name and logo
+![Version](https://img.shields.io/badge/version-1.0.0-blue)
+![License](https://img.shields.io/badge/license-open--source-green)
+![Status](https://img.shields.io/badge/status-production--ready-brightgreen)
 
-### Dual Interface System
-- **Control Interface** (`index.html`): Full operator controls with settings and buttons
-- **Viewing Interface** (`view.html`): Clean, display-only interface for spectators
-- **Real-time Sync**: Firebase ensures both interfaces stay in perfect sync
+## ✨ Features
 
-### Design
-- Responsive layout (desktop, tablet, mobile)
-- Dark/Light theme support
-- Professional hockey scoreboard aesthetic
-- Accessible UI with ARIA labels
+### 🎮 Scoreboard Controls
+- **18-Minute Timer** - Configurable countdown with start/stop/reset
+- **Score Tracking** - Track both teams' scores with +/- buttons
+- **Period Management** - Periods 1-3, Overtime, and Shootout support
+- **Real Hockey Buzzer** - Authentic arena sound every minute + 3 buzzers at end
 
-## 📁 Project Structure
+### 🖥️ Dual Interface System
+- **Control Interface** - Full operator controls with settings (index.html)
+- **Display Interface** - Clean, read-only view for spectators (view.html)
+- **Real-time Sync** - Firebase keeps both screens perfectly synchronized
+- **One-Click Setup** - Click "Display" in navbar to open second screen
 
-```
-meerkats_board/
-├── README.md                 # This file
-├── index.html                # Control interface (operator view)
-├── view.html                 # Viewing interface (display only)
-├── scoreboard.css            # Shared styles
-├── scoreboard.js             # Control logic with audio
-├── view.js                   # Viewing logic (read-only sync)
-├── firebase-config.js        # Firebase configuration
-└── .gitignore                # Git ignore file
-```
+### 🎨 Customization
+- **League Branding** - Custom league name and logo in navbar
+- **Team Setup** - Configure team names and upload logos
+- **Theme Toggle** - Switch between light and dark modes
+- **Visibility Controls** - Show/hide any element independently on each interface
+
+### 📱 Professional Design
+- Fully responsive (mobile, tablet, desktop)
+- Fixed navbar with branding
+- Dynamic element scaling (timer always prominent)
+- WCAG 2.1 AA accessible
 
 ## 🚀 Quick Start
 
-### Prerequisites
-- Modern web browser (Chrome, Firefox, Safari, Edge)
-- Firebase project (instructions below)
+### Option 1: Use the Live Version (Easiest)
 
-### Firebase Setup
+1. **Open Control**: [thewaulicus.github.io/meerkats_board/index.html](https://thewaulicus.github.io/meerkats_board/index.html)
+2. **Click "Display"** in navbar to open second screen
+3. **Configure Settings** (gear icon) - Add your league name and logos
+4. **Start Using!** - Set timer, track scores, play games
+
+**Note**: The live version uses shared Firebase, so multiple users will see each other's games. For private use, set up your own Firebase (see below).
+
+### Option 2: Run Locally
+
+1. **Clone the repository**:
+   ```bash
+   git clone https://github.com/TheWaulicus/meerkats_board.git
+   cd meerkats_board
+   ```
+
+2. **Open in browser**:
+   ```bash
+   open index.html    # Control interface
+   open view.html     # Display interface (separate window)
+   ```
+
+3. **Configure Firebase** (for sync between screens):
+   - See Firebase Setup section below
+
+## ⚙️ Firebase Setup (Optional)
+
+Firebase enables real-time sync between control and display screens. Skip this if using locally on one screen.
+
+### Create Firebase Project
 
 1. **Create a Firebase Project**:
    - Go to [Firebase Console](https://console.firebase.google.com/)
@@ -84,21 +105,38 @@ meerkats_board/
    - Open `firebase-config.js`
    - Replace the placeholder config with your Firebase config
 
-### Running the Scoreboard
+## 🎮 How to Use
 
-1. **Control Interface** (Operator):
-   - Open `index.html` in your browser
-   - Use settings (gear icon) to configure teams and league
-   - Control timer, manage scores, and track periods
+### Control Interface (index.html)
 
-2. **Viewing Interface** (Display):
-   - Open `view.html` in your browser (or on a separate display)
-   - The scoreboard automatically syncs with the control interface
-   - No controls visible - pure display mode
+**Fixed Navbar**:
+- [League Logo] League Name - Your branding
+- **Display** button - Click to open display interface in new window
+- **Settings** (⚙️) - Configure everything
 
-3. **Multiple Displays**:
-   - You can open `view.html` on multiple screens
-   - All displays sync in real-time with the control interface
+**Timer Controls**:
+- Click timer to edit manually (e.g., type "15:00")
+- **Start/Stop/Reset** buttons
+- Period controls: +/- and "Advance Phase"
+
+**Scores**:
+- Use +/- buttons under each team
+- Scores sync instantly to display
+
+**Settings** (⚙️ gear icon):
+1. **Theme** - Toggle light/dark mode
+2. **League Name** - Shows in navbar
+3. **League Logo** - Upload image for navbar
+4. **Team Names** - Home and Away
+5. **Team Logos** - Upload team images
+6. **Display Options** - Show/hide elements on control vs display
+
+### Display Interface (view.html)
+
+- **Read-only** - No controls, just clean display
+- **Auto-sync** - Updates from control interface in real-time
+- **Fullscreen** - Press 'F' key to maximize
+- Perfect for spectators and arena displays
 
 ## 🎮 Usage
 
@@ -178,30 +216,14 @@ The scoreboard includes two audio alarm behaviors:
 - For production, implement authentication
 - Restrict write access to authenticated operators only
 
-## 📝 Data Structure
+## 💾 Technical Details
 
-```javascript
-{
-  timerSeconds: 1200,           // Current timer value in seconds
-  timerRunning: false,          // Is timer counting down?
-  period: 1,                    // Current period (1-3)
-  gamePhase: "REG",             // REG, OT, or SO
-  teamA: {
-    name: "Team A",
-    logo: "",                   // Base64 or URL
-    score: 0
-  },
-  teamB: {
-    name: "Team B",
-    logo: "",
-    score: 0
-  },
-  leagueName: "League Name",
-  leagueLogo: "",
-  theme: "dark",                // dark or light
-  lastUpdate: timestamp         // Firestore server timestamp
-}
-```
+- **Frontend**: HTML5, CSS3, JavaScript (no frameworks)
+- **Database**: Firebase Firestore (real-time sync)
+- **Audio**: Web Audio API + WAV file
+- **Hosting**: GitHub Pages (free)
+- **Browser Support**: Chrome, Firefox, Safari, Edge (all modern browsers)
+- **Cost**: $0/month (Firebase free tier)
 
 ## 🐛 Troubleshooting
 
