@@ -359,8 +359,8 @@ body {
 
 [data-theme="dark"] .timer-outline {
   box-shadow: 
-    0 0 50px 15px var(--glow-primary),
-    0 0 100px 25px var(--shadow-accent),
+    0 0 20px 6px var(--glow-primary),
+    0 0 40px 10px var(--shadow-accent),
     0 4px 20px var(--shadow-color),
     inset 0 2px 8px var(--shadow-color);
 }
@@ -374,7 +374,7 @@ body {
 
 .timer-display {
   font-family: "Orbitron", "Share Tech Mono", "Courier New", Courier, monospace;
-  font-size: clamp(4rem, 10vw, 8rem);
+  font-size: clamp(6rem, 14vw, 12rem);
   font-weight: 900;
   width: 100%;
   text-align: center;
@@ -388,9 +388,9 @@ body {
 
 [data-theme="dark"] .timer-display {
   text-shadow: 
-    0 0 30px var(--glow-primary),
-    0 0 60px var(--glow-secondary),
-    0 0 10px var(--text-primary),
+    0 0 15px var(--glow-primary),
+    0 0 30px var(--glow-secondary),
+    0 0 5px var(--text-primary),
     0 4px 12px var(--shadow-color);
 }
 
@@ -716,12 +716,12 @@ body {
 
   /* Timer remains prominent on tablets */
   .timer-display {
-    font-size: clamp(4.5rem, 12vw, 7rem);
+    font-size: clamp(6rem, 16vw, 10rem);
   }
   
   .timer-outline {
     max-width: 95%;
-    padding: 16px 40px;
+    padding: 20px 40px;
   }
   
   /* Scores scale down but remain visible */
@@ -748,11 +748,11 @@ body {
 
   /* Timer stays LARGE even on mobile */
   .timer-display {
-    font-size: clamp(3.5rem, 15vw, 6rem);
+    font-size: clamp(5rem, 18vw, 8rem);
   }
 
   .timer-outline {
-    padding: 16px 20px;
+    padding: 20px 24px;
     max-width: 95%;
     width: fit-content;
     border-width: 3px;
@@ -793,12 +793,12 @@ body {
   /* Timer-only mode on mobile = MASSIVE */
   .scoreboard.hide-scores-control.hide-period-control:not(.view-mode) .timer-display,
   .view-mode .scoreboard.hide-scores-view.hide-period-view .timer-display {
-    font-size: clamp(6rem, 22vw, 10rem);
+    font-size: clamp(8rem, 26vw, 14rem);
   }
   
   .scoreboard.hide-scores-control.hide-period-control:not(.view-mode) .timer-outline,
   .view-mode .scoreboard.hide-scores-view.hide-period-view .timer-outline {
-    padding: 40px 20px;
+    padding: 50px 24px;
     max-width: 95%;
     border-width: 3px;
   }
@@ -880,27 +880,27 @@ body {
 
 .scoreboard.hide-scores-control:not(.view-mode) .timer-display,
 .view-mode .scoreboard.hide-scores-view .timer-display {
-  font-size: clamp(8rem, 18vw, 16rem);
+  font-size: clamp(12rem, 24vw, 22rem);
 }
 
 .scoreboard.hide-scores-control:not(.view-mode) .timer-outline,
 .view-mode .scoreboard.hide-scores-view .timer-outline {
-  padding: 40px 60px;
+  padding: 50px 70px;
   max-width: 90%;
-  min-height: 180px;
+  min-height: 200px;
 }
 
 /* When period is hidden, give more space to timer */
 .scoreboard.hide-period-control:not(.view-mode) .timer-display,
 .view-mode .scoreboard.hide-period-view .timer-display {
-  font-size: clamp(5rem, 12vw, 10rem);
+  font-size: clamp(7rem, 16vw, 14rem);
 }
 
 .scoreboard.hide-period-control:not(.view-mode) .timer-outline,
 .view-mode .scoreboard.hide-period-view .timer-outline {
-  padding: 32px 48px;
+  padding: 40px 56px;
   max-width: 90%;
-  min-height: 140px;
+  min-height: 160px;
 }
 
 /* When scores visible but other elements hidden, scale appropriately */
@@ -972,14 +972,14 @@ body {
 /* Timer-only mode (ultimate prominence) */
 .scoreboard.hide-scores-control.hide-period-control:not(.view-mode) .timer-display,
 .view-mode .scoreboard.hide-scores-view.hide-period-view .timer-display {
-  font-size: clamp(10rem, 25vw, 20rem);
+  font-size: clamp(14rem, 30vw, 28rem);
 }
 
 .scoreboard.hide-scores-control.hide-period-control:not(.view-mode) .timer-outline,
 .view-mode .scoreboard.hide-scores-view.hide-period-view .timer-outline {
-  padding: 60px 80px;
+  padding: 70px 90px;
   max-width: 85%;
-  min-height: 250px;
+  min-height: 280px;
   border-width: 5px;
 }
 
@@ -1263,8 +1263,8 @@ select:focus-visible {
 
 [data-theme="dark"] .score-value {
   text-shadow: 
-    0 0 20px var(--glow-primary),
-    0 0 40px var(--glow-secondary),
+    0 0 10px var(--glow-primary),
+    0 0 20px var(--glow-secondary),
     0 4px 8px rgba(0, 0, 0, 0.5);
 }
 
@@ -1371,22 +1371,22 @@ select:focus-visible {
   border-color: var(--glow-primary);
   animation: timerPulse 2s ease-in-out infinite;
   box-shadow: 
-    0 0 60px 20px var(--glow-primary),
-    0 0 120px 30px var(--shadow-accent),
+    0 0 25px 8px var(--glow-primary),
+    0 0 50px 12px var(--shadow-accent),
     0 4px 20px var(--shadow-color);
 }
 
 @keyframes timerPulse {
   0%, 100% {
     box-shadow: 
-      0 0 60px 20px var(--glow-primary),
-      0 0 120px 30px var(--shadow-accent),
+      0 0 25px 8px var(--glow-primary),
+      0 0 50px 12px var(--shadow-accent),
       0 4px 20px var(--shadow-color);
   }
   50% {
     box-shadow: 
-      0 0 80px 30px var(--glow-primary),
-      0 0 160px 40px var(--shadow-accent),
+      0 0 35px 12px var(--glow-primary),
+      0 0 70px 18px var(--shadow-accent),
       0 4px 20px var(--shadow-color);
   }
 }
