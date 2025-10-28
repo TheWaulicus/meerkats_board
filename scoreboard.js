@@ -585,7 +585,10 @@ function applySettings() {
   const leagueNameValue = document.getElementById("leagueNameInput").value;
   if (leagueNameValue) {
     leagueName = leagueNameValue;
-    document.getElementById("leagueName").textContent = leagueName;
+    const navbarLeagueName = document.getElementById("navbarLeagueName");
+    if (navbarLeagueName) {
+      navbarLeagueName.textContent = leagueName;
+    }
   }
   
   // Update team names
@@ -624,7 +627,11 @@ function applySettings() {
     const reader = new FileReader();
     reader.onload = (e) => {
       leagueLogo = e.target.result;
-      document.getElementById("leagueLogo").src = leagueLogo;
+      const navbarLeagueLogo = document.getElementById("navbarLeagueLogo");
+      if (navbarLeagueLogo) {
+        navbarLeagueLogo.src = leagueLogo;
+        navbarLeagueLogo.style.display = 'block';
+      }
       saveStateToFirestore();
     };
     reader.readAsDataURL(leagueLogoInput.files[0]);
@@ -834,9 +841,15 @@ function loadStateFromSnapshot(snapshot) {
       document.getElementById("teamBLogo").src = teamState.B.logo;
     }
     
-    document.getElementById("leagueName").textContent = leagueName;
-    if (leagueLogo) {
-      document.getElementById("leagueLogo").src = leagueLogo;
+    // Update navbar with league info
+    const navbarLeagueName = document.getElementById("navbarLeagueName");
+    if (navbarLeagueName) {
+      navbarLeagueName.textContent = leagueName;
+    }
+    const navbarLeagueLogo = document.getElementById("navbarLeagueLogo");
+    if (navbarLeagueLogo && leagueLogo) {
+      navbarLeagueLogo.src = leagueLogo;
+      navbarLeagueLogo.style.display = 'block';
     }
     
     // Update theme

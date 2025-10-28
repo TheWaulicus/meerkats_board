@@ -167,7 +167,10 @@
 
   <!-- Fixed Navbar -->
   <nav class="navbar">
-    <div class="navbar-title">🏒 Meerkats Board</div>
+    <div class="navbar-brand">
+      <img src="" alt="League Logo" class="navbar-logo" id="navbarLeagueLogo" onerror="this.style.display='none'" />
+      <span class="navbar-title" id="navbarLeagueName">League Name</span>
+    </div>
     <div class="header-controls">
       <a href="view.html" class="navbar-link" title="Open Display View" aria-label="Open display view" target="_blank">
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -231,11 +234,6 @@
         </div>
       </div>
 
-      <!-- League Info (Center) -->
-      <div class="league-info">
-        <img src="" alt="League Logo" class="league-logo" id="leagueLogo" onerror="this.onerror=null;this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'90\' height=\'90\' viewBox=\'0 0 90 90\'><rect width=\'90\' height=\'90\' rx=\'12\' fill=\'%23e3e9f4\'/><text x=\'50%\' y=\'54%\' text-anchor=\'middle\' font-size=\'40\' fill=\'%2399aabb\' font-family=\'Arial, sans-serif\' dy=\'.3em\'>L</text></svg>'" />
-        <span class="league-name" id="leagueName">League</span>
-      </div>
 
       <!-- Away Team (Team B) -->
       <div class="team-score">
