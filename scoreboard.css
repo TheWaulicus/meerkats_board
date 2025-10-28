@@ -110,11 +110,42 @@ body {
   text-transform: uppercase;
 }
 
-/* Header Controls (Settings) */
+/* Header Controls (Settings, Display Link) */
 .header-controls {
   display: flex;
   gap: 12px;
   align-items: center;
+}
+
+.navbar-link {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--accent-primary);
+  padding: 8px 12px;
+  border-radius: 8px;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 0.95em;
+}
+
+.navbar-link:hover {
+  background: var(--shadow-accent);
+  color: var(--text-primary);
+}
+
+.navbar-link:focus {
+  outline: 2px solid var(--accent-primary);
+  outline-offset: 2px;
+}
+
+.navbar-link-text {
+  display: inline;
 }
 
 .settings-open {
@@ -138,6 +169,17 @@ body {
 .settings-open:focus {
   outline: 2px solid var(--accent-primary);
   outline-offset: 2px;
+}
+
+/* Hide link text on small screens */
+@media (max-width: 600px) {
+  .navbar-link-text {
+    display: none;
+  }
+  
+  .navbar-title {
+    font-size: 1.2em;
+  }
 }
 
 .theme-toggle-inline {
