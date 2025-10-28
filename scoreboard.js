@@ -1257,6 +1257,52 @@ async function confirmResetGame() {
   }
 }
 
+/**
+ * Toggle QR code section visibility
+ */
+function toggleQRSection() {
+  const section = document.getElementById('qrSection');
+  const button = event.target;
+  
+  if (!section) return;
+  
+  if (section.style.display === 'none') {
+    // Show and generate QR codes
+    section.style.display = 'block';
+    button.textContent = '📱 Hide QR Codes';
+    
+    // Generate QR codes
+    const gameId = window.GameManager ? window.GameManager.getCurrentGameId() : 'main';
+    if (window.QRGenerator) {
+      setTimeout(() => {
+        window.QRGenerator.generateGameQRCodes(gameId);
+      }, 100);
+    }
+  } else {
+    // Hide
+    section.style.display = 'none';
+    button.textContent = '📱 Show QR Codes';
+  }
+}
+
+/**
+ * Download QR code as PNG
+ */
+function downloadQRCode(containerId, filename) {
+  if (window.QRGenerator) {
+    window.QRGenerator.downloadQRCode(containerId, filename);
+  }
+}
+
+/**
+ * Print QR codes
+ */
+function printQRCodes() {
+  if (window.QRGenerator) {
+    window.QRGenerator.printQRCodes();
+  }
+}
+
 // Wait for DOM to be ready
 if (document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', initializeApp);

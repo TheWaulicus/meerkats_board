@@ -17,6 +17,9 @@
   <!-- Firebase SDKs -->
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+  
+  <!-- QR Code Library -->
+  <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
 </head>
 <body data-theme="dark">
   
@@ -40,10 +43,45 @@
       <!-- Share Links -->
       <div class="settings-section">
         <label>Share Links</label>
-        <div style="display: flex; gap: 8px; align-items: center;">
+        <div style="display: flex; gap: 8px; align-items: center; margin-bottom: 12px;">
           <button class="timer-btn" onclick="copyControlLink()" title="Copy control link" style="flex: 1;">📋 Control</button>
           <button class="timer-btn" onclick="copyDisplayLink()" title="Copy display link" style="flex: 1;">📺 Display</button>
         </div>
+        <button class="timer-btn" onclick="toggleQRSection()" style="width: 100%; background: var(--accent-secondary);">
+          📱 Show QR Codes
+        </button>
+      </div>
+      
+      <!-- QR Codes Section (Initially Hidden) -->
+      <div class="settings-section" id="qrSection" style="display: none;">
+        <label>QR Codes for Quick Access</label>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 12px;">
+          <!-- Control QR -->
+          <div style="text-align: center;">
+            <p style="font-size: 0.9em; font-weight: 600; margin-bottom: 8px;">📋 Control</p>
+            <div id="qrCodeControl" style="min-height: 200px; display: flex; align-items: center; justify-content: center; background: white; padding: 10px; border-radius: 8px;"></div>
+            <button class="timer-btn" onclick="downloadQRCode('qrCodeControl', 'meerkats-control-qr.png')" style="margin-top: 8px; width: 100%; font-size: 0.85em;">
+              ⬇️ Download
+            </button>
+          </div>
+          
+          <!-- Display QR -->
+          <div style="text-align: center;">
+            <p style="font-size: 0.9em; font-weight: 600; margin-bottom: 8px;">📺 Display</p>
+            <div id="qrCodeDisplay" style="min-height: 200px; display: flex; align-items: center; justify-content: center; background: white; padding: 10px; border-radius: 8px;"></div>
+            <button class="timer-btn" onclick="downloadQRCode('qrCodeDisplay', 'meerkats-display-qr.png')" style="margin-top: 8px; width: 100%; font-size: 0.85em;">
+              ⬇️ Download
+            </button>
+          </div>
+        </div>
+        
+        <button class="settings-save" onclick="printQRCodes()" style="width: 100%;">
+          🖨️ Print QR Codes
+        </button>
+        
+        <p style="font-size: 0.85em; color: var(--text-secondary); margin-top: 8px; text-align: center;">
+          Scan QR codes with a phone to quickly access the scoreboard
+        </p>
       </div>
       
       <!-- Recent Games -->
@@ -388,6 +426,9 @@
   
   <!-- Game Manager -->
   <script src="game-manager.js"></script>
+  
+  <!-- QR Code Generator -->
+  <script src="qr-generator.js"></script>
   
   <!-- Scoreboard Logic -->
   <script src="scoreboard.js"></script>
