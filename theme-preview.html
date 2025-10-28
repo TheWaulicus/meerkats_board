@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Meerkats Board - Theme Preview</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&family=Orbitron:wght@700;900&display=swap" rel="stylesheet" />
+  
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: "Inter", sans-serif;
+      background: #1a1a1a;
+      color: #ffffff;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 40px;
+      font-size: 2.5rem;
+      background: linear-gradient(135deg, #06b6d4, #8b5cf6);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .theme-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+      gap: 30px;
+      margin-bottom: 40px;
+    }
+
+    .theme-card {
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+      transition: transform 0.3s ease;
+    }
+
+    .theme-card:hover {
+      transform: translateY(-5px);
+    }
+
+    .theme-header {
+      padding: 20px;
+      text-align: center;
+      font-weight: 700;
+      font-size: 1.3rem;
+      border-bottom: 2px solid;
+    }
+
+    .theme-preview {
+      padding: 30px;
+      min-height: 400px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .timer-demo {
+      border: 4px solid;
+      border-radius: 20px;
+      padding: 30px 40px;
+      text-align: center;
+      font-family: "Orbitron", monospace;
+      font-size: 4rem;
+      font-weight: 900;
+      letter-spacing: 0.05em;
+      line-height: 1;
+    }
+
+    .score-demo {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      gap: 20px;
+      align-items: center;
+      padding: 20px;
+      border: 2px solid;
+      border-radius: 12px;
+    }
+
+    .team-score {
+      text-align: center;
+      font-size: 3rem;
+      font-weight: 900;
+      font-family: "Orbitron", monospace;
+    }
+
+    .period-demo {
+      padding: 12px 24px;
+      border: 1px solid;
+      border-radius: 8px;
+      text-align: center;
+      font-weight: 600;
+      width: fit-content;
+      margin: 0 auto;
+    }
+
+    .buttons-demo {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .btn-demo {
+      padding: 12px 24px;
+      border: none;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .btn-demo:hover {
+      transform: translateY(-2px);
+    }
+
+    /* ========================================
+       THEME 1: ICE HOCKEY CLASSIC
+       ======================================== */
+    
+    .ice-hockey .theme-header {
+      background: linear-gradient(135deg, #0f1c2e 0%, #1a2e42 100%);
+      color: #f0f9ff;
+      border-bottom-color: #38bdf8;
+    }
+
+    .ice-hockey .theme-preview {
+      background: linear-gradient(135deg, #0a141e 0%, #0f1c2e 100%);
+    }
+
+    .ice-hockey .timer-demo {
+      background: linear-gradient(135deg, #1a2e42 0%, #0f1c2e 100%);
+      border-color: #38bdf8;
+      color: #f0f9ff;
+      box-shadow: 
+        0 0 30px rgba(56, 189, 248, 0.4),
+        0 0 60px rgba(125, 211, 252, 0.2),
+        inset 0 2px 8px rgba(0, 0, 0, 0.3);
+      text-shadow: 
+        0 0 20px rgba(56, 189, 248, 0.6),
+        0 0 40px rgba(125, 211, 252, 0.3);
+    }
+
+    .ice-hockey .score-demo {
+      background: rgba(26, 46, 66, 0.5);
+      border-color: rgba(56, 189, 248, 0.3);
+    }
+
+    .ice-hockey .team-score {
+      color: #7dd3fc;
+      text-shadow: 0 0 15px rgba(125, 211, 252, 0.5);
+    }
+
+    .ice-hockey .period-demo {
+      background: rgba(56, 189, 248, 0.15);
+      border-color: rgba(56, 189, 248, 0.4);
+      color: #7dd3fc;
+    }
+
+    .ice-hockey .btn-demo {
+      background: linear-gradient(135deg, #38bdf8, #0ea5e9);
+      color: #0a141e;
+    }
+
+    .ice-hockey .btn-demo:hover {
+      box-shadow: 0 8px 20px rgba(56, 189, 248, 0.4);
+    }
+
+    /* ========================================
+       THEME 2: OCEAN DEPTHS
+       ======================================== */
+    
+    .ocean-depths .theme-header {
+      background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+      color: #f0f9ff;
+      border-bottom-color: #0ea5e9;
+    }
+
+    .ocean-depths .theme-preview {
+      background: linear-gradient(135deg, #0a0e17 0%, #0f172a 100%);
+    }
+
+    .ocean-depths .timer-demo {
+      background: linear-gradient(135deg, #1e293b 0%, #141827 100%);
+      border-color: #0ea5e9;
+      color: #f0f9ff;
+      box-shadow: 
+        0 0 25px rgba(14, 165, 233, 0.4),
+        0 0 50px rgba(6, 182, 212, 0.2),
+        inset 0 2px 8px rgba(0, 0, 0, 0.3);
+      text-shadow: 
+        0 0 18px rgba(14, 165, 233, 0.6),
+        0 0 35px rgba(6, 182, 212, 0.3);
+    }
+
+    .ocean-depths .score-demo {
+      background: rgba(30, 41, 59, 0.5);
+      border-color: rgba(14, 165, 233, 0.3);
+    }
+
+    .ocean-depths .team-score {
+      color: #06b6d4;
+      text-shadow: 0 0 15px rgba(6, 182, 212, 0.5);
+    }
+
+    .ocean-depths .period-demo {
+      background: rgba(14, 165, 233, 0.15);
+      border-color: rgba(14, 165, 233, 0.4);
+      color: #06b6d4;
+    }
+
+    .ocean-depths .btn-demo {
+      background: linear-gradient(135deg, #0ea5e9, #06b6d4);
+      color: #0a0e17;
+    }
+
+    .ocean-depths .btn-demo:hover {
+      box-shadow: 0 8px 20px rgba(14, 165, 233, 0.4);
+    }
+
+    /* ========================================
+       THEME 3: NEON NIGHTS
+       ======================================== */
+    
+    .neon-nights .theme-header {
+      background: linear-gradient(135deg, #1a0f2e 0%, #2d1b4e 100%);
+      color: #faf5ff;
+      border-bottom-color: #a855f7;
+    }
+
+    .neon-nights .theme-preview {
+      background: linear-gradient(135deg, #0c0a14 0%, #1a0f2e 100%);
+    }
+
+    .neon-nights .timer-demo {
+      background: linear-gradient(135deg, #2d1b4e 0%, #1a0f2e 100%);
+      border-color: #a855f7;
+      color: #faf5ff;
+      box-shadow: 
+        0 0 30px rgba(168, 85, 247, 0.5),
+        0 0 60px rgba(236, 72, 153, 0.3),
+        inset 0 2px 8px rgba(0, 0, 0, 0.3);
+      text-shadow: 
+        0 0 20px rgba(168, 85, 247, 0.7),
+        0 0 40px rgba(236, 72, 153, 0.4);
+    }
+
+    .neon-nights .score-demo {
+      background: rgba(45, 27, 78, 0.5);
+      border-color: rgba(168, 85, 247, 0.4);
+    }
+
+    .neon-nights .team-score {
+      color: #ec4899;
+      text-shadow: 0 0 15px rgba(236, 72, 153, 0.6);
+    }
+
+    .neon-nights .period-demo {
+      background: rgba(168, 85, 247, 0.15);
+      border-color: rgba(168, 85, 247, 0.5);
+      color: #a855f7;
+    }
+
+    .neon-nights .btn-demo {
+      background: linear-gradient(135deg, #a855f7, #ec4899);
+      color: #faf5ff;
+    }
+
+    .neon-nights .btn-demo:hover {
+      box-shadow: 0 8px 20px rgba(168, 85, 247, 0.5);
+    }
+
+    /* Light themes preview */
+    .light-preview {
+      margin-top: 60px;
+      padding-top: 40px;
+      border-top: 2px solid #333;
+    }
+
+    .light-preview h2 {
+      text-align: center;
+      margin-bottom: 30px;
+      font-size: 2rem;
+    }
+
+    /* Light theme styles */
+    .ice-hockey-light .theme-header {
+      background: linear-gradient(135deg, #e0f2fe 0%, #bae6fd 100%);
+      color: #0c1825;
+      border-bottom-color: #0284c7;
+    }
+
+    .ice-hockey-light .theme-preview {
+      background: linear-gradient(180deg, #f8fafc 0%, #e0f2fe 100%);
+    }
+
+    .ice-hockey-light .timer-demo {
+      background: #ffffff;
+      border-color: #0284c7;
+      color: #0c1825;
+      box-shadow: 
+        0 8px 32px rgba(2, 132, 199, 0.15),
+        0 0 0 3px #0284c7;
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .ice-hockey-light .score-demo {
+      background: rgba(255, 255, 255, 0.8);
+      border-color: rgba(2, 132, 199, 0.3);
+    }
+
+    .ice-hockey-light .team-score {
+      color: #0284c7;
+      text-shadow: none;
+    }
+
+    .ice-hockey-light .period-demo {
+      background: rgba(2, 132, 199, 0.1);
+      border-color: rgba(2, 132, 199, 0.3);
+      color: #0c1825;
+    }
+
+    .ice-hockey-light .btn-demo {
+      background: #0284c7;
+      color: #ffffff;
+    }
+
+    .ocean-depths-light .theme-header {
+      background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+      color: #0f172a;
+      border-bottom-color: #0284c7;
+    }
+
+    .ocean-depths-light .theme-preview {
+      background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+    }
+
+    .ocean-depths-light .timer-demo {
+      background: #ffffff;
+      border-color: #0284c7;
+      color: #0f172a;
+      box-shadow: 
+        0 8px 32px rgba(2, 132, 199, 0.15),
+        0 0 0 3px #0284c7;
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .ocean-depths-light .score-demo {
+      background: rgba(248, 250, 252, 0.9);
+      border-color: rgba(2, 132, 199, 0.3);
+    }
+
+    .ocean-depths-light .team-score {
+      color: #0284c7;
+      text-shadow: none;
+    }
+
+    .ocean-depths-light .period-demo {
+      background: rgba(2, 132, 199, 0.1);
+      border-color: rgba(2, 132, 199, 0.3);
+      color: #0f172a;
+    }
+
+    .ocean-depths-light .btn-demo {
+      background: #0284c7;
+      color: #ffffff;
+    }
+
+    .neon-nights-light .theme-header {
+      background: linear-gradient(135deg, #fefbff 0%, #f5f0ff 100%);
+      color: #1e0c3a;
+      border-bottom-color: #9333ea;
+    }
+
+    .neon-nights-light .theme-preview {
+      background: linear-gradient(180deg, #fefbff 0%, #f5f0ff 100%);
+    }
+
+    .neon-nights-light .timer-demo {
+      background: #ffffff;
+      border-color: #9333ea;
+      color: #1e0c3a;
+      box-shadow: 
+        0 8px 32px rgba(147, 51, 234, 0.2),
+        0 0 0 3px #9333ea;
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .neon-nights-light .score-demo {
+      background: rgba(254, 251, 255, 0.9);
+      border-color: rgba(147, 51, 234, 0.3);
+    }
+
+    .neon-nights-light .team-score {
+      color: #db2777;
+      text-shadow: none;
+    }
+
+    .neon-nights-light .period-demo {
+      background: rgba(147, 51, 234, 0.1);
+      border-color: rgba(147, 51, 234, 0.3);
+      color: #1e0c3a;
+    }
+
+    .neon-nights-light .btn-demo {
+      background: linear-gradient(135deg, #9333ea, #db2777);
+      color: #ffffff;
+    }
+
+    @media (max-width: 1200px) {
+      .theme-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🎨 Meerkats Board Theme Preview</h1>
+    
+    <h2 style="text-align: center; margin-bottom: 30px; color: #94a3b8;">Dark Themes</h2>
+    
+    <div class="theme-grid">
+      <!-- Ice Hockey Classic -->
+      <div class="theme-card ice-hockey">
+        <div class="theme-header">
+          ❄️ Ice Hockey Classic
+        </div>
+        <div class="theme-preview">
+          <div class="timer-demo">18:02</div>
+          <div class="score-demo">
+            <div class="team-score">3</div>
+            <div style="font-size: 2rem; color: #7dd3fc;">:</div>
+            <div class="team-score">2</div>
+          </div>
+          <div class="period-demo">PERIOD 2</div>
+          <div class="buttons-demo">
+            <button class="btn-demo">Start Timer</button>
+            <button class="btn-demo">Add Score</button>
+            <button class="btn-demo">Settings</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Ocean Depths -->
+      <div class="theme-card ocean-depths">
+        <div class="theme-header">
+          🌊 Ocean Depths
+        </div>
+        <div class="theme-preview">
+          <div class="timer-demo">18:02</div>
+          <div class="score-demo">
+            <div class="team-score">3</div>
+            <div style="font-size: 2rem; color: #06b6d4;">:</div>
+            <div class="team-score">2</div>
+          </div>
+          <div class="period-demo">PERIOD 2</div>
+          <div class="buttons-demo">
+            <button class="btn-demo">Start Timer</button>
+            <button class="btn-demo">Add Score</button>
+            <button class="btn-demo">Settings</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Neon Nights -->
+      <div class="theme-card neon-nights">
+        <div class="theme-header">
+          🔥 Neon Nights
+        </div>
+        <div class="theme-preview">
+          <div class="timer-demo">18:02</div>
+          <div class="score-demo">
+            <div class="team-score">3</div>
+            <div style="font-size: 2rem; color: #ec4899;">:</div>
+            <div class="team-score">2</div>
+          </div>
+          <div class="period-demo">PERIOD 2</div>
+          <div class="buttons-demo">
+            <button class="btn-demo">Start Timer</button>
+            <button class="btn-demo">Add Score</button>
+            <button class="btn-demo">Settings</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="light-preview">
+      <h2 style="color: #94a3b8;">Light Themes</h2>
+      
+      <div class="theme-grid">
+        <!-- Ice Hockey Classic Light -->
+        <div class="theme-card ice-hockey-light">
+          <div class="theme-header">
+            ❄️ Ice Hockey Classic (Light)
+          </div>
+          <div class="theme-preview">
+            <div class="timer-demo">18:02</div>
+            <div class="score-demo">
+              <div class="team-score">3</div>
+              <div style="font-size: 2rem; color: #0284c7;">:</div>
+              <div class="team-score">2</div>
+            </div>
+            <div class="period-demo">PERIOD 2</div>
+            <div class="buttons-demo">
+              <button class="btn-demo">Start Timer</button>
+              <button class="btn-demo">Add Score</button>
+              <button class="btn-demo">Settings</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Ocean Depths Light -->
+        <div class="theme-card ocean-depths-light">
+          <div class="theme-header">
+            🌊 Ocean Depths (Light)
+          </div>
+          <div class="theme-preview">
+            <div class="timer-demo">18:02</div>
+            <div class="score-demo">
+              <div class="team-score">3</div>
+              <div style="font-size: 2rem; color: #0284c7;">:</div>
+              <div class="team-score">2</div>
+            </div>
+            <div class="period-demo">PERIOD 2</div>
+            <div class="buttons-demo">
+              <button class="btn-demo">Start Timer</button>
+              <button class="btn-demo">Add Score</button>
+              <button class="btn-demo">Settings</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Neon Nights Light -->
+        <div class="theme-card neon-nights-light">
+          <div class="theme-header">
+            🔥 Neon Nights (Light)
+          </div>
+          <div class="theme-preview">
+            <div class="timer-demo">18:02</div>
+            <div class="score-demo">
+              <div class="team-score">3</div>
+              <div style="font-size: 2rem; color: #db2777;">:</div>
+              <div class="team-score">2</div>
+            </div>
+            <div class="period-demo">PERIOD 2</div>
+            <div class="buttons-demo">
+              <button class="btn-demo">Start Timer</button>
+              <button class="btn-demo">Add Score</button>
+              <button class="btn-demo">Settings</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div style="margin-top: 60px; text-align: center; padding: 40px; background: rgba(255,255,255,0.05); border-radius: 16px;">
+      <h3 style="margin-bottom: 20px;">Which theme do you prefer?</h3>
+      <p style="color: #94a3b8; font-size: 1.1rem;">
+        Each theme includes both dark and light modes<br/>
+        Choose your favorite and I'll implement it immediately!
+      </p>
+    </div>
+  </div>
+</body>
+</html>

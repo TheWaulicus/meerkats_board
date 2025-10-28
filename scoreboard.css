@@ -2,34 +2,34 @@
 
 /* CSS Variables for Theming */
 :root {
-  /* Dark theme (default) - Modern & Vibrant */
-  --bg-primary: #0a0e1a;
-  --bg-secondary: #141827;
-  --bg-tertiary: #1a1f35;
-  --bg-quaternary: #202542;
+  /* Dark theme - Ice Hockey Classic */
+  --bg-primary: #0a141e;
+  --bg-secondary: #0f1c2e;
+  --bg-tertiary: #1a2e42;
+  --bg-quaternary: #1e3a52;
   --text-primary: #f0f9ff;
   --text-secondary: #94a3b8;
   --text-muted: #cbd5e1;
-  --accent-primary: #06b6d4;
+  --accent-primary: #38bdf8;
   --accent-secondary: #f59e0b;
   --accent-danger: #ef4444;
   --error-color: #ef4444;
   --success-color: #10b981;
-  --border: #06b6d466;
-  --border-color: #06b6d466;
+  --border: #38bdf866;
+  --border-color: #38bdf866;
   --shadow-color: #00000080;
-  --shadow-accent: #06b6d433;
-  --glow-primary: #06b6d4;
-  --glow-secondary: #0ea5e9;
+  --shadow-accent: #38bdf833;
+  --glow-primary: #38bdf8;
+  --glow-secondary: #7dd3fc;
 }
 
 [data-theme="light"] {
-  /* Light theme - Clean & Professional */
-  --bg-primary: #ffffff;
-  --bg-secondary: #f8fafc;
-  --bg-tertiary: #f1f5f9;
-  --bg-quaternary: #e2e8f0;
-  --text-primary: #0f172a;
+  /* Light theme - Ice Hockey Classic */
+  --bg-primary: #f8fafc;
+  --bg-secondary: #ffffff;
+  --bg-tertiary: #e0f2fe;
+  --bg-quaternary: #bae6fd;
+  --text-primary: #0c1825;
   --text-secondary: #475569;
   --text-muted: #64748b;
   --accent-primary: #0284c7;
