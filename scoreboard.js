@@ -668,15 +668,15 @@ function toggleTheme() {
  * Update theme icon visibility
  */
 function updateThemeIcons(theme) {
-  const sunIcon = document.querySelector('.sun-icon');
-  const moonIcon = document.querySelector('.moon-icon');
+  const sunIcons = document.querySelectorAll('.sun-icon');
+  const moonIcons = document.querySelectorAll('.moon-icon');
   
   if (theme === 'light') {
-    sunIcon.classList.add('active');
-    moonIcon.classList.remove('active');
+    sunIcons.forEach(icon => icon.classList.add('active'));
+    moonIcons.forEach(icon => icon.classList.remove('active'));
   } else {
-    sunIcon.classList.remove('active');
-    moonIcon.classList.add('active');
+    sunIcons.forEach(icon => icon.classList.remove('active'));
+    moonIcons.forEach(icon => moonIcon.classList.add('active'));
   }
 }
 
