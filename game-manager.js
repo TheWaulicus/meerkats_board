@@ -111,16 +111,17 @@ function copyGameUrl(gameId, isViewMode = false) {
  */
 function createNewGame() {
   const newGameId = generateGameId();
-  console.log('Creating new game:', newGameId);
+  const sanitized = sanitizeGameId(newGameId);
+  console.log('Creating new game:', sanitized);
   
-  // Add to history
+  // Add to history (use sanitized version)
   if (window.GameHistory) {
-    window.GameHistory.addToHistory(newGameId, '', true);
+    window.GameHistory.addToHistory(sanitized, '', true);
   }
   
   // Reload page with new game ID
   const url = new URL(window.location);
-  url.searchParams.set('game', newGameId);
+  url.searchParams.set('game', sanitized);
   window.location.href = url.toString();
 }
 

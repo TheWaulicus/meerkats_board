@@ -53,14 +53,18 @@ function saveGameHistory(history) {
  * @param {boolean} isNewGame - Whether this is a newly created game
  */
 function addToHistory(gameId, friendlyName = '', isNewGame = false) {
-  const history = getGameHistory();
+  let history = getGameHistory();
   const now = Date.now();
   
-  // Check if game already exists
-  const existingIndex = history.findIndex(g => g.gameId === gameId);
+  // Normalize game ID to lowercase for consistency
+  const normalizedGameId = gameId.toLowerCase();
+  
+  // Check if game already exists (case-insensitive)
+  const existingIndex = history.findIndex(g => g.gameId.toLowerCase() === normalizedGameId);
   
   if (existingIndex >= 0) {
     // Update existing entry
+    history[existingIndex].gameId = normalizedGameId; // Ensure lowercase
     history[existingIndex].lastAccessed = now;
     if (friendlyName) {
       history[existingIndex].friendlyName = friendlyName;
@@ -72,8 +76,8 @@ function addToHistory(gameId, friendlyName = '', isNewGame = false) {
   } else {
     // Add new entry
     const newEntry = {
-      gameId,
-      friendlyName: friendlyName || gameId,
+      gameId: normalizedGameId,
+      friendlyName: friendlyName || normalizedGameId,
       lastAccessed: now,
       createdDate: now,
       isFavorite: false,
@@ -82,8 +86,11 @@ function addToHistory(gameId, friendlyName = '', isNewGame = false) {
     history.unshift(newEntry);
   }
   
+  // Remove duplicates (case-insensitive)
+  history = deduplicateHistory(history);
+  
   saveGameHistory(history);
-  console.log('Game added to history:', gameId);
+  console.log('Game added to history:', normalizedGameId);
 }
 
 /**
@@ -198,11 +205,49 @@ function sortGames(sortBy = 'recent') {
 }
 
 /**
+ * Remove duplicate game entries (case-insensitive)
+ * Keeps the most recently accessed version
+ * @param {GameHistoryEntry[]} history - Game history array
+ * @returns {GameHistoryEntry[]} Deduplicated history
+ */
+function deduplicateHistory(history) {
+  const seen = new Map();
+  const deduplicated = [];
+  
+  for (const entry of history) {
+    const normalizedId = entry.gameId.toLowerCase();
+    
+    if (!seen.has(normalizedId)) {
+      // Keep this entry (first occurrence, which is most recent due to sorting)
+      seen.set(normalizedId, true);
+      deduplicated.push({
+        ...entry,
+        gameId: normalizedId // Ensure lowercase
+      });
+    }
+  }
+  
+  return deduplicated;
+}
+
+/**
  * Clear all game history
  */
 function clearHistory() {
   localStorage.removeItem(HISTORY_KEY);
   console.log('Game history cleared');
+}
+
+/**
+ * Clean up duplicate games in history
+ * Merges case-insensitive duplicates
+ */
+function cleanupDuplicates() {
+  let history = getGameHistory();
+  history = deduplicateHistory(history);
+  saveGameHistory(history);
+  console.log('History cleaned, duplicates removed');
+  return history.length;
 }
 
 /**
@@ -239,6 +284,14 @@ if (typeof window !== 'undefined') {
     searchGames,
     sortGames,
     clearHistory,
+    cleanupDuplicates,
     formatDate
   };
+  
+  // Auto-cleanup duplicates on load
+  setTimeout(() => {
+    if (window.GameHistory) {
+      window.GameHistory.cleanupDuplicates();
+    }
+  }, 1000);
 }
