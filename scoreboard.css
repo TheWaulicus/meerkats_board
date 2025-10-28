@@ -2,41 +2,47 @@
 
 /* CSS Variables for Theming */
 :root {
-  /* Dark theme (default) */
-  --bg-primary: #1a1d22;
-  --bg-secondary: #23272b;
-  --bg-tertiary: #181c20;
-  --bg-quaternary: #1e2328;
-  --text-primary: #eaf6ff;
-  --text-secondary: #a2b6cc;
-  --text-muted: #c3d2e2;
-  --accent-primary: #0af2ff;
-  --accent-secondary: #ffc857;
-  --accent-danger: #ff2a2a;
-  --error-color: #ff2a2a;
-  --border: #0af2ff44;
-  --border-color: #0af2ff44;
-  --shadow-color: #000a;
-  --shadow-accent: #0af2ff22;
+  /* Dark theme (default) - Modern & Vibrant */
+  --bg-primary: #0a0e1a;
+  --bg-secondary: #141827;
+  --bg-tertiary: #1a1f35;
+  --bg-quaternary: #202542;
+  --text-primary: #f0f9ff;
+  --text-secondary: #94a3b8;
+  --text-muted: #cbd5e1;
+  --accent-primary: #06b6d4;
+  --accent-secondary: #f59e0b;
+  --accent-danger: #ef4444;
+  --error-color: #ef4444;
+  --success-color: #10b981;
+  --border: #06b6d466;
+  --border-color: #06b6d466;
+  --shadow-color: #00000080;
+  --shadow-accent: #06b6d433;
+  --glow-primary: #06b6d4;
+  --glow-secondary: #0ea5e9;
 }
 
 [data-theme="light"] {
-  /* Light theme */
-  --bg-primary: #f8fafc;
-  --bg-secondary: #ffffff;
+  /* Light theme - Clean & Professional */
+  --bg-primary: #ffffff;
+  --bg-secondary: #f8fafc;
   --bg-tertiary: #f1f5f9;
   --bg-quaternary: #e2e8f0;
-  --text-primary: #1e293b;
-  --text-secondary: #334155;
-  --text-muted: #475569;
+  --text-primary: #0f172a;
+  --text-secondary: #475569;
+  --text-muted: #64748b;
   --accent-primary: #0284c7;
-  --accent-secondary: #b91c1c;
+  --accent-secondary: #f59e0b;
   --accent-danger: #dc2626;
   --error-color: #dc2626;
-  --border: #0284c744;
-  --border-color: #0284c744;
-  --shadow-color: #0000001a;
-  --shadow-accent: #0284c722;
+  --success-color: #059669;
+  --border: #0284c755;
+  --border-color: #0284c755;
+  --shadow-color: #00000015;
+  --shadow-accent: #0284c728;
+  --glow-primary: #0284c7;
+  --glow-secondary: #0ea5e9;
 }
 
 /* Global Styles */
@@ -331,9 +337,9 @@ body {
 /* Timer Display */
 .timer-outline {
   border: 4px solid var(--accent-primary);
-  border-radius: 18px;
+  border-radius: 20px;
   padding: 18px 48px;
-  background: linear-gradient(135deg, var(--bg-secondary) 80%, var(--bg-quaternary) 100%);
+  background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-tertiary) 100%);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -342,9 +348,28 @@ body {
   width: fit-content;
   margin: 0 auto;
   min-height: 90px;
-  box-shadow: 0 0 32px 8px var(--shadow-accent), 0 2px 12px var(--shadow-color) inset,
-    0 0 0 8px var(--shadow-accent) inset;
+  box-shadow: 
+    0 0 40px 12px var(--shadow-accent),
+    0 0 80px 20px var(--shadow-accent),
+    0 4px 20px var(--shadow-color),
+    inset 0 2px 8px var(--shadow-color);
   transition: all 0.3s ease;
+  position: relative;
+}
+
+[data-theme="dark"] .timer-outline {
+  box-shadow: 
+    0 0 50px 15px var(--glow-primary),
+    0 0 100px 25px var(--shadow-accent),
+    0 4px 20px var(--shadow-color),
+    inset 0 2px 8px var(--shadow-color);
+}
+
+[data-theme="light"] .timer-outline {
+  box-shadow: 
+    0 8px 32px var(--shadow-color),
+    0 0 0 3px var(--accent-primary),
+    inset 0 2px 4px var(--shadow-color);
 }
 
 .timer-display {
@@ -357,9 +382,22 @@ body {
   background: transparent;
   outline: none;
   color: var(--text-primary);
-  text-shadow: 0 0 16px var(--accent-primary), 0 0 8px var(--text-primary), 0 2px 8px var(--shadow-color);
   letter-spacing: 0.08em;
   transition: all 0.3s ease;
+}
+
+[data-theme="dark"] .timer-display {
+  text-shadow: 
+    0 0 30px var(--glow-primary),
+    0 0 60px var(--glow-secondary),
+    0 0 10px var(--text-primary),
+    0 4px 12px var(--shadow-color);
+}
+
+[data-theme="light"] .timer-display {
+  text-shadow: 
+    0 2px 4px var(--shadow-color),
+    0 0 20px var(--accent-primary);
 }
 
 .timer-display:focus {
@@ -1202,4 +1240,161 @@ select:focus-visible {
     max-height: 90vh;
     overflow-y: auto;
   }
+}
+
+/* ============================================
+   ENHANCED THEME IMPROVEMENTS
+   ============================================ */
+
+/* Dark theme enhancements */
+[data-theme="dark"] .scoreboard {
+  background: rgba(10, 14, 26, 0.6);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(6, 182, 212, 0.2);
+}
+
+[data-theme="dark"] .score-card {
+  background: linear-gradient(135deg, rgba(20, 24, 39, 0.9) 0%, rgba(26, 31, 53, 0.9) 100%);
+  border: 2px solid rgba(6, 182, 212, 0.3);
+  box-shadow: 
+    0 8px 32px rgba(0, 0, 0, 0.4),
+    0 0 40px rgba(6, 182, 212, 0.15);
+}
+
+[data-theme="dark"] .score-value {
+  text-shadow: 
+    0 0 20px var(--glow-primary),
+    0 0 40px var(--glow-secondary),
+    0 4px 8px rgba(0, 0, 0, 0.5);
+}
+
+[data-theme="dark"] .navbar {
+  background: rgba(10, 14, 26, 0.95);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(6, 182, 212, 0.3);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.4);
+}
+
+[data-theme="dark"] .settings-modal {
+  background: rgba(0, 0, 0, 0.85);
+  backdrop-filter: blur(10px);
+}
+
+[data-theme="dark"] .settings-content {
+  background: linear-gradient(135deg, rgba(20, 24, 39, 0.98) 0%, rgba(26, 31, 53, 0.98) 100%);
+  border: 1px solid rgba(6, 182, 212, 0.3);
+  box-shadow: 
+    0 20px 60px rgba(0, 0, 0, 0.6),
+    0 0 80px rgba(6, 182, 212, 0.2);
+}
+
+/* Light theme enhancements */
+[data-theme="light"] .scoreboard {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(2, 132, 199, 0.2);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+}
+
+[data-theme="light"] .score-card {
+  background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+  border: 2px solid rgba(2, 132, 199, 0.3);
+  box-shadow: 
+    0 4px 16px rgba(0, 0, 0, 0.1),
+    0 0 0 1px rgba(2, 132, 199, 0.1);
+}
+
+[data-theme="light"] .score-value {
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+[data-theme="light"] .navbar {
+  background: rgba(255, 255, 255, 0.98);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(2, 132, 199, 0.2);
+  box-shadow: 0 2px 16px rgba(0, 0, 0, 0.08);
+}
+
+[data-theme="light"] .settings-modal {
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(8px);
+}
+
+[data-theme="light"] .settings-content {
+  background: #ffffff;
+  border: 1px solid rgba(2, 132, 199, 0.2);
+  box-shadow: 
+    0 20px 60px rgba(0, 0, 0, 0.15),
+    0 0 0 1px rgba(2, 132, 199, 0.1);
+}
+
+/* Button improvements for both themes */
+[data-theme="dark"] .timer-btn {
+  background: linear-gradient(135deg, var(--accent-primary) 0%, var(--glow-secondary) 100%);
+  box-shadow: 
+    0 4px 16px rgba(6, 182, 212, 0.3),
+    0 0 20px rgba(6, 182, 212, 0.2);
+}
+
+[data-theme="dark"] .timer-btn:hover {
+  box-shadow: 
+    0 6px 20px rgba(6, 182, 212, 0.4),
+    0 0 30px rgba(6, 182, 212, 0.3);
+  transform: translateY(-2px);
+}
+
+[data-theme="light"] .timer-btn {
+  background: var(--accent-primary);
+  box-shadow: 0 4px 12px rgba(2, 132, 199, 0.25);
+}
+
+[data-theme="light"] .timer-btn:hover {
+  box-shadow: 0 6px 16px rgba(2, 132, 199, 0.35);
+  background: #0369a1;
+  transform: translateY(-2px);
+}
+
+/* Period label improvements */
+[data-theme="dark"] .period-label {
+  background: linear-gradient(135deg, rgba(6, 182, 212, 0.2) 0%, rgba(14, 165, 233, 0.2) 100%);
+  border: 1px solid rgba(6, 182, 212, 0.4);
+  text-shadow: 0 0 10px var(--glow-primary);
+}
+
+[data-theme="light"] .period-label {
+  background: rgba(2, 132, 199, 0.1);
+  border: 1px solid rgba(2, 132, 199, 0.3);
+}
+
+/* Enhanced glow effects for dark theme */
+[data-theme="dark"] .scoreboard.isRunning .timer-outline {
+  border-color: var(--glow-primary);
+  animation: timerPulse 2s ease-in-out infinite;
+  box-shadow: 
+    0 0 60px 20px var(--glow-primary),
+    0 0 120px 30px var(--shadow-accent),
+    0 4px 20px var(--shadow-color);
+}
+
+@keyframes timerPulse {
+  0%, 100% {
+    box-shadow: 
+      0 0 60px 20px var(--glow-primary),
+      0 0 120px 30px var(--shadow-accent),
+      0 4px 20px var(--shadow-color);
+  }
+  50% {
+    box-shadow: 
+      0 0 80px 30px var(--glow-primary),
+      0 0 160px 40px var(--shadow-accent),
+      0 4px 20px var(--shadow-color);
+  }
+}
+
+/* Light theme running state */
+[data-theme="light"] .scoreboard.isRunning .timer-outline {
+  border-color: var(--accent-primary);
+  box-shadow: 
+    0 8px 32px rgba(2, 132, 199, 0.3),
+    0 0 0 3px var(--accent-primary);
 }
