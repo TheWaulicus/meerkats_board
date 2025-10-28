@@ -16,8 +16,8 @@ let teamState = {
   B: { name: "Away Team", logo: "", score: 0 }
 };
 
-let leagueName = "League";
-let leagueLogo = "";
+let leagueName = "Juice Box Hockey";
+let leagueLogo = "images/juice_box.png";
 
 // Visibility settings
 let visibilitySettings = {
