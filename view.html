@@ -20,11 +20,49 @@
 </head>
 <body data-theme="dark" class="view-mode">
   
+  <!-- Game Manager Modal -->
+  <div id="gameModal" class="settings-modal" style="display: none" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="gameHeading">
+    <div class="settings-content">
+      <button class="settings-close" onclick="toggleGameModal(false)" type="button" aria-label="Close game manager">
+        &times;
+      </button>
+      <h2 id="gameHeading">Game Selection</h2>
+      
+      <div class="settings-section">
+        <label>Current Game ID</label>
+        <input type="text" id="currentGameIdDisplay" class="settings-input" readonly />
+      </div>
+      
+      <div class="settings-section">
+        <label for="joinGameInput">Join Different Game</label>
+        <div style="display: flex; gap: 8px;">
+          <input type="text" id="joinGameInput" class="settings-input" placeholder="Enter game ID" style="flex: 1;" />
+          <button class="settings-save" onclick="joinExistingGame()" style="width: auto; padding: 12px 24px;">
+            Join
+          </button>
+        </div>
+      </div>
+      
+      <div class="settings-section" style="background: var(--bg-tertiary); padding: 12px; border-radius: 8px; margin-top: 16px;">
+        <p style="font-size: 0.9em; color: var(--text-secondary); margin: 0;">
+          💡 Enter the game ID from the control interface to sync this display.
+        </p>
+      </div>
+    </div>
+  </div>
+  
   <!-- Fixed Navbar (Display Only) -->
   <nav class="navbar">
     <div class="navbar-brand">
       <img src="images/juice_box.png" alt="League Logo" class="navbar-logo" id="navbarLeagueLogo" onerror="this.style.display='none'" />
       <span class="navbar-title" id="navbarLeagueName">Juice Box Hockey</span>
+    </div>
+    <div class="navbar-game-id">
+      <span class="game-id-label">Game:</span>
+      <span class="game-id-display" id="currentGameId">MAIN</span>
+      <button class="game-btn" onclick="toggleGameModal(true)" title="Manage Game" aria-label="Manage game">
+        🎮
+      </button>
     </div>
   </nav>
 
@@ -71,6 +109,12 @@
 
   <!-- Firebase Config -->
   <script src="firebase-config.js"></script>
+  
+  <!-- Game History Manager -->
+  <script src="game-history.js"></script>
+  
+  <!-- Game Manager -->
+  <script src="game-manager.js"></script>
   
   <!-- View-only Logic -->
   <script src="view.js"></script>

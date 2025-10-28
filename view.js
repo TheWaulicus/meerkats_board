@@ -271,6 +271,19 @@ function loadStateFromSnapshot(snapshot) {
 function initializeView() {
   console.log("Meerkats Board - Display View (Read-only)");
   
+  // Get current game ID
+  const gameId = window.GameManager ? window.GameManager.getCurrentGameId() : 'main';
+  console.log("Current game ID:", gameId);
+  
+  // Initialize Firebase with game ID
+  if (window.initializeScoreboardDoc) {
+    window.initializeScoreboardDoc(gameId);
+    window.SCOREBOARD_DOC = window.getScoreboardDoc();
+  }
+  
+  // Update game ID display in UI
+  updateGameIdDisplay(gameId);
+  
   // Set initial display
   updateTimerDisplay();
   updatePhaseDisplay();
@@ -303,6 +316,68 @@ function initializeView() {
       toggleFullscreen();
     }
   });
+}
+
+/**
+ * Update game ID display in navbar and load game name
+ * @param {string} gameId - Current game ID
+ */
+async function updateGameIdDisplay(gameId) {
+  const display = document.getElementById('currentGameId');
+  
+  // Get game name from Firebase
+  let displayName = gameId === 'main' ? 'MAIN' : gameId.toUpperCase();
+  if (window.getGameName && gameId !== 'main') {
+    const gameName = await window.getGameName(gameId);
+    if (gameName && gameName !== gameId) {
+      displayName = gameName;
+    }
+  }
+  
+  if (display) {
+    display.textContent = displayName;
+  }
+  
+  const modalDisplay = document.getElementById('currentGameIdDisplay');
+  if (modalDisplay) {
+    modalDisplay.value = gameId;
+  }
+}
+
+/**
+ * Toggle game manager modal
+ * @param {boolean} show - Whether to show or hide
+ */
+function toggleGameModal(show) {
+  const modal = document.getElementById('gameModal');
+  if (!modal) return;
+  
+  if (show) {
+    const gameId = window.GameManager ? window.GameManager.getCurrentGameId() : 'main';
+    const modalDisplay = document.getElementById('currentGameIdDisplay');
+    if (modalDisplay) {
+      modalDisplay.value = gameId;
+    }
+    modal.style.display = 'flex';
+    modal.setAttribute('aria-hidden', 'false');
+  } else {
+    modal.style.display = 'none';
+    modal.setAttribute('aria-hidden', 'true');
+  }
+}
+
+/**
+ * Join an existing game by ID
+ */
+function joinExistingGame() {
+  const input = document.getElementById('joinGameInput');
+  if (input && input.value) {
+    if (window.GameManager) {
+      window.GameManager.joinGameById(input.value);
+    }
+  } else {
+    alert('Please enter a game ID');
+  }
 }
 
 /**

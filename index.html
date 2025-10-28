@@ -20,6 +20,130 @@
 </head>
 <body data-theme="dark">
   
+  <!-- Game Manager Modal -->
+  <div id="gameModal" class="settings-modal" style="display: none" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="gameHeading">
+    <div class="settings-content">
+      <button class="settings-close" onclick="toggleGameModal(false)" type="button" aria-label="Close game manager">
+        &times;
+      </button>
+      <h2 id="gameHeading">Game Selection</h2>
+      
+      <!-- Current Game Info -->
+      <div class="settings-section">
+        <label for="gameNameInput">Game Name</label>
+        <input type="text" id="gameNameInput" class="settings-input" placeholder="Enter game name (e.g., Meerkats vs Tigers)" maxlength="50" />
+        <p style="font-size: 0.85em; color: var(--text-secondary); margin-top: 4px;">
+          Game ID: <span id="currentGameIdDisplay" style="font-family: monospace; color: var(--text-primary);">MAIN</span>
+        </p>
+      </div>
+      
+      <!-- Share Links -->
+      <div class="settings-section">
+        <label>Share Links</label>
+        <div style="display: flex; gap: 8px; align-items: center;">
+          <button class="timer-btn" onclick="copyControlLink()" title="Copy control link" style="flex: 1;">📋 Control</button>
+          <button class="timer-btn" onclick="copyDisplayLink()" title="Copy display link" style="flex: 1;">📺 Display</button>
+        </div>
+      </div>
+      
+      <!-- Recent Games -->
+      <div class="settings-section" id="recentGamesSection">
+        <label>Recent Games</label>
+        <div id="recentGamesList" style="max-height: 200px; overflow-y: auto; border: 1px solid var(--border); border-radius: 8px; padding: 8px;">
+          <p style="text-align: center; color: var(--text-secondary); padding: 16px;">No recent games</p>
+        </div>
+      </div>
+      
+      <!-- Create/Join Actions -->
+      <div class="settings-section">
+        <button class="settings-save" onclick="createNewGame()" style="background: var(--accent-secondary); width: 100%;">
+          🆕 Create New Game
+        </button>
+      </div>
+      
+      <div class="settings-section">
+        <label for="joinGameInput">Join Existing Game</label>
+        <div style="display: flex; gap: 8px;">
+          <input type="text" id="joinGameInput" class="settings-input" placeholder="Enter game ID (e.g., game-ABC123)" style="flex: 1;" />
+          <button class="settings-save" onclick="joinExistingGame()" style="width: auto; padding: 12px 24px;">
+            Join
+          </button>
+        </div>
+      </div>
+      
+      <!-- Reset Game -->
+      <div class="settings-section" style="border-top: 2px solid var(--border); padding-top: 16px;">
+        <button class="timer-btn" onclick="showResetModal()" style="background: var(--error-color); width: 100%;">
+          🔄 Reset Game
+        </button>
+      </div>
+      
+      <div class="settings-section" style="background: var(--bg-tertiary); padding: 12px; border-radius: 8px; margin-top: 16px;">
+        <p style="font-size: 0.9em; color: var(--text-secondary); margin: 0;">
+          💡 <strong>Tip:</strong> Each game has a unique ID. Multiple games can run simultaneously without interfering with each other.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Reset Confirmation Modal -->
+  <div id="resetModal" class="settings-modal" style="display: none" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="resetHeading">
+    <div class="settings-content" style="max-width: 500px;">
+      <button class="settings-close" onclick="toggleResetModal(false)" type="button" aria-label="Close reset dialog">
+        &times;
+      </button>
+      <h2 id="resetHeading" style="color: var(--error-color);">⚠️ Reset Game</h2>
+      
+      <p style="margin-bottom: 16px; color: var(--text-secondary);">
+        Choose what to reset. Game ID and name will be preserved.
+      </p>
+      
+      <div class="settings-section">
+        <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+          <input type="checkbox" id="resetScores" checked style="width: 20px; height: 20px;" />
+          <span>Reset Scores & Shots</span>
+        </label>
+      </div>
+      
+      <div class="settings-section">
+        <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+          <input type="checkbox" id="resetTimer" checked style="width: 20px; height: 20px;" />
+          <span>Reset Timer & Period</span>
+        </label>
+      </div>
+      
+      <div class="settings-section">
+        <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+          <input type="checkbox" id="resetPenalties" checked style="width: 20px; height: 20px;" />
+          <span>Reset Penalties</span>
+        </label>
+      </div>
+      
+      <div class="settings-section">
+        <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+          <input type="checkbox" id="resetTeams" style="width: 20px; height: 20px;" />
+          <span>Reset Team Names & Logos</span>
+        </label>
+      </div>
+      
+      <div class="settings-section">
+        <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+          <input type="checkbox" id="resetSettings" style="width: 20px; height: 20px;" />
+          <span>Reset League Settings</span>
+        </label>
+      </div>
+      
+      <div style="display: flex; gap: 8px; margin-top: 24px;">
+        <button class="timer-btn" onclick="toggleResetModal(false)" style="flex: 1; background: var(--bg-secondary);">
+          Cancel
+        </button>
+        <button class="settings-save" onclick="confirmResetGame()" style="flex: 1; background: var(--error-color);">
+          Reset Game
+        </button>
+      </div>
+    </div>
+  </div>
+
   <!-- Settings Modal -->
   <div id="settingsModal" class="settings-modal" style="display: none" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="settingsHeading">
     <div class="settings-content">
@@ -171,6 +295,13 @@
       <img src="images/juice_box.png" alt="League Logo" class="navbar-logo" id="navbarLeagueLogo" onerror="this.style.display='none'" />
       <span class="navbar-title" id="navbarLeagueName">Juice Box Hockey</span>
     </div>
+    <div class="navbar-game-id">
+      <span class="game-id-label">Game:</span>
+      <span class="game-id-display" id="currentGameId">MAIN</span>
+      <button class="game-btn" onclick="toggleGameModal(true)" title="Manage Game" aria-label="Manage game">
+        🎮
+      </button>
+    </div>
     <div class="header-controls">
       <a href="view.html" class="navbar-link" title="Open Display View" aria-label="Open display view" target="_blank">
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -251,6 +382,12 @@
 
   <!-- Firebase Config -->
   <script src="firebase-config.js"></script>
+  
+  <!-- Game History Manager -->
+  <script src="game-history.js"></script>
+  
+  <!-- Game Manager -->
+  <script src="game-manager.js"></script>
   
   <!-- Scoreboard Logic -->
   <script src="scoreboard.js"></script>

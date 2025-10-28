@@ -13,6 +13,8 @@
   --accent-primary: #0af2ff;
   --accent-secondary: #ffc857;
   --accent-danger: #ff2a2a;
+  --error-color: #ff2a2a;
+  --border: #0af2ff44;
   --border-color: #0af2ff44;
   --shadow-color: #000a;
   --shadow-accent: #0af2ff22;
@@ -30,6 +32,8 @@
   --accent-primary: #0284c7;
   --accent-secondary: #b91c1c;
   --accent-danger: #dc2626;
+  --error-color: #dc2626;
+  --border: #0284c744;
   --border-color: #0284c744;
   --shadow-color: #0000001a;
   --shadow-accent: #0284c722;
@@ -123,6 +127,52 @@ body {
   color: var(--accent-primary);
   letter-spacing: 0.05em;
   text-transform: uppercase;
+}
+
+.navbar-game-id {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--bg-tertiary);
+  padding: 6px 12px;
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+}
+
+.game-id-label {
+  font-size: 0.9em;
+  color: var(--text-secondary);
+  font-weight: 600;
+}
+
+.game-id-display {
+  font-family: 'Courier New', monospace;
+  font-size: 0.95em;
+  font-weight: 700;
+  color: var(--accent-primary);
+  letter-spacing: 0.05em;
+}
+
+.game-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1.2em;
+  padding: 2px 6px;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.game-btn:hover {
+  transform: scale(1.1);
+}
+
+.game-btn:focus {
+  outline: 2px solid var(--accent-primary);
+  outline-offset: 2px;
+  border-radius: 4px;
 }
 
 /* Header Controls (Settings, Display Link) */

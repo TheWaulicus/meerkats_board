@@ -19,11 +19,141 @@ firebase.initializeApp(firebaseConfig);
 // Initialize Firestore
 const db = firebase.firestore();
 
-// Reference to the main scoreboard document
-const SCOREBOARD_DOC = db.collection("scoreboards").doc("main");
+// Scoreboard document reference (set dynamically based on game ID)
+let SCOREBOARD_DOC = null;
+
+/**
+ * Initialize scoreboard document for a specific game ID
+ * @param {string} gameId - Game ID to connect to
+ * @returns {object} Firestore document reference
+ */
+function initializeScoreboardDoc(gameId) {
+  const sanitizedId = gameId || 'main';
+  SCOREBOARD_DOC = db.collection("scoreboards").doc(sanitizedId);
+  console.log('Initialized Firestore document for game:', sanitizedId);
+  return SCOREBOARD_DOC;
+}
+
+/**
+ * Get the current scoreboard document reference
+ * @returns {object} Firestore document reference
+ */
+function getScoreboardDoc() {
+  return SCOREBOARD_DOC;
+}
+
+/**
+ * Update game name in Firebase
+ * @param {string} gameId - Game ID
+ * @param {string} gameName - Friendly name for the game
+ */
+function updateGameName(gameId, gameName) {
+  const docRef = db.collection("scoreboards").doc(gameId);
+  return docRef.set({ gameName }, { merge: true });
+}
+
+/**
+ * Get game name from Firebase
+ * @param {string} gameId - Game ID
+ * @returns {Promise<string>} Game name
+ */
+async function getGameName(gameId) {
+  try {
+    const docRef = db.collection("scoreboards").doc(gameId);
+    const doc = await docRef.get();
+    
+    if (doc.exists) {
+      const data = doc.data();
+      return data.gameName || gameId;
+    }
+    return gameId;
+  } catch (error) {
+    console.error('Error getting game name:', error);
+    return gameId;
+  }
+}
+
+/**
+ * Reset game to initial state (keeps game ID and name)
+ * @param {string} gameId - Game ID to reset
+ * @param {object} options - Reset options
+ */
+async function resetGame(gameId, options = {}) {
+  const {
+    resetScores = true,
+    resetTimer = true,
+    resetPenalties = true,
+    resetTeams = false,
+    resetSettings = false
+  } = options;
+  
+  try {
+    const docRef = db.collection("scoreboards").doc(gameId);
+    const doc = await docRef.get();
+    
+    // Preserve certain fields
+    const preserve = {};
+    if (doc.exists) {
+      const data = doc.data();
+      preserve.gameName = data.gameName;
+      
+      if (!resetTeams) {
+        preserve.teamAName = data.teamAName;
+        preserve.teamBName = data.teamBName;
+        preserve.teamALogo = data.teamALogo;
+        preserve.teamBLogo = data.teamBLogo;
+      }
+      
+      if (!resetSettings) {
+        preserve.leagueName = data.leagueName;
+        preserve.leagueLogo = data.leagueLogo;
+      }
+    }
+    
+    // Build reset data
+    const resetData = {
+      ...preserve,
+      lastUpdated: firebase.firestore.FieldValue.serverTimestamp()
+    };
+    
+    if (resetScores) {
+      resetData.teamAScore = 0;
+      resetData.teamBScore = 0;
+      resetData.teamAShots = 0;
+      resetData.teamBShots = 0;
+      resetData.teamATimeouts = 0;
+      resetData.teamBTimeouts = 0;
+    }
+    
+    if (resetTimer) {
+      resetData.timerDisplay = "20:00";
+      resetData.timerSeconds = 1200;
+      resetData.isRunning = false;
+      resetData.period = 1;
+      resetData.gamePhase = "regulation";
+    }
+    
+    if (resetPenalties) {
+      resetData.teamAPenalties = [];
+      resetData.teamBPenalties = [];
+    }
+    
+    await docRef.set(resetData, { merge: true });
+    console.log('Game reset:', gameId);
+    return true;
+  } catch (error) {
+    console.error('Error resetting game:', error);
+    return false;
+  }
+}
 
 // Export for use in other files
 if (typeof window !== 'undefined') {
   window.db = db;
-  window.SCOREBOARD_DOC = SCOREBOARD_DOC;
+  window.SCOREBOARD_DOC = SCOREBOARD_DOC; // Will be set dynamically
+  window.initializeScoreboardDoc = initializeScoreboardDoc;
+  window.getScoreboardDoc = getScoreboardDoc;
+  window.updateGameName = updateGameName;
+  window.getGameName = getGameName;
+  window.resetGame = resetGame;
 }

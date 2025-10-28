@@ -897,6 +897,19 @@ function initializeApp() {
   // Load custom audio files if available
   loadAudioFiles();
   
+  // Get current game ID
+  const gameId = window.GameManager ? window.GameManager.getCurrentGameId() : 'main';
+  console.log("Current game ID:", gameId);
+  
+  // Initialize Firebase with game ID
+  if (window.initializeScoreboardDoc) {
+    window.initializeScoreboardDoc(gameId);
+    window.SCOREBOARD_DOC = window.getScoreboardDoc();
+  }
+  
+  // Update game ID display in UI
+  updateGameIdDisplay(gameId);
+  
   // Initialize display
   updateTimerDisplay();
   updatePhaseDisplay();
@@ -911,6 +924,336 @@ function initializeApp() {
     });
   } else {
     console.warn("Firebase not initialized. Check firebase-config.js");
+  }
+}
+
+/**
+ * Update game ID display in navbar and load game name
+ * @param {string} gameId - Current game ID
+ */
+async function updateGameIdDisplay(gameId) {
+  const display = document.getElementById('currentGameId');
+  
+  // Get game name from Firebase
+  let displayName = gameId === 'main' ? 'MAIN' : gameId.toUpperCase();
+  if (window.getGameName && gameId !== 'main') {
+    const gameName = await window.getGameName(gameId);
+    if (gameName && gameName !== gameId) {
+      displayName = gameName;
+    }
+  }
+  
+  if (display) {
+    display.textContent = displayName;
+  }
+  
+  // Update modal displays
+  const modalDisplay = document.getElementById('currentGameIdDisplay');
+  if (modalDisplay) {
+    modalDisplay.textContent = gameId;
+  }
+  
+  const gameNameInput = document.getElementById('gameNameInput');
+  if (gameNameInput && window.getGameName) {
+    const gameName = await window.getGameName(gameId);
+    gameNameInput.value = gameName === gameId ? '' : gameName;
+  }
+  
+  // Load recent games list
+  if (window.GameHistory) {
+    loadRecentGamesList();
+  }
+}
+
+/**
+ * Toggle game manager modal
+ * @param {boolean} show - Whether to show or hide
+ */
+async function toggleGameModal(show) {
+  const modal = document.getElementById('gameModal');
+  if (!modal) return;
+  
+  if (show) {
+    const gameId = window.GameManager ? window.GameManager.getCurrentGameId() : 'main';
+    
+    // Update displays
+    const modalDisplay = document.getElementById('currentGameIdDisplay');
+    if (modalDisplay) {
+      modalDisplay.textContent = gameId;
+    }
+    
+    // Load game name
+    const gameNameInput = document.getElementById('gameNameInput');
+    if (gameNameInput && window.getGameName) {
+      const gameName = await window.getGameName(gameId);
+      gameNameInput.value = gameName === gameId ? '' : gameName;
+    }
+    
+    // Load recent games
+    loadRecentGamesList();
+    
+    modal.style.display = 'flex';
+    modal.setAttribute('aria-hidden', 'false');
+  } else {
+    // Save game name when closing modal
+    await saveGameName();
+    
+    modal.style.display = 'none';
+    modal.setAttribute('aria-hidden', 'true');
+  }
+}
+
+/**
+ * Create a new game with random ID
+ */
+function createNewGame() {
+  if (window.GameManager) {
+    window.GameManager.createNewGame();
+  }
+}
+
+/**
+ * Join an existing game by ID
+ */
+function joinExistingGame() {
+  const input = document.getElementById('joinGameInput');
+  if (input && input.value) {
+    if (window.GameManager) {
+      window.GameManager.joinGameById(input.value);
+    }
+  } else {
+    alert('Please enter a game ID');
+  }
+}
+
+/**
+ * Copy control interface link to clipboard
+ */
+function copyControlLink() {
+  const gameId = window.GameManager ? window.GameManager.getCurrentGameId() : 'main';
+  if (window.GameManager) {
+    window.GameManager.copyGameUrl(gameId, false);
+  }
+}
+
+/**
+ * Copy display interface link to clipboard
+ */
+function copyDisplayLink() {
+  const gameId = window.GameManager ? window.GameManager.getCurrentGameId() : 'main';
+  if (window.GameManager) {
+    window.GameManager.copyGameUrl(gameId, true);
+  }
+}
+
+/**
+ * Save game name to Firebase and history
+ */
+async function saveGameName() {
+  const gameId = window.GameManager ? window.GameManager.getCurrentGameId() : 'main';
+  const gameNameInput = document.getElementById('gameNameInput');
+  
+  if (!gameNameInput || !gameId) return;
+  
+  const gameName = gameNameInput.value.trim();
+  
+  // Save to Firebase
+  if (gameName && window.updateGameName) {
+    try {
+      await window.updateGameName(gameId, gameName);
+      console.log('Game name saved:', gameName);
+      
+      // Update navbar display
+      const display = document.getElementById('currentGameId');
+      if (display) {
+        display.textContent = gameName || gameId.toUpperCase();
+      }
+      
+      // Update history
+      if (window.GameHistory) {
+        window.GameHistory.updateGameName(gameId, gameName);
+      }
+    } catch (error) {
+      console.error('Error saving game name:', error);
+    }
+  }
+}
+
+/**
+ * Load and display recent games list
+ */
+function loadRecentGamesList() {
+  if (!window.GameHistory) return;
+  
+  const listContainer = document.getElementById('recentGamesList');
+  if (!listContainer) return;
+  
+  const recentGames = window.GameHistory.getRecentGames(10);
+  const currentGameId = window.GameManager ? window.GameManager.getCurrentGameId() : 'main';
+  
+  if (recentGames.length === 0) {
+    listContainer.innerHTML = '<p style="text-align: center; color: var(--text-secondary); padding: 16px;">No recent games</p>';
+    return;
+  }
+  
+  listContainer.innerHTML = '';
+  
+  recentGames.forEach(game => {
+    const gameItem = document.createElement('div');
+    gameItem.style.cssText = 'display: flex; align-items: center; gap: 8px; padding: 8px; border-radius: 4px; cursor: pointer; background: var(--bg-secondary); margin-bottom: 4px;';
+    
+    // Highlight current game
+    if (game.gameId === currentGameId) {
+      gameItem.style.background = 'var(--accent-primary)';
+      gameItem.style.color = 'white';
+    }
+    
+    // Favorite star
+    const favBtn = document.createElement('button');
+    favBtn.textContent = game.isFavorite ? '⭐' : '☆';
+    favBtn.style.cssText = 'background: none; border: none; cursor: pointer; font-size: 16px; padding: 0; width: 24px;';
+    favBtn.onclick = (e) => {
+      e.stopPropagation();
+      toggleFavoriteGame(game.gameId);
+    };
+    
+    // Game info
+    const infoDiv = document.createElement('div');
+    infoDiv.style.cssText = 'flex: 1; overflow: hidden;';
+    
+    const nameSpan = document.createElement('div');
+    nameSpan.textContent = game.friendlyName;
+    nameSpan.style.cssText = 'font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;';
+    
+    const metaSpan = document.createElement('div');
+    metaSpan.textContent = `${game.gameId} • ${window.GameHistory.formatDate(game.lastAccessed)}`;
+    metaSpan.style.cssText = 'font-size: 0.75em; opacity: 0.7;';
+    
+    infoDiv.appendChild(nameSpan);
+    infoDiv.appendChild(metaSpan);
+    
+    // Delete button
+    const deleteBtn = document.createElement('button');
+    deleteBtn.textContent = '🗑️';
+    deleteBtn.style.cssText = 'background: none; border: none; cursor: pointer; font-size: 14px; padding: 4px; opacity: 0.6;';
+    deleteBtn.title = 'Remove from history';
+    deleteBtn.onclick = (e) => {
+      e.stopPropagation();
+      removeGameFromHistory(game.gameId);
+    };
+    
+    gameItem.appendChild(favBtn);
+    gameItem.appendChild(infoDiv);
+    gameItem.appendChild(deleteBtn);
+    
+    // Click to switch games
+    gameItem.onclick = () => {
+      if (game.gameId !== currentGameId) {
+        switchToGame(game.gameId);
+      }
+    };
+    
+    listContainer.appendChild(gameItem);
+  });
+}
+
+/**
+ * Toggle favorite status for a game
+ */
+function toggleFavoriteGame(gameId) {
+  if (window.GameHistory) {
+    window.GameHistory.toggleFavorite(gameId);
+    loadRecentGamesList();
+  }
+}
+
+/**
+ * Remove game from history
+ */
+function removeGameFromHistory(gameId) {
+  if (confirm('Remove this game from your history?')) {
+    if (window.GameHistory) {
+      window.GameHistory.removeFromHistory(gameId);
+      loadRecentGamesList();
+    }
+  }
+}
+
+/**
+ * Switch to a different game
+ */
+function switchToGame(gameId) {
+  if (window.GameManager) {
+    const url = new URL(window.location);
+    url.searchParams.set('game', gameId);
+    window.location.href = url.toString();
+  }
+}
+
+/**
+ * Show reset game modal
+ */
+function showResetModal() {
+  toggleGameModal(false);
+  toggleResetModal(true);
+}
+
+/**
+ * Toggle reset modal
+ */
+function toggleResetModal(show) {
+  const modal = document.getElementById('resetModal');
+  if (!modal) return;
+  
+  if (show) {
+    modal.style.display = 'flex';
+    modal.setAttribute('aria-hidden', 'false');
+  } else {
+    modal.style.display = 'none';
+    modal.setAttribute('aria-hidden', 'true');
+  }
+}
+
+/**
+ * Confirm and execute game reset
+ */
+async function confirmResetGame() {
+  const gameId = window.GameManager ? window.GameManager.getCurrentGameId() : 'main';
+  
+  // Get reset options
+  const resetScores = document.getElementById('resetScores')?.checked ?? true;
+  const resetTimer = document.getElementById('resetTimer')?.checked ?? true;
+  const resetPenalties = document.getElementById('resetPenalties')?.checked ?? true;
+  const resetTeams = document.getElementById('resetTeams')?.checked ?? false;
+  const resetSettings = document.getElementById('resetSettings')?.checked ?? false;
+  
+  const options = {
+    resetScores,
+    resetTimer,
+    resetPenalties,
+    resetTeams,
+    resetSettings
+  };
+  
+  if (!confirm('Are you sure you want to reset this game? This cannot be undone.')) {
+    return;
+  }
+  
+  try {
+    if (window.resetGame) {
+      const success = await window.resetGame(gameId, options);
+      if (success) {
+        alert('Game reset successfully!');
+        toggleResetModal(false);
+        // Reload page to reflect changes
+        window.location.reload();
+      } else {
+        alert('Failed to reset game. Please try again.');
+      }
+    }
+  } catch (error) {
+    console.error('Error resetting game:', error);
+    alert('Error resetting game. Please try again.');
   }
 }
 
