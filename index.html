@@ -239,90 +239,92 @@
           <input type="file" accept="image/*" id="teamBLogoInput" class="settings-file" />
         </div>
         
-        <h3 style="margin-top: 24px; margin-bottom: 12px; font-size: 1.1em; color: var(--text-primary);">Display Options</h3>
+        <h3 style="margin-top: 24px; margin-bottom: 12px; font-size: 1.1em; color: var(--text-primary);">Visibility Settings</h3>
         
         <div class="settings-section">
-          <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
-            <input type="checkbox" id="showPeriodControl" class="settings-checkbox" checked />
-            <span>Show Period/Phase on Control</span>
-          </label>
-        </div>
-        
-        <div class="settings-section">
-          <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
-            <input type="checkbox" id="showPeriodView" class="settings-checkbox" checked />
-            <span>Show Period/Phase on Display</span>
-          </label>
-        </div>
-        
-        <div class="settings-section">
-          <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
-            <input type="checkbox" id="showTimerControl" class="settings-checkbox" checked />
-            <span>Show Timer on Control</span>
-          </label>
-        </div>
-        
-        <div class="settings-section">
-          <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
-            <input type="checkbox" id="showTimerView" class="settings-checkbox" checked />
-            <span>Show Timer on Display</span>
-          </label>
-        </div>
-        
-        <div class="settings-section">
-          <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
-            <input type="checkbox" id="showScoresControl" class="settings-checkbox" checked />
-            <span>Show Scores on Control</span>
-          </label>
-        </div>
-        
-        <div class="settings-section">
-          <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
-            <input type="checkbox" id="showScoresView" class="settings-checkbox" checked />
-            <span>Show Scores on Display</span>
-          </label>
-        </div>
-        
-        <div class="settings-section">
-          <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
-            <input type="checkbox" id="showTeamLogosControl" class="settings-checkbox" checked />
-            <span>Show Team Logos on Control</span>
-          </label>
-        </div>
-        
-        <div class="settings-section">
-          <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
-            <input type="checkbox" id="showTeamLogosView" class="settings-checkbox" checked />
-            <span>Show Team Logos on Display</span>
-          </label>
-        </div>
-        
-        <div class="settings-section">
-          <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
-            <input type="checkbox" id="showTeamNamesControl" class="settings-checkbox" checked />
-            <span>Show Team Names on Control</span>
-          </label>
-        </div>
-        
-        <div class="settings-section">
-          <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
-            <input type="checkbox" id="showTeamNamesView" class="settings-checkbox" checked />
-            <span>Show Team Names on Display</span>
-          </label>
-        </div>
-        
-        <div class="settings-section">
-          <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
-            <input type="checkbox" id="showLeagueControl" class="settings-checkbox" checked />
-            <span>Show League Info on Control</span>
-          </label>
-        </div>
-        
-        <div class="settings-section">
-          <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
-            <input type="checkbox" id="showLeagueView" class="settings-checkbox" checked />
-            <span>Show League Info on Display</span>
-          </label>
+          <p style="font-size: 0.9em; color: var(--text-secondary); margin-bottom: 16px;">
+            Control which elements appear on the <strong>📋 Control Interface</strong> (operator view with buttons) and the <strong>📺 Display Interface</strong> (audience view without buttons). Each interface can be customized independently.
+          </p>
+          
+          <div style="overflow-x: auto;">
+            <table style="width: 100%; border-collapse: collapse; margin-top: 12px;">
+              <thead>
+                <tr style="border-bottom: 2px solid var(--border);">
+                  <th style="text-align: left; padding: 12px 8px; font-weight: 600; color: var(--text-secondary);">Element</th>
+                  <th style="text-align: center; padding: 12px 8px; font-weight: 600; color: var(--text-secondary);">
+                    📋 Control<br/>
+                    <span style="font-size: 0.75em; font-weight: normal; opacity: 0.8;">(Operator)</span>
+                  </th>
+                  <th style="text-align: center; padding: 12px 8px; font-weight: 600; color: var(--text-secondary);">
+                    📺 Display<br/>
+                    <span style="font-size: 0.75em; font-weight: normal; opacity: 0.8;">(Audience)</span>
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr style="border-bottom: 1px solid var(--border);">
+                  <td style="padding: 12px 8px; font-weight: 500;">Period/Phase</td>
+                  <td style="text-align: center; padding: 12px 8px;">
+                    <input type="checkbox" id="showPeriodControl" class="settings-checkbox" checked style="width: 20px; height: 20px; cursor: pointer;" />
+                  </td>
+                  <td style="text-align: center; padding: 12px 8px;">
+                    <input type="checkbox" id="showPeriodView" class="settings-checkbox" checked style="width: 20px; height: 20px; cursor: pointer;" />
+                  </td>
+                </tr>
+                <tr style="border-bottom: 1px solid var(--border);">
+                  <td style="padding: 12px 8px; font-weight: 500;">Timer</td>
+                  <td style="text-align: center; padding: 12px 8px;">
+                    <input type="checkbox" id="showTimerControl" class="settings-checkbox" checked style="width: 20px; height: 20px; cursor: pointer;" />
+                  </td>
+                  <td style="text-align: center; padding: 12px 8px;">
+                    <input type="checkbox" id="showTimerView" class="settings-checkbox" checked style="width: 20px; height: 20px; cursor: pointer;" />
+                  </td>
+                </tr>
+                <tr style="border-bottom: 1px solid var(--border);">
+                  <td style="padding: 12px 8px; font-weight: 500;">Scores</td>
+                  <td style="text-align: center; padding: 12px 8px;">
+                    <input type="checkbox" id="showScoresControl" class="settings-checkbox" checked style="width: 20px; height: 20px; cursor: pointer;" />
+                  </td>
+                  <td style="text-align: center; padding: 12px 8px;">
+                    <input type="checkbox" id="showScoresView" class="settings-checkbox" checked style="width: 20px; height: 20px; cursor: pointer;" />
+                  </td>
+                </tr>
+                <tr style="border-bottom: 1px solid var(--border);">
+                  <td style="padding: 12px 8px; font-weight: 500;">Team Logos</td>
+                  <td style="text-align: center; padding: 12px 8px;">
+                    <input type="checkbox" id="showTeamLogosControl" class="settings-checkbox" checked style="width: 20px; height: 20px; cursor: pointer;" />
+                  </td>
+                  <td style="text-align: center; padding: 12px 8px;">
+                    <input type="checkbox" id="showTeamLogosView" class="settings-checkbox" checked style="width: 20px; height: 20px; cursor: pointer;" />
+                  </td>
+                </tr>
+                <tr style="border-bottom: 1px solid var(--border);">
+                  <td style="padding: 12px 8px; font-weight: 500;">Team Names</td>
+                  <td style="text-align: center; padding: 12px 8px;">
+                    <input type="checkbox" id="showTeamNamesControl" class="settings-checkbox" checked style="width: 20px; height: 20px; cursor: pointer;" />
+                  </td>
+                  <td style="text-align: center; padding: 12px 8px;">
+                    <input type="checkbox" id="showTeamNamesView" class="settings-checkbox" checked style="width: 20px; height: 20px; cursor: pointer;" />
+                  </td>
+                </tr>
+                <tr>
+                  <td style="padding: 12px 8px; font-weight: 500;">League Info</td>
+                  <td style="text-align: center; padding: 12px 8px;">
+                    <input type="checkbox" id="showLeagueControl" class="settings-checkbox" checked style="width: 20px; height: 20px; cursor: pointer;" />
+                  </td>
+                  <td style="text-align: center; padding: 12px 8px;">
+                    <input type="checkbox" id="showLeagueView" class="settings-checkbox" checked style="width: 20px; height: 20px; cursor: pointer;" />
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          
+          <div style="margin-top: 16px; padding: 12px; background: var(--bg-tertiary); border-radius: 8px; border-left: 4px solid var(--accent-primary);">
+            <p style="font-size: 0.85em; color: var(--text-secondary); margin: 0;">
+              <strong>💡 Tip:</strong> Uncheck items in the Display column to hide them from the audience view while keeping them visible in your control interface.
+            </p>
+          </div>
         </div>
         
         <button type="submit" class="settings-save">Save Settings</button>
