@@ -71,9 +71,9 @@ body {
 /* Main Scoreboard Container */
 .scoreboard {
   width: 98vw;
-  min-height: 90vh;
+  min-height: calc(100vh - 80px);
   max-width: 1600px;
-  margin: 0 auto;
+  margin: 80px auto 20px;
   background: linear-gradient(135deg, var(--bg-secondary) 80%, var(--bg-secondary) 100%);
   border-radius: 18px;
   box-shadow: 0 8px 40px var(--shadow-color), 0 1.5px 0 var(--border-color) inset;
@@ -85,14 +85,36 @@ body {
   transition: background 0.3s ease, box-shadow 0.3s ease;
 }
 
-/* Header Controls (Theme Toggle, Settings) */
+/* Fixed Navbar at Top */
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 60px;
+  background: var(--bg-secondary);
+  border-bottom: 2px solid var(--border-color);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 24px;
+  z-index: 100;
+  box-shadow: 0 2px 8px var(--shadow-color);
+}
+
+.navbar-title {
+  font-size: 1.5em;
+  font-weight: 900;
+  color: var(--accent-primary);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+/* Header Controls (Settings) */
 .header-controls {
-  position: absolute;
-  top: 18px;
-  right: 18px;
   display: flex;
   gap: 12px;
-  z-index: 10;
+  align-items: center;
 }
 
 .settings-open {
