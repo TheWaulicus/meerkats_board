@@ -108,12 +108,15 @@ function updateDisplayInfo() {
     teamBLogoEl.src = teamState.B.logo;
   }
   
-  // Update league info
-  const leagueNameEl = document.getElementById("leagueName");
-  const leagueLogoEl = document.getElementById("leagueLogo");
-  if (leagueNameEl) leagueNameEl.textContent = leagueName;
-  if (leagueLogoEl && leagueLogo) {
-    leagueLogoEl.src = leagueLogo;
+  // Update navbar with league info
+  const navbarLeagueName = document.getElementById("navbarLeagueName");
+  if (navbarLeagueName) {
+    navbarLeagueName.textContent = leagueName;
+  }
+  const navbarLeagueLogo = document.getElementById("navbarLeagueLogo");
+  if (navbarLeagueLogo && leagueLogo) {
+    navbarLeagueLogo.src = leagueLogo;
+    navbarLeagueLogo.style.display = 'block';
   }
 }
 
