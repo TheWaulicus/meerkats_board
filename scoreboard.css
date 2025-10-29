@@ -337,17 +337,17 @@ body {
 /* Timer Display */
 .timer-outline {
   border: 4px solid var(--accent-primary);
-  border-radius: 16px;
-  padding: 20px 40px;
+  border-radius: 20px;
+  padding: 24px 48px;
   background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-tertiary) 100%);
   display: flex;
   justify-content: center;
   align-items: center;
-  min-width: 200px;
-  max-width: 85%;
+  min-width: 220px;
+  max-width: 90%;
   width: fit-content;
   margin: 0 auto;
-  min-height: 80px;
+  min-height: 90px;
   box-shadow: 
     0 0 40px 12px var(--shadow-accent),
     0 0 80px 20px var(--shadow-accent),
@@ -375,7 +375,7 @@ body {
 
 .timer-display {
   font-family: "Orbitron", "Share Tech Mono", "Courier New", Courier, monospace;
-  font-size: clamp(3rem, 8vw, 6rem);
+  font-size: clamp(5rem, 12vw, 10rem);
   font-weight: 900;
   width: 100%;
   max-width: 100%;
@@ -722,13 +722,18 @@ body {
 
   /* Timer remains prominent on tablets */
   .timer-display {
-    font-size: clamp(3.5rem, 10vw, 7rem);
+    font-size: clamp(5rem, 14vw, 9rem);
     letter-spacing: 0.04em;
   }
   
   .timer-outline {
-    max-width: 85%;
-    padding: 18px 36px;
+    max-width: 95%;
+    padding: 22px 40px;
+  }
+  
+  .timer-block {
+    gap: 10px;
+    padding: 10px;
   }
   
   /* Scores scale down but remain visible */
@@ -755,15 +760,21 @@ body {
 
   /* Timer stays LARGE even on mobile */
   .timer-display {
-    font-size: clamp(2.5rem, 12vw, 5rem);
+    font-size: clamp(4rem, 16vw, 7rem);
     letter-spacing: 0.03em;
   }
 
   .timer-outline {
-    padding: 16px 20px;
-    max-width: 90%;
+    padding: 20px 20px;
+    max-width: 95%;
     width: fit-content;
     border-width: 3px;
+  }
+  
+  .timer-block {
+    gap: 8px;
+    padding: 8px;
+    min-height: 140px;
   }
 
   /* Scale other elements appropriately */
@@ -801,15 +812,20 @@ body {
   /* Timer-only mode on mobile = MASSIVE */
   .scoreboard.hide-scores-control.hide-period-control:not(.view-mode) .timer-display,
   .view-mode .scoreboard.hide-scores-view.hide-period-view .timer-display {
-    font-size: clamp(4rem, 18vw, 9rem);
+    font-size: clamp(6rem, 22vw, 12rem);
     letter-spacing: 0.03em;
   }
   
   .scoreboard.hide-scores-control.hide-period-control:not(.view-mode) .timer-outline,
   .view-mode .scoreboard.hide-scores-view.hide-period-view .timer-outline {
-    padding: 32px 20px;
-    max-width: 88%;
+    padding: 40px 20px;
+    max-width: 92%;
     border-width: 3px;
+  }
+  
+  .scoreboard.hide-scores-control.hide-period-control:not(.view-mode) .timer-block,
+  .view-mode .scoreboard.hide-scores-view.hide-period-view .timer-block {
+    gap: 12px;
   }
 }
 
@@ -885,33 +901,39 @@ body {
 .scoreboard.hide-scores-control:not(.view-mode) .timer-block,
 .view-mode .scoreboard.hide-scores-view .timer-block {
   min-height: 60vh;
+  gap: 16px;
 }
 
 .scoreboard.hide-scores-control:not(.view-mode) .timer-display,
 .view-mode .scoreboard.hide-scores-view .timer-display {
-  font-size: clamp(8rem, 16vw, 14rem);
+  font-size: clamp(10rem, 20vw, 18rem);
   letter-spacing: 0.04em;
 }
 
 .scoreboard.hide-scores-control:not(.view-mode) .timer-outline,
 .view-mode .scoreboard.hide-scores-view .timer-outline {
-  padding: 40px 50px;
-  max-width: 85%;
-  min-height: 180px;
+  padding: 50px 60px;
+  max-width: 88%;
+  min-height: 200px;
 }
 
 /* When period is hidden, give more space to timer */
 .scoreboard.hide-period-control:not(.view-mode) .timer-display,
 .view-mode .scoreboard.hide-period-view .timer-display {
-  font-size: clamp(4rem, 10vw, 8rem);
+  font-size: clamp(6rem, 14vw, 12rem);
   letter-spacing: 0.04em;
 }
 
 .scoreboard.hide-period-control:not(.view-mode) .timer-outline,
 .view-mode .scoreboard.hide-period-view .timer-outline {
-  padding: 28px 44px;
-  max-width: 85%;
-  min-height: 120px;
+  padding: 36px 52px;
+  max-width: 88%;
+  min-height: 160px;
+}
+
+.scoreboard.hide-period-control:not(.view-mode) .timer-block,
+.view-mode .scoreboard.hide-period-view .timer-block {
+  gap: 14px;
 }
 
 /* When scores visible but other elements hidden, scale appropriately */
@@ -983,15 +1005,15 @@ body {
 /* Timer-only mode (ultimate prominence) */
 .scoreboard.hide-scores-control.hide-period-control:not(.view-mode) .timer-display,
 .view-mode .scoreboard.hide-scores-view.hide-period-view .timer-display {
-  font-size: clamp(10rem, 22vw, 20rem);
+  font-size: clamp(12rem, 26vw, 24rem);
   letter-spacing: 0.04em;
 }
 
 .scoreboard.hide-scores-control.hide-period-control:not(.view-mode) .timer-outline,
 .view-mode .scoreboard.hide-scores-view.hide-period-view .timer-outline {
-  padding: 50px 60px;
-  max-width: 80%;
-  min-height: 240px;
+  padding: 60px 70px;
+  max-width: 85%;
+  min-height: 280px;
   border-width: 5px;
 }
 
@@ -999,6 +1021,7 @@ body {
 .view-mode .scoreboard.hide-scores-view.hide-period-view .timer-block {
   min-height: 70vh;
   justify-content: center;
+  gap: 20px;
 }
 
 /* Accessibility enhancements */
