@@ -105,6 +105,6 @@ ui-debug.log
 coverage/
 .nyc_output/
 
-# Old/legacy directories (keeping old images/sounds for reference)
-images/
-sounds/
+# Old/legacy directories at root level only
+/images/
+/sounds/
