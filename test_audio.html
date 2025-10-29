@@ -13,7 +13,7 @@
       const status = document.getElementById('status');
       status.innerHTML = 'Testing...<br>';
       
-      const audio = new Audio('sounds/hockey-buzzer.wav');
+      const audio = new Audio('assets/sounds/hockey-buzzer.wav');
       
       audio.addEventListener('canplaythrough', () => {
         status.innerHTML += '✅ Audio file loaded successfully!<br>';

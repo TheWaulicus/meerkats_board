@@ -116,7 +116,7 @@ function loadAudioFiles() {
   buzzerAudio = new Audio();
   
   // Try WAV format first
-  buzzerAudio.src = 'sounds/hockey-buzzer.wav';
+  buzzerAudio.src = 'assets/sounds/hockey-buzzer.wav';
   buzzerAudio.volume = 0.7;
   buzzerAudio.preload = 'auto';
   
@@ -130,7 +130,7 @@ function loadAudioFiles() {
   // Fallback to MP3 if WAV doesn't exist
   buzzerAudio.addEventListener('error', (e) => {
     console.log('WAV buzzer error, trying MP3...', e);
-    buzzerAudio.src = 'sounds/hockey-buzzer.mp3';
+    buzzerAudio.src = 'assets/sounds/hockey-buzzer.mp3';
     buzzerAudio.addEventListener('error', () => {
       console.log('Custom buzzer audio not found, using synthesized sound');
       buzzerAudio = null;
@@ -139,12 +139,12 @@ function loadAudioFiles() {
   
   // Try to load minute beep audio file (optional)
   minuteBeepAudio = new Audio();
-  minuteBeepAudio.src = 'sounds/minute-beep.wav';
+  minuteBeepAudio.src = 'assets/sounds/minute-beep.wav';
   minuteBeepAudio.volume = 0.3;
   
   // Fallback to MP3
   minuteBeepAudio.addEventListener('error', () => {
-    minuteBeepAudio.src = 'sounds/minute-beep.mp3';
+    minuteBeepAudio.src = 'assets/sounds/minute-beep.mp3';
     minuteBeepAudio.addEventListener('error', () => {
       console.log('Custom minute beep not found, using synthesized sound');
       minuteBeepAudio = null;
