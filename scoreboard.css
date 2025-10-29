@@ -355,7 +355,7 @@ body {
     inset 0 2px 8px var(--shadow-color);
   transition: all 0.3s ease;
   position: relative;
-  overflow: visible;
+  overflow: hidden;
 }
 
 [data-theme="dark"] .timer-outline {
@@ -386,8 +386,8 @@ body {
   color: var(--text-primary);
   letter-spacing: 0.05em;
   transition: all 0.3s ease;
-  line-height: 1.1;
-  overflow: visible;
+  line-height: 1;
+  overflow: hidden;
   text-overflow: clip;
 }
 
@@ -1433,4 +1433,28 @@ select:focus-visible {
   box-shadow: 
     0 8px 32px rgba(2, 132, 199, 0.3),
     0 0 0 3px var(--accent-primary);
+}
+
+/* View Mode Mobile Optimizations */
+@media (max-width: 600px) {
+  .view-mode .timer-display {
+    font-size: clamp(8rem, 28vw, 16rem);
+    letter-spacing: 0.02em;
+  }
+
+  .view-mode .timer-outline {
+    padding: 60px 24px;
+    border-width: 4px;
+  }
+  
+  .view-mode .timer-block {
+    gap: 8px;
+    padding: 8px;
+    min-height: 300px;
+    flex: 2;
+  }
+  
+  .view-mode .scoreboard {
+    padding: 8px;
+  }
 }
