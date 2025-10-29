@@ -19,6 +19,9 @@ firebase.initializeApp(firebaseConfig);
 // Initialize Firestore
 const db = firebase.firestore();
 
+// Initialize Firebase Authentication
+const auth = firebase.auth();
+
 // Scoreboard document reference (set dynamically based on game ID)
 let SCOREBOARD_DOC = null;
 
@@ -147,13 +150,57 @@ async function resetGame(gameId, options = {}) {
   }
 }
 
+/**
+ * Authentication functions
+ */
+
+// Sign in with email and password (for control interface)
+function signInWithEmail(email, password) {
+  return auth.signInWithEmailAndPassword(email, password);
+}
+
+// Sign in anonymously (for view interface)
+function signInAnonymously() {
+  return auth.signInAnonymously();
+}
+
+// Sign out
+function signOut() {
+  return auth.signOut();
+}
+
+// Get current user
+function getCurrentUser() {
+  return auth.currentUser;
+}
+
+// Auth state change listener
+auth.onAuthStateChanged((user) => {
+  if (user) {
+    console.log('User authenticated:', user.uid, user.email || '(anonymous)');
+    if (typeof window !== 'undefined') {
+      window.currentUser = user;
+    }
+  } else {
+    console.log('User not authenticated');
+    if (typeof window !== 'undefined') {
+      window.currentUser = null;
+    }
+  }
+});
+
 // Export for use in other files
 if (typeof window !== 'undefined') {
   window.db = db;
+  window.auth = auth;
   window.SCOREBOARD_DOC = SCOREBOARD_DOC; // Will be set dynamically
   window.initializeScoreboardDoc = initializeScoreboardDoc;
   window.getScoreboardDoc = getScoreboardDoc;
   window.updateGameName = updateGameName;
   window.getGameName = getGameName;
   window.resetGame = resetGame;
+  window.signInWithEmail = signInWithEmail;
+  window.signInAnonymously = signInAnonymously;
+  window.signOut = signOut;
+  window.getCurrentUser = getCurrentUser;
 }

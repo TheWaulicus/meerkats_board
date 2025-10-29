@@ -23,6 +23,42 @@
 </head>
 <body data-theme="dark">
   
+  <!-- Login Modal -->
+  <div id="loginModal" class="settings-modal" style="display: none" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="loginHeading">
+    <div class="settings-content" style="max-width: 500px;">
+      <h2 id="loginHeading">🔒 Operator Login</h2>
+      
+      <p style="color: var(--text-secondary); margin-bottom: 24px;">
+        Authentication required to access control interface.
+      </p>
+      
+      <form id="loginForm" onsubmit="event.preventDefault(); handleLogin();">
+        <div class="settings-section">
+          <label for="loginEmail">Email</label>
+          <input type="email" id="loginEmail" class="settings-input" placeholder="operator@example.com" required autofocus />
+        </div>
+        
+        <div class="settings-section">
+          <label for="loginPassword">Password</label>
+          <input type="password" id="loginPassword" class="settings-input" placeholder="Enter password" required />
+        </div>
+        
+        <div id="loginError" style="display: none; color: var(--error-color); padding: 12px; background: rgba(220, 38, 38, 0.1); border-radius: 8px; margin-bottom: 16px;">
+        </div>
+        
+        <button type="submit" id="loginButton" class="settings-save" style="width: 100%;">
+          Login
+        </button>
+      </form>
+      
+      <div style="margin-top: 24px; padding: 16px; background: var(--bg-tertiary); border-radius: 8px; border-left: 4px solid var(--accent-primary);">
+        <p style="font-size: 0.9em; color: var(--text-secondary); margin: 0;">
+          <strong>💡 First time?</strong> You need to create an operator account in Firebase Console first. See README for instructions.
+        </p>
+      </div>
+    </div>
+  </div>
+  
   <!-- Game Manager Modal -->
   <div id="gameModal" class="settings-modal" style="display: none" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="gameHeading">
     <div class="settings-content">
@@ -459,3 +495,98 @@
 
 </body>
 </html>
+
+  <!-- Authentication Script -->
+  <script>
+    // Check authentication state on page load
+    firebase.auth().onAuthStateChanged((user) => {
+      const loginModal = document.getElementById('loginModal');
+      
+      if (user) {
+        // User is signed in
+        console.log('Authenticated as:', user.email || user.uid);
+        loginModal.style.display = 'none';
+        
+        // Show logout option in navbar (optional)
+        if (user.email) {
+          const navbar = document.querySelector('.header-controls');
+          if (navbar && !document.getElementById('logoutBtn')) {
+            const logoutBtn = document.createElement('button');
+            logoutBtn.id = 'logoutBtn';
+            logoutBtn.className = 'navbar-link';
+            logoutBtn.innerHTML = '🚪 Logout';
+            logoutBtn.title = 'Sign out: ' + user.email;
+            logoutBtn.onclick = handleLogout;
+            navbar.appendChild(logoutBtn);
+          }
+        }
+      } else {
+        // User is signed out - show login modal
+        loginModal.style.display = 'flex';
+        loginModal.setAttribute('aria-hidden', 'false');
+      }
+    });
+
+    // Handle login
+    async function handleLogin() {
+      const email = document.getElementById('loginEmail').value;
+      const password = document.getElementById('loginPassword').value;
+      const loginButton = document.getElementById('loginButton');
+      const loginError = document.getElementById('loginError');
+      
+      // Disable button and show loading
+      loginButton.disabled = true;
+      loginButton.textContent = 'Signing in...';
+      loginError.style.display = 'none';
+      
+      try {
+        await signInWithEmail(email, password);
+        // Success - modal will close automatically via onAuthStateChanged
+      } catch (error) {
+        console.error('Login error:', error);
+        
+        // Show user-friendly error message
+        let errorMessage = 'Login failed. ';
+        switch (error.code) {
+          case 'auth/invalid-email':
+            errorMessage += 'Invalid email address.';
+            break;
+          case 'auth/user-disabled':
+            errorMessage += 'This account has been disabled.';
+            break;
+          case 'auth/user-not-found':
+            errorMessage += 'No account found with this email.';
+            break;
+          case 'auth/wrong-password':
+            errorMessage += 'Incorrect password.';
+            break;
+          case 'auth/invalid-credential':
+            errorMessage += 'Invalid email or password.';
+            break;
+          default:
+            errorMessage += error.message;
+        }
+        
+        loginError.textContent = errorMessage;
+        loginError.style.display = 'block';
+      } finally {
+        // Re-enable button
+        loginButton.disabled = false;
+        loginButton.textContent = 'Login';
+      }
+    }
+
+    // Handle logout
+    async function handleLogout() {
+      if (confirm('Are you sure you want to sign out?')) {
+        try {
+          await signOut();
+          // Page will reload or show login modal
+        } catch (error) {
+          console.error('Logout error:', error);
+          alert('Failed to sign out: ' + error.message);
+        }
+      }
+    }
+  </script>
+

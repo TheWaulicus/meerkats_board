@@ -118,6 +118,19 @@
   
   <!-- View-only Logic -->
   <script src="src/view.js"></script>
+  
+  <!-- Anonymous Authentication for View Mode -->
+  <script>
+    // Auto sign-in anonymously for view mode (read-only access)
+    firebase.auth().signInAnonymously()
+      .then(() => {
+        console.log('Signed in anonymously for view mode');
+      })
+      .catch((error) => {
+        console.error('Anonymous auth failed:', error);
+        // Still allow viewing, but writes won't work
+      });
+  </script>
 
 </body>
 </html>
