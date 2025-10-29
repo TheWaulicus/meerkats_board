@@ -1,51 +1,48 @@
 # 🏒 Meerkats Board - Hockey Scoreboard
 
-A professional web-based hockey scoreboard with dual interfaces and real-time synchronization. Perfect for hockey rinks, tournaments, and practice sessions.
+A professional web-based hockey scoreboard with real-time synchronization, multi-game support, and dual interface system. Perfect for hockey rinks, tournaments, and practice sessions.
 
-**Live Demo**: [thewaulicus.github.io/meerkats_board](https://thewaulicus.github.io/meerkats_board/)
-
-![Version](https://img.shields.io/badge/version-1.0.0-blue)
+![Version](https://img.shields.io/badge/version-2.0.0-blue)
 ![License](https://img.shields.io/badge/license-open--source-green)
 ![Status](https://img.shields.io/badge/status-production--ready-brightgreen)
 
 ## ✨ Features
 
-### 🎮 Scoreboard Controls
-- **18-Minute Timer** - Configurable countdown with start/stop/reset
-- **Score Tracking** - Track both teams' scores with +/- buttons
-- **Period Management** - Periods 1-3, Overtime, and Shootout support
-- **Real Hockey Buzzer** - Authentic arena sound every minute + 3 buzzers at end
+### 🎮 Core Functionality
+- **Configurable Timer** - Editable countdown with start/stop/reset controls
+- **Score Tracking** - Real-time score management for both teams
+- **Period/Phase Management** - Support for Periods 1-3, Overtime, and Shootout
+- **Audio Alerts** - Synthesized buzzer sounds (minute beeps + end buzzer)
+
+### 🎪 Multi-Game System
+- **Multiple Simultaneous Games** - Run unlimited games with unique IDs
+- **Game History** - Track and switch between recent games
+- **QR Code Generation** - Share control and display links via QR codes
+- **URL Shortening** - Create short links for easy sharing
+- **Game Export** - Download game data as JSON
 
 ### 🖥️ Dual Interface System
-- **Control Interface** - Full operator controls with settings (index.html)
-- **Display Interface** - Clean, read-only view for spectators (view.html)
-- **Real-time Sync** - Firebase keeps both screens perfectly synchronized
-- **One-Click Setup** - Click "Display" in navbar to open second screen
+- **Control Interface** (`index.html`) - Full operator controls and settings
+- **Display Interface** (`view.html`) - Clean, read-only view for audience
+- **Real-time Sync** - Firebase Firestore keeps all interfaces synchronized
+- **Independent Visibility** - Control what shows on operator vs audience screens
 
-### 🎨 Customization
-- **League Branding** - Custom league name and logo in navbar
-- **Team Setup** - Configure team names and upload logos
-- **Theme Toggle** - Switch between light and dark modes
-- **Visibility Controls** - Show/hide any element independently on each interface
+### 🎨 Customization & Branding
+- **League Settings** - Custom name and logo
+- **Team Branding** - Names and logos for both teams
+- **Dark/Light Themes** - Toggle between themes with instant sync
+- **Flexible Visibility** - Show/hide any element (timer, scores, period, logos, names, league)
 
-### 📱 Professional Design
-- Fully responsive (mobile, tablet, desktop)
-- Fixed navbar with branding
-- Dynamic element scaling (timer always prominent)
-- WCAG 2.1 AA accessible
+### 📱 Display & Performance
+- **Fully Responsive** - Optimized for mobile, tablet, and desktop
+- **Maximized Space Usage** - 95% screen utilization, up from 70%
+- **Large Timer Display** - 60-100% larger timer for better visibility
+- **Mobile Optimized** - Massive timer on mobile (60% larger than previous)
+- **Edge-to-Edge Layout** - No wasted space on any screen size
 
 ## 🚀 Quick Start
 
-### Option 1: Use the Live Version (Easiest)
-
-1. **Open Control**: [thewaulicus.github.io/meerkats_board/index.html](https://thewaulicus.github.io/meerkats_board/index.html)
-2. **Click "Display"** in navbar to open second screen
-3. **Configure Settings** (gear icon) - Add your league name and logos
-4. **Start Using!** - Set timer, track scores, play games
-
-**Note**: The live version uses shared Firebase, so multiple users will see each other's games. For private use, set up your own Firebase (see below).
-
-### Option 2: Run Locally
+### Run Locally
 
 1. **Clone the repository**:
    ```bash
@@ -54,17 +51,16 @@ A professional web-based hockey scoreboard with dual interfaces and real-time sy
    ```
 
 2. **Open in browser**:
-   ```bash
-   open index.html    # Control interface
-   open view.html     # Display interface (separate window)
-   ```
+   - Open `index.html` for the control interface
+   - Click "Display" button in navbar to open `view.html` in a new window
 
-3. **Configure Firebase** (for sync between screens):
+3. **Configure Firebase** (required for multi-screen sync):
    - See Firebase Setup section below
+   - Without Firebase, the scoreboard works locally but won't sync between screens
 
-## ⚙️ Firebase Setup (Optional)
+## ⚙️ Firebase Setup
 
-Firebase enables real-time sync between control and display screens. Skip this if using locally on one screen.
+Firebase enables real-time sync between control and display screens, and is required for multi-game support.
 
 ### Create Firebase Project
 
@@ -102,155 +98,119 @@ Firebase enables real-time sync between control and display screens. Skip this i
    - Copy the Firebase configuration object
 
 5. **Update firebase-config.js**:
-   - Open `firebase-config.js`
+   - Open `src/firebase-config.js`
    - Replace the placeholder config with your Firebase config
 
 ## 🎮 How to Use
 
-### Control Interface (index.html)
+### Control Interface (`index.html`)
 
-**Fixed Navbar**:
-- [League Logo] League Name - Your branding
-- **Display** button - Click to open display interface in new window
-- **Settings** (⚙️) - Configure everything
+**Navbar**:
+- **Game Button** (🎮) - Manage games, create new games, join existing games
+- **Display Button** - Open display interface in new window
+- **Settings** (⚙️) - Configure scoreboard settings
+
+**Game Management** (🎮 icon):
+- **Create New Game** - Generate unique game ID for new game
+- **Join Existing Game** - Enter game ID to join another game
+- **Recent Games** - Quick access to previously used games
+- **Share Links** - Copy control and display URLs
+- **QR Codes** - Generate QR codes for easy mobile access
+- **Short URLs** - Create shortened links via TinyURL
+- **Export Game** - Download game data as JSON
+- **Reset Game** - Selectively reset scores, timer, penalties, teams, or settings
 
 **Timer Controls**:
 - Click timer to edit manually (e.g., type "15:00")
 - **Start/Stop/Reset** buttons
-- Period controls: +/- and "Advance Phase"
-
-**Scores**:
-- Use +/- buttons under each team
-- Scores sync instantly to display
-
-**Settings** (⚙️ gear icon):
-1. **Theme** - Toggle light/dark mode
-2. **League Name** - Shows in navbar
-3. **League Logo** - Upload image for navbar
-4. **Team Names** - Home and Away
-5. **Team Logos** - Upload team images
-6. **Display Options** - Show/hide elements on control vs display
-
-### Display Interface (view.html)
-
-- **Read-only** - No controls, just clean display
-- **Auto-sync** - Updates from control interface in real-time
-- **Fullscreen** - Press 'F' key to maximize
-- Perfect for spectators and arena displays
-
-## 🎮 Usage
-
-### Control Interface
-
-**Settings (Gear Icon)**:
-- Configure league name and logo
-- Set team names and logos
-- All changes sync to viewing interfaces instantly
-
-**Timer Controls**:
-- Click timer to edit time manually
-- Start/Stop/Reset buttons control countdown
-- Audio beeps play every minute
-- Three buzzers sound at zero
+- Period controls: +/- buttons and "Advance Phase"
+- Advance Phase: Period 1 → Period 2 → Period 3 → Overtime → Shootout
 
 **Score Management**:
-- Use +/- buttons to adjust scores
+- Use +/- buttons under each team
 - Scores sync instantly across all interfaces
 
-**Period Management**:
-- Use +/- to adjust period number
-- "Advance Phase" button transitions: Period 3 → Overtime → Shootout
+**Settings** (⚙️ gear icon):
+- **Theme** - Toggle light/dark mode
+- **League** - Name and logo (appears in navbar)
+- **Teams** - Names and logos for Home and Away
+- **Visibility Controls** - Independently control what shows on:
+  - Control interface (operator view)
+  - Display interface (audience view)
+  - Toggle: Timer, Scores, Period, Team Logos, Team Names, League Info
 
-**Reset All**:
-- Red "Reset All" button clears everything
-- Returns scoreboard to default state
+### Display Interface (`view.html`)
 
-### Viewing Interface
+- **Read-only** - No controls, clean display for audience
+- **Auto-sync** - Real-time updates from control interface via Firebase
+- **Game Selection** - Join different games using game ID
+- **Theme Sync** - Automatically matches control interface theme
+- Perfect for projectors, TVs, and spectator screens
 
-- **Display Only**: No controls or settings visible
-- **Auto-Sync**: Updates automatically from Firebase
-- **Clean Design**: Optimized for visibility
-- **Theme Support**: Syncs theme from control interface
+## 🔊 Audio System
 
-## 🔊 Audio Alarms
+The scoreboard uses **Web Audio API** for synthesized sounds (no external files required):
 
-The scoreboard includes two audio alarm behaviors:
+- **Minute Beeps** - Short beep every 60 seconds during countdown
+- **End Buzzer** - Three loud buzzer sounds when timer reaches 0:00
+- All sounds work in modern browsers without additional files
 
-1. **Minute Beeps**: A short beep plays every 60 seconds during countdown
-2. **End Buzzer**: Three loud buzzer sounds play when timer reaches 0:00
+## 🔧 Technical Stack
 
-**Note**: Audio files use synthesized tones (Web Audio API). No external audio files required.
+- **Frontend**: Vanilla HTML5, CSS3, JavaScript (no frameworks)
+- **Database**: Firebase Firestore (real-time sync)
+- **Audio**: Web Audio API (synthesized sounds)
+- **Structure**:
+  - `/src` - JavaScript modules
+  - `/css` - Stylesheets
+  - `/assets` - Images and sounds
+  - `/docs` - Documentation
 
-## 🎨 Customization
-
-### Themes
-- Toggle between light and dark themes using the sun/moon icon
-- Theme preference syncs across all interfaces
-
-### Colors
-- Edit CSS variables in `scoreboard.css` to customize colors
-- Primary accent: `--accent-primary`
-- Secondary accent: `--accent-secondary`
-
-### Timer Duration
-- Default: 20:00 minutes
-- Click the timer display to edit directly
-- Changes persist across sessions
-
-## 🔧 Technical Details
-
-### Firebase Sync
+### Firebase Architecture
 - Uses Firestore real-time listeners (`onSnapshot`)
-- Single document: `/scoreboards/main`
+- Document structure: `/scoreboards/{gameId}`
+- Multi-game support with unique game IDs
 - Automatic conflict resolution
-- Offline support (updates when reconnected)
+- Offline support (syncs when reconnected)
 
 ### Browser Compatibility
-- Chrome/Edge: Full support
-- Firefox: Full support
-- Safari: Full support (iOS 13+)
-- Audio API: Supported in all modern browsers
-
-### Security Considerations
-- Current Firestore rules allow public read/write
-- For production, implement authentication
-- Restrict write access to authenticated operators only
-
-## 💾 Technical Details
-
-- **Frontend**: HTML5, CSS3, JavaScript (no frameworks)
-- **Database**: Firebase Firestore (real-time sync)
-- **Audio**: Web Audio API + WAV file
-- **Hosting**: GitHub Pages (free)
-- **Browser Support**: Chrome, Firefox, Safari, Edge (all modern browsers)
-- **Cost**: $0/month (Firebase free tier)
+- Chrome/Edge: ✅ Full support
+- Firefox: ✅ Full support
+- Safari: ✅ Full support (iOS 13+)
+- All modern browsers supported
 
 ## 🐛 Troubleshooting
 
 **Interfaces not syncing?**
 - Check browser console for Firebase errors
-- Verify Firestore rules allow read/write
-- Ensure Firebase config is correct in `firebase-config.js`
+- Verify Firestore rules allow read/write access
+- Ensure Firebase config is correct in `src/firebase-config.js`
+- Confirm both interfaces are using the same game ID
 
 **Audio not playing?**
-- Check browser audio permissions
+- Browser audio permissions may be blocked
 - Ensure browser tab is not muted
 - Some browsers require user interaction before playing audio
 
 **Images not displaying?**
-- Logo uploads use base64 encoding
+- Logos use base64 encoding and are stored in Firebase
 - Large images may take time to sync
-- Consider resizing images before upload
+- Recommended: Resize images to 200x200px before upload
+
+**Game not loading?**
+- Check that game ID is correctly formatted
+- Verify Firebase is properly configured
+- Clear browser cache and reload
 
 ## 📄 License
 
-This project is open source and available for use in hockey rinks, sports facilities, and personal use.
+Open source - Free to use for hockey rinks, sports facilities, and personal use.
 
-## 🙏 Credits
+## 🙏 Acknowledgments
 
-Built for hockey enthusiasts who need a simple, reliable scoreboard solution with dual-screen support.
+Built for hockey enthusiasts who need a reliable, feature-rich scoreboard solution.
 
 ---
 
-**Version**: 1.0.0  
+**Version**: 2.0.0  
 **Last Updated**: 2024
