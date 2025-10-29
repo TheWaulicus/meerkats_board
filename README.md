@@ -213,4 +213,4 @@ Built for hockey enthusiasts who need a reliable, feature-rich scoreboard soluti
 ---
 
 **Version**: 2.0.0  
-**Last Updated**: 2024
+**Last Updated**: October 29, 2025
