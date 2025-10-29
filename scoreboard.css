@@ -751,30 +751,31 @@ body {
     width: 100vw;
     min-height: 100vh;
     border-radius: 0;
-    padding: 16px;
+    padding: 8px;
   }
 
   .timer-block {
-    padding: 20px 16px;
+    padding: 12px 8px;
+    flex: 2;
   }
 
   /* Timer stays LARGE even on mobile */
   .timer-display {
-    font-size: clamp(5rem, 20vw, 10rem);
-    letter-spacing: 0.03em;
+    font-size: clamp(8rem, 28vw, 16rem);
+    letter-spacing: 0.02em;
   }
 
   .timer-outline {
-    padding: 32px 16px;
+    padding: 60px 24px;
     max-width: 100%;
     width: 100%;
-    border-width: 3px;
+    border-width: 4px;
   }
   
   .timer-block {
-    gap: 6px;
-    padding: 6px;
-    min-height: 160px;
+    gap: 8px;
+    padding: 8px;
+    min-height: 300px;
   }
 
   /* Scale other elements appropriately */
@@ -812,15 +813,15 @@ body {
   /* Timer-only mode on mobile = MASSIVE */
   .scoreboard.hide-scores-control.hide-period-control:not(.view-mode) .timer-display,
   .view-mode .scoreboard.hide-scores-view.hide-period-view .timer-display {
-    font-size: clamp(8rem, 28vw, 16rem);
-    letter-spacing: 0.03em;
+    font-size: clamp(10rem, 35vw, 20rem);
+    letter-spacing: 0.02em;
   }
   
   .scoreboard.hide-scores-control.hide-period-control:not(.view-mode) .timer-outline,
   .view-mode .scoreboard.hide-scores-view.hide-period-view .timer-outline {
-    padding: 52px 16px;
+    padding: 80px 24px;
     max-width: 100%;
-    border-width: 3px;
+    border-width: 4px;
   }
   
   .scoreboard.hide-scores-control.hide-period-control:not(.view-mode) .timer-block,
