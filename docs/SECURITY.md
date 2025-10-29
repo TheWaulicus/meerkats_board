@@ -1,5 +1,43 @@
 # 🔒 Security Guide for Meerkats Board
 
+## 💰 Firebase Authentication Costs
+
+### **TL;DR: $0/month for Email/Password Auth** ✅
+
+**What's FREE (Unlimited):**
+- ✅ Email/Password authentication
+- ✅ Anonymous authentication  
+- ✅ Google/Facebook/Twitter sign-in
+- ✅ User storage (~1KB per user)
+- ✅ Token generation and validation
+
+**What Costs Money:**
+- Phone/SMS verification: $0.06 per verification after 10,000/month
+- We don't use this ❌
+
+**Firestore Costs (Separate from Auth):**
+- First 50,000 reads/day: FREE
+- First 20,000 writes/day: FREE
+- After that: ~$0.06 per 100,000 reads
+
+**For Meerkats Board:**
+- Small rink (1-10 operators): **$0/month**
+- Medium facility (10-50 operators): **~$2/month**
+- Large organization (100+ operators): **~$10/month**
+
+### How It Works
+
+1. User enters email + password
+2. Firebase verifies credentials (on their servers)
+3. Issues secure token (JWT) valid for 1 hour
+4. Token auto-refreshes invisibly
+5. Every Firestore request includes token
+6. Firestore Rules check `request.auth != null`
+
+**Performance Impact:** ~500ms initial login (one-time), then negligible
+
+---
+
 ## Current Security Issues
 
 ### ⚠️ Critical: Open Firestore Rules
