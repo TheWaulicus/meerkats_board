@@ -14,7 +14,7 @@ To add a custom hockey buzzer sound:
 
 3. Name it: `hockey-buzzer.mp3` or `hockey-buzzer.wav`
 
-4. Place it in this `sounds/` folder
+4. Place it in the `assets/sounds/` folder (this directory is deprecated)
 
 5. The scoreboard will automatically use it!
 
