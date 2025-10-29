@@ -18,7 +18,7 @@ let teamState = {
 };
 
 let leagueName = "Juice Box Hockey";
-let leagueLogo = "images/juice_box.png";
+let leagueLogo = "assets/images/juice_box.png";
 
 // Visibility settings
 let visibilitySettings = {
@@ -743,7 +743,7 @@ function getDefaultState() {
       score: 0
     },
     leagueName: "Juice Box Hockey",
-    leagueLogo: "images/juice_box.png",
+    leagueLogo: "assets/images/juice_box.png",
     theme: "dark",
     visibilitySettings: {
       showPeriodControl: true,

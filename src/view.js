@@ -17,7 +17,7 @@ let teamState = {
 };
 
 let leagueName = "Juice Box Hockey";
-let leagueLogo = "images/juice_box.png";
+let leagueLogo = "assets/images/juice_box.png";
 
 // Visibility settings
 let visibilitySettings = {
