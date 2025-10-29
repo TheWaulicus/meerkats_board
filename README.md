@@ -62,6 +62,8 @@ A professional web-based hockey scoreboard with real-time synchronization, multi
 
 Firebase enables real-time sync between control and display screens, and is required for multi-game support.
 
+> ⚠️ **Security Warning**: The default Firestore rules in this guide allow **public read/write access**. This is fine for testing but **NOT secure for production**. See [docs/SECURITY.md](docs/SECURITY.md) for security improvements before deploying publicly.
+
 ### Create Firebase Project
 
 1. **Create a Firebase Project**:
@@ -178,6 +180,24 @@ The scoreboard uses **Web Audio API** for synthesized sounds (no external files 
 - Firefox: ✅ Full support
 - Safari: ✅ Full support (iOS 13+)
 - All modern browsers supported
+
+## 🔒 Security
+
+⚠️ **Important**: The default Firebase setup uses open read/write rules for simplicity. This is **not secure for production**.
+
+**See [docs/SECURITY.md](docs/SECURITY.md)** for:
+- Current security issues and risks
+- Authentication implementation guide
+- Secure Firestore rules (3 options)
+- Role-based access control
+- Rate limiting and data validation
+- Complete security audit checklist
+
+**Quick Fix**: At minimum, require authentication for writes:
+```javascript
+allow read: if true;
+allow write: if request.auth != null;  // Require authentication
+```
 
 ## 🐛 Troubleshooting
 
