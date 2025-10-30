@@ -25,39 +25,28 @@ const auth = firebase.auth();
 // Initialize Firebase Storage
 let storage = null;
 
-// Function to initialize storage (may need to retry if SDK not loaded yet)
+// Function to initialize storage
 function initializeStorage() {
   try {
-    console.log('Checking firebase object:', {
-      firebaseDefined: typeof firebase !== 'undefined',
-      firebaseKeys: typeof firebase !== 'undefined' ? Object.keys(firebase) : [],
-      hasStorage: typeof firebase !== 'undefined' && typeof firebase.storage !== 'undefined',
-      storageType: typeof firebase !== 'undefined' ? typeof firebase.storage : 'N/A'
-    });
-    
     if (typeof firebase !== 'undefined' && firebase.storage) {
       storage = firebase.storage();
       if (typeof window !== 'undefined') {
         window.storage = storage;
       }
-      console.log('✅ Firebase Storage initialized');
       return true;
-    } else {
-      console.warn('⚠️ firebase.storage() not available yet, will retry...');
-      return false;
     }
+    return false;
   } catch (error) {
-    console.error('❌ Error initializing Firebase Storage:', error);
+    console.error('Error initializing Firebase Storage:', error);
     return false;
   }
 }
 
-// Try to initialize immediately
+// Try to initialize immediately, retry once if needed
 if (!initializeStorage()) {
-  // If it fails, retry after a short delay
   setTimeout(() => {
     if (!initializeStorage()) {
-      console.error('❌ Failed to initialize Firebase Storage after retry');
+      console.error('Failed to initialize Firebase Storage');
     }
   }, 100);
 }

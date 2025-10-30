@@ -1451,65 +1451,116 @@ async function getLogosFromGallery(type) {
 }
 
 /**
- * Save logo to gallery
+ * Compress and resize image if needed
+ */
+async function compressImage(base64Data, maxSizeMB = 2) {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    img.onload = () => {
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d');
+      
+      // Max dimensions for logos
+      const MAX_WIDTH = 800;
+      const MAX_HEIGHT = 800;
+      
+      let width = img.width;
+      let height = img.height;
+      
+      // Calculate new dimensions while maintaining aspect ratio
+      if (width > height) {
+        if (width > MAX_WIDTH) {
+          height *= MAX_WIDTH / width;
+          width = MAX_WIDTH;
+        }
+      } else {
+        if (height > MAX_HEIGHT) {
+          width *= MAX_HEIGHT / height;
+          height = MAX_HEIGHT;
+        }
+      }
+      
+      canvas.width = width;
+      canvas.height = height;
+      ctx.drawImage(img, 0, 0, width, height);
+      
+      // Start with quality 0.9 and reduce if needed
+      let quality = 0.9;
+      let compressedData = canvas.toDataURL('image/jpeg', quality);
+      
+      // If still too large, reduce quality
+      const maxSizeBytes = maxSizeMB * 1024 * 1024;
+      while (compressedData.length > maxSizeBytes && quality > 0.5) {
+        quality -= 0.1;
+        compressedData = canvas.toDataURL('image/jpeg', quality);
+      }
+      
+      resolve(compressedData);
+    };
+    img.onerror = reject;
+    img.src = base64Data;
+  });
+}
+
+/**
+ * Save logo to gallery with compression and size limits
  */
 async function saveLogoToGallery(type, base64Data, filename) {
   const user = firebase.auth().currentUser;
-  console.log('saveLogoToGallery called:', { 
-    type, 
-    filename, 
-    userAuthenticated: !!user,
-    storageAvailable: !!window.storage,
-    dbAvailable: !!window.db,
-    firebaseAvailable: typeof firebase !== 'undefined'
-  });
   
-  // If user is authenticated, save to Firebase Storage
-  if (user && window.storage && window.db) {
-    try {
-      console.log('Attempting Firebase Storage upload...');
-      // Convert base64 to blob
-      const blob = base64ToBlob(base64Data);
-      console.log('Blob created, size:', blob.size);
-      
-      // Create storage path
-      const timestamp = Date.now();
-      const galleryType = type === 'league' ? 'league' : 'team';
-      const storagePath = `logos/${user.uid}/${galleryType}/${timestamp}-${filename}`;
-      console.log('Storage path:', storagePath);
-      
-      // Upload to Firebase Storage
-      const storageRef = window.storage.ref().child(storagePath);
-      console.log('Uploading to Firebase Storage...');
-      const uploadTask = await storageRef.put(blob);
-      console.log('Upload complete!');
-      
-      // Get download URL
-      const downloadURL = await uploadTask.ref.getDownloadURL();
-      console.log('Download URL:', downloadURL);
-      
-      // Save metadata to Firestore
-      console.log('Saving metadata to Firestore...');
-      await window.db.collection('users').doc(user.uid).collection('logoGallery').add({
-        url: downloadURL,
-        name: filename || 'Untitled',
-        type: galleryType,
-        storagePath: storagePath,
-        timestamp: timestamp
-      });
-      
-      console.log('✅ Logo saved to Firebase Storage successfully:', downloadURL);
-      return downloadURL;
-    } catch (error) {
-      console.error('❌ Error saving logo to Firebase:', error);
-      alert('Error uploading logo to Firebase: ' + error.message);
-      throw error; // Don't fall back, let caller handle error
-    }
-  } else {
-    // User must be authenticated to save logos
-    console.error('❌ Cannot save logo: User not authenticated or Firebase not available');
+  // Check authentication
+  if (!user || !window.storage || !window.db) {
     alert('Please sign in to upload logos. Firebase Storage requires authentication.');
     throw new Error('User not authenticated');
+  }
+  
+  try {
+    // Check file size (base64 is ~33% larger than actual file)
+    const estimatedSizeMB = (base64Data.length * 0.75) / (1024 * 1024);
+    
+    // If larger than 5MB, compress it
+    let processedData = base64Data;
+    if (estimatedSizeMB > 5) {
+      alert('Image is large, compressing...');
+      processedData = await compressImage(base64Data, 2);
+    }
+    
+    // Convert base64 to blob
+    const blob = base64ToBlob(processedData);
+    
+    // Final size check
+    const finalSizeMB = blob.size / (1024 * 1024);
+    if (finalSizeMB > 5) {
+      alert('Image is too large (max 5MB). Please use a smaller image.');
+      throw new Error('Image too large');
+    }
+    
+    // Create storage path
+    const timestamp = Date.now();
+    const galleryType = type === 'league' ? 'league' : 'team';
+    const storagePath = `logos/${user.uid}/${galleryType}/${timestamp}-${filename}`;
+    
+    // Upload to Firebase Storage
+    const storageRef = window.storage.ref().child(storagePath);
+    const uploadTask = await storageRef.put(blob);
+    
+    // Get download URL
+    const downloadURL = await uploadTask.ref.getDownloadURL();
+    
+    // Save metadata to Firestore
+    await window.db.collection('users').doc(user.uid).collection('logoGallery').add({
+      url: downloadURL,
+      name: filename || 'Untitled',
+      type: galleryType,
+      storagePath: storagePath,
+      timestamp: timestamp
+    });
+    
+    return downloadURL;
+  } catch (error) {
+    console.error('Error saving logo to Firebase:', error);
+    alert('Error uploading logo: ' + error.message);
+    throw error;
   }
 }
 
@@ -1684,15 +1735,12 @@ function selectLogoFromGallery(type, base64Data) {
 function setupLogoUploadListeners() {
   // League logo upload
   const leagueLogoInput = document.getElementById('leagueLogoInput');
-  console.log('League logo input element:', leagueLogoInput);
   if (leagueLogoInput) {
     leagueLogoInput.addEventListener('change', async (e) => {
-      console.log('League logo file selected:', e.target.files[0]);
       if (e.target.files[0]) {
         const file = e.target.files[0];
         const reader = new FileReader();
         reader.onload = async (e) => {
-          console.log('League logo file read, size:', e.target.result.length);
           leagueLogo = e.target.result;
           const navbarLeagueLogo = document.getElementById('navbarLeagueLogo');
           if (navbarLeagueLogo) {
@@ -1701,9 +1749,7 @@ function setupLogoUploadListeners() {
           }
           updatePageBranding();
           // Save to gallery
-          console.log('Saving league logo to gallery...');
           await saveLogoToGallery('league', leagueLogo, file.name);
-          console.log('Saving to Firestore...');
           saveStateToFirestore();
           alert('✅ League logo uploaded successfully!');
         };
