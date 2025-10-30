@@ -1455,7 +1455,14 @@ async function getLogosFromGallery(type) {
  */
 async function saveLogoToGallery(type, base64Data, filename) {
   const user = firebase.auth().currentUser;
-  console.log('saveLogoToGallery called:', { type, filename, userAuthenticated: !!user });
+  console.log('saveLogoToGallery called:', { 
+    type, 
+    filename, 
+    userAuthenticated: !!user,
+    storageAvailable: !!window.storage,
+    dbAvailable: !!window.db,
+    firebaseAvailable: typeof firebase !== 'undefined'
+  });
   
   // If user is authenticated, save to Firebase Storage
   if (user && window.storage && window.db) {
