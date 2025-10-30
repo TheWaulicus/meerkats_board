@@ -813,28 +813,32 @@ body {
   }
   
   /* Control mode - when scores are hidden on mobile */
-  .scoreboard.hide-scores-control:not(.view-mode) .timer-display {
-    font-size: clamp(5.5rem, 16vw, 11rem) !important;
-    letter-spacing: 0em;
+  .scoreboard.hide-scores-control:not(.view-mode) .timer-outline {
+    padding: 25px 14px !important;
+    max-width: 88vw;
+    container-type: inline-size;
   }
   
-  .scoreboard.hide-scores-control:not(.view-mode) .timer-outline {
-    padding: 35px 14px !important;
-    max-width: 90vw;
+  .scoreboard.hide-scores-control:not(.view-mode) .timer-display {
+    font-size: 20cqi !important;
+    letter-spacing: -0.02em;
+    width: 100%;
   }
   
   /* Timer-only mode on mobile = MASSIVE */
-  .scoreboard.hide-scores-control.hide-period-control:not(.view-mode) .timer-display,
-  .view-mode .scoreboard.hide-scores-view.hide-period-view .timer-display {
-    font-size: clamp(6.5rem, 18vw, 13rem) !important;
-    letter-spacing: 0em;
-  }
-  
   .scoreboard.hide-scores-control.hide-period-control:not(.view-mode) .timer-outline,
   .view-mode .scoreboard.hide-scores-view.hide-period-view .timer-outline {
-    padding: 35px 14px !important;
-    max-width: 90vw;
+    padding: 30px 14px !important;
+    max-width: 88vw;
     border-width: 4px;
+    container-type: inline-size;
+  }
+  
+  .scoreboard.hide-scores-control.hide-period-control:not(.view-mode) .timer-display,
+  .view-mode .scoreboard.hide-scores-view.hide-period-view .timer-display {
+    font-size: 22cqi !important;
+    letter-spacing: -0.02em;
+    width: 100%;
   }
   
   .scoreboard.hide-scores-control.hide-period-control:not(.view-mode) .timer-block,
@@ -1450,15 +1454,17 @@ select:focus-visible {
 
 /* View Mode Mobile Optimizations */
 @media (max-width: 900px) {
-  .view-mode .timer-display {
-    font-size: clamp(4.5rem, 16vw, 9rem) !important;
-    letter-spacing: 0em;
-  }
-
   .view-mode .timer-outline {
-    padding: 30px 10px !important;
+    padding: 20px 12px !important;
     border-width: 4px;
-    max-width: 90vw;
+    max-width: 88vw;
+    container-type: inline-size;
+  }
+  
+  .view-mode .timer-display {
+    font-size: 18cqi !important;
+    letter-spacing: -0.02em;
+    width: 100%;
   }
   
   .view-mode .timer-block {
@@ -1473,19 +1479,28 @@ select:focus-visible {
   }
   
   /* When scores are hidden on mobile, make timer fit screen */
-  .view-mode .scoreboard.hide-scores-view .timer-display {
-    font-size: clamp(5.5rem, 16vw, 11rem) !important;
-    letter-spacing: 0em;
+  .view-mode .scoreboard.hide-scores-view .timer-outline {
+    padding: 25px 14px !important;
+    max-width: 88vw;
+    container-type: inline-size;
   }
   
-  .view-mode .scoreboard.hide-scores-view .timer-outline {
-    padding: 35px 14px !important;
-    max-width: 90vw;
+  .view-mode .scoreboard.hide-scores-view .timer-display {
+    font-size: 20cqi !important;
+    letter-spacing: -0.02em;
+    width: 100%;
   }
   
   /* When both scores and period hidden on mobile */
+  .view-mode .scoreboard.hide-scores-view.hide-period-view .timer-outline {
+    padding: 30px 14px !important;
+    max-width: 88vw;
+    container-type: inline-size;
+  }
+  
   .view-mode .scoreboard.hide-scores-view.hide-period-view .timer-display {
-    font-size: clamp(6.5rem, 18vw, 13rem) !important;
-    letter-spacing: 0em;
+    font-size: 22cqi !important;
+    letter-spacing: -0.02em;
+    width: 100%;
   }
 }
