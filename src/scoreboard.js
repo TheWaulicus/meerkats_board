@@ -1685,9 +1685,81 @@ function selectLogoFromGallery(type, base64Data) {
   closeLogoGallery();
 }
 
+// Add event listeners for logo uploads
+function setupLogoUploadListeners() {
+  // League logo upload
+  const leagueLogoInput = document.getElementById('leagueLogoInput');
+  if (leagueLogoInput) {
+    leagueLogoInput.addEventListener('change', async (e) => {
+      if (e.target.files[0]) {
+        const file = e.target.files[0];
+        const reader = new FileReader();
+        reader.onload = async (e) => {
+          leagueLogo = e.target.result;
+          const navbarLeagueLogo = document.getElementById('navbarLeagueLogo');
+          if (navbarLeagueLogo) {
+            navbarLeagueLogo.src = leagueLogo;
+            navbarLeagueLogo.style.display = 'block';
+          }
+          updatePageBranding();
+          // Save to gallery
+          await saveLogoToGallery('league', leagueLogo, file.name);
+          saveStateToFirestore();
+          alert('✅ League logo uploaded successfully!');
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+  }
+  
+  // Team A logo upload
+  const teamALogoInput = document.getElementById('teamALogoInput');
+  if (teamALogoInput) {
+    teamALogoInput.addEventListener('change', async (e) => {
+      if (e.target.files[0]) {
+        const file = e.target.files[0];
+        const reader = new FileReader();
+        reader.onload = async (e) => {
+          teamState.A.logo = e.target.result;
+          document.getElementById('teamALogo').src = teamState.A.logo;
+          // Save to gallery
+          await saveLogoToGallery('team', teamState.A.logo, file.name);
+          saveStateToFirestore();
+          alert('✅ Home team logo uploaded successfully!');
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+  }
+  
+  // Team B logo upload
+  const teamBLogoInput = document.getElementById('teamBLogoInput');
+  if (teamBLogoInput) {
+    teamBLogoInput.addEventListener('change', async (e) => {
+      if (e.target.files[0]) {
+        const file = e.target.files[0];
+        const reader = new FileReader();
+        reader.onload = async (e) => {
+          teamState.B.logo = e.target.result;
+          document.getElementById('teamBLogo').src = teamState.B.logo;
+          // Save to gallery
+          await saveLogoToGallery('team', teamState.B.logo, file.name);
+          saveStateToFirestore();
+          alert('✅ Away team logo uploaded successfully!');
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+  }
+}
+
 // Wait for DOM to be ready
 if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', initializeApp);
+  document.addEventListener('DOMContentLoaded', () => {
+    initializeApp();
+    setupLogoUploadListeners();
+  });
 } else {
   initializeApp();
+  setupLogoUploadListeners();
 }
