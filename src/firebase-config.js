@@ -54,11 +54,17 @@ if (!initializeStorage()) {
 // Initialize Firebase App Check (protection against abuse)
 if (typeof firebase !== 'undefined' && firebase.appCheck) {
   try {
+    // Firebase v8 SDK uses a different initialization pattern
     const appCheck = firebase.appCheck();
-    appCheck.activate('6LfO1PsrAAAAAG1tPsUfbTFg-HW-hdozR4WD8yKJ', true);
+    // Activate with reCAPTCHA v3 provider
+    appCheck.activate(
+      new firebase.appCheck.ReCaptchaV3Provider('6LfO1PsrAAAAAG1tPsUfbTFg-HW-hdozR4WD8yKJ'),
+      true // isTokenAutoRefreshEnabled
+    );
     console.log('✅ Firebase App Check activated - protection enabled');
   } catch (error) {
     console.error('Error initializing App Check:', error);
+    console.log('⚠️ App Check SDK loaded but not activated. Add your reCAPTCHA site key to activate.');
   }
 }
 
