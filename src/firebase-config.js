@@ -24,15 +24,35 @@ const auth = firebase.auth();
 
 // Initialize Firebase Storage
 let storage = null;
-try {
-  if (firebase.storage) {
-    storage = firebase.storage();
-    console.log('✅ Firebase Storage initialized');
-  } else {
-    console.error('❌ firebase.storage() is not available - Storage SDK may not be loaded');
+
+// Function to initialize storage (may need to retry if SDK not loaded yet)
+function initializeStorage() {
+  try {
+    if (typeof firebase !== 'undefined' && firebase.storage) {
+      storage = firebase.storage();
+      if (typeof window !== 'undefined') {
+        window.storage = storage;
+      }
+      console.log('✅ Firebase Storage initialized');
+      return true;
+    } else {
+      console.warn('⚠️ firebase.storage() not available yet, will retry...');
+      return false;
+    }
+  } catch (error) {
+    console.error('❌ Error initializing Firebase Storage:', error);
+    return false;
   }
-} catch (error) {
-  console.error('❌ Error initializing Firebase Storage:', error);
+}
+
+// Try to initialize immediately
+if (!initializeStorage()) {
+  // If it fails, retry after a short delay
+  setTimeout(() => {
+    if (!initializeStorage()) {
+      console.error('❌ Failed to initialize Firebase Storage after retry');
+    }
+  }, 100);
 }
 
 // Scoreboard document reference (set dynamically based on game ID)
