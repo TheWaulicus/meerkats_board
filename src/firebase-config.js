@@ -28,6 +28,13 @@ let storage = null;
 // Function to initialize storage (may need to retry if SDK not loaded yet)
 function initializeStorage() {
   try {
+    console.log('Checking firebase object:', {
+      firebaseDefined: typeof firebase !== 'undefined',
+      firebaseKeys: typeof firebase !== 'undefined' ? Object.keys(firebase) : [],
+      hasStorage: typeof firebase !== 'undefined' && typeof firebase.storage !== 'undefined',
+      storageType: typeof firebase !== 'undefined' ? typeof firebase.storage : 'N/A'
+    });
+    
     if (typeof firebase !== 'undefined' && firebase.storage) {
       storage = firebase.storage();
       if (typeof window !== 'undefined') {
