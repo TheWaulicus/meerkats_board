@@ -125,15 +125,9 @@
   
   <!-- Anonymous Authentication for View Mode -->
   <script>
-    // Auto sign-in anonymously for view mode (read-only access)
-    firebase.auth().signInAnonymously()
-      .then(() => {
-        console.log('Signed in anonymously for view mode');
-      })
-      .catch((error) => {
-        console.error('Anonymous auth failed:', error);
-        // Still allow viewing, but writes won't work
-      });
+    // Note: View mode works with Firestore read permissions
+    // Anonymous auth is optional if your Firestore rules allow public reads
+    console.log('View mode loaded - using Firestore read permissions');
   </script>
 
 </body>
