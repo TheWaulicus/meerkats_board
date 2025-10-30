@@ -22,6 +22,19 @@ const db = firebase.firestore();
 // Initialize Firebase Authentication
 const auth = firebase.auth();
 
+// Initialize Firebase Storage
+let storage = null;
+try {
+  if (firebase.storage) {
+    storage = firebase.storage();
+    console.log('✅ Firebase Storage initialized');
+  } else {
+    console.error('❌ firebase.storage() is not available - Storage SDK may not be loaded');
+  }
+} catch (error) {
+  console.error('❌ Error initializing Firebase Storage:', error);
+}
+
 // Scoreboard document reference (set dynamically based on game ID)
 let SCOREBOARD_DOC = null;
 
@@ -193,6 +206,7 @@ auth.onAuthStateChanged((user) => {
 if (typeof window !== 'undefined') {
   window.db = db;
   window.auth = auth;
+  window.storage = storage;
   window.SCOREBOARD_DOC = SCOREBOARD_DOC; // Will be set dynamically
   window.initializeScoreboardDoc = initializeScoreboardDoc;
   window.getScoreboardDoc = getScoreboardDoc;
