@@ -1303,6 +1303,27 @@ select:focus-visible {
   background: #dc2626;
 }
 
+/* Smooth transitions for content updates */
+.team-name,
+.team-logo,
+.score-value,
+.timer-display,
+.period-label,
+#navbarLeagueName,
+#navbarLeagueLogo {
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.team-logo {
+  transition: opacity 0.3s ease;
+}
+
+/* Prevent layout shift during loading */
+.team-logo {
+  min-height: 80px;
+  min-width: 80px;
+}
+
 /* Improve button contrast */
 .timer-btn {
   background: var(--accent-primary);

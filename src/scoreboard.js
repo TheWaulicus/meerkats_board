@@ -819,18 +819,63 @@ function saveStateToFirestore() {
 }
 
 /**
+ * Save state to localStorage cache for instant loading
+ */
+function saveStateToCache(state) {
+  try {
+    const cacheKey = `scoreboard_cache_${window.GameManager ? window.GameManager.getCurrentGameId() : 'main'}`;
+    const cacheData = {
+      ...state,
+      cachedAt: Date.now()
+    };
+    localStorage.setItem(cacheKey, JSON.stringify(cacheData));
+  } catch (error) {
+    console.warn('Failed to cache state:', error);
+  }
+}
+
+/**
+ * Load state from localStorage cache
+ */
+function loadStateFromCache() {
+  try {
+    const cacheKey = `scoreboard_cache_${window.GameManager ? window.GameManager.getCurrentGameId() : 'main'}`;
+    const cached = localStorage.getItem(cacheKey);
+    if (!cached) return null;
+    
+    const cacheData = JSON.parse(cached);
+    
+    // Check if cache is less than 7 days old
+    const age = Date.now() - (cacheData.cachedAt || 0);
+    if (age > 7 * 24 * 60 * 60 * 1000) {
+      return null; // Cache too old
+    }
+    
+    return cacheData;
+  } catch (error) {
+    console.warn('Failed to load cache:', error);
+    return null;
+  }
+}
+
+/**
  * Load state from Firestore snapshot
  */
-function loadStateFromSnapshot(snapshot) {
-  if (!snapshot.exists) {
+function loadStateFromSnapshot(snapshot, isFromCache = false) {
+  if (!snapshot.exists && !isFromCache) {
     // Initialize with default state
     window.SCOREBOARD_DOC.set(getDefaultState());
     return;
   }
   
-  const state = snapshot.data();
+  const state = isFromCache ? snapshot : snapshot.data();
   
-  if (!isLocalUpdate) {
+  // Save to cache for next time (only if from Firebase, not from cache itself)
+  if (!isFromCache) {
+    saveStateToCache(state);
+  }
+  
+  if (!isLocalUpdate || isFromCache) {
     // Update local state from remote
     // Don't use fallback for timerSeconds - it could be 0
     if (state.timerSeconds !== undefined) {
@@ -931,6 +976,18 @@ function initializeApp() {
   const gameId = window.GameManager ? window.GameManager.getCurrentGameId() : 'main';
   console.log("Current game ID:", gameId);
   
+  // Try to load from cache first for instant display
+  const cachedState = loadStateFromCache();
+  if (cachedState) {
+    console.log("Loading from cache for instant display");
+    loadStateFromSnapshot(cachedState, true);
+  } else {
+    // No cache, show defaults
+    updateTimerDisplay();
+    updatePhaseDisplay();
+    applyVisibilitySettings();
+  }
+  
   // Initialize Firebase with game ID
   if (window.initializeScoreboardDoc) {
     window.initializeScoreboardDoc(gameId);
@@ -939,11 +996,6 @@ function initializeApp() {
   
   // Update game ID display in UI
   updateGameIdDisplay(gameId);
-  
-  // Initialize display
-  updateTimerDisplay();
-  updatePhaseDisplay();
-  applyVisibilitySettings();
   
   // Set up Firebase listener
   if (window.SCOREBOARD_DOC) {
@@ -1722,10 +1774,11 @@ async function renderLogoGallery(type) {
 /**
  * Select logo from gallery
  */
-function selectLogoFromGallery(type, base64Data) {
+function selectLogoFromGallery(type, logoUrl) {
   // Apply the logo based on type
+  // Note: We don't call saveLogoToGallery() here because the logo is already in Firebase Storage
   if (type === 'league') {
-    leagueLogo = base64Data;
+    leagueLogo = logoUrl;
     const navbarLeagueLogo = document.getElementById('navbarLeagueLogo');
     if (navbarLeagueLogo) {
       navbarLeagueLogo.src = leagueLogo;
@@ -1733,20 +1786,20 @@ function selectLogoFromGallery(type, base64Data) {
     }
     updatePageBranding();
   } else if (type === 'teamA') {
-    teamState.A.logo = base64Data;
+    teamState.A.logo = logoUrl;
     const teamALogo = document.getElementById('teamALogo');
     if (teamALogo) {
-      teamALogo.src = base64Data;
+      teamALogo.src = logoUrl;
     }
   } else if (type === 'teamB') {
-    teamState.B.logo = base64Data;
+    teamState.B.logo = logoUrl;
     const teamBLogo = document.getElementById('teamBLogo');
     if (teamBLogo) {
-      teamBLogo.src = base64Data;
+      teamBLogo.src = logoUrl;
     }
   }
   
-  // Save to Firestore
+  // Save to Firestore (saves the scoreboard state, not the logo to gallery)
   saveStateToFirestore();
   
   // Close gallery
