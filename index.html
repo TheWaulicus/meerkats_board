@@ -269,7 +269,15 @@
         
         <div class="settings-section">
           <label for="leagueLogoInput">League Logo</label>
-          <input type="file" accept="image/*" id="leagueLogoInput" class="settings-file" />
+          <div style="display: flex; gap: 8px; align-items: center;">
+            <button type="button" class="settings-save" onclick="openLogoGallery('league')" style="flex: 1; background: var(--accent-secondary);">
+              📁 Choose from Gallery
+            </button>
+            <input type="file" accept="image/*" id="leagueLogoInput" class="settings-file" style="display: none;" />
+            <button type="button" class="settings-save" onclick="document.getElementById('leagueLogoInput').click()" style="flex: 1;">
+              ⬆️ Upload New
+            </button>
+          </div>
         </div>
         
         <div class="settings-section">
@@ -279,7 +287,15 @@
         
         <div class="settings-section">
           <label for="teamALogoInput">Home Team Logo</label>
-          <input type="file" accept="image/*" id="teamALogoInput" class="settings-file" />
+          <div style="display: flex; gap: 8px; align-items: center;">
+            <button type="button" class="settings-save" onclick="openLogoGallery('teamA')" style="flex: 1; background: var(--accent-secondary);">
+              📁 Choose from Gallery
+            </button>
+            <input type="file" accept="image/*" id="teamALogoInput" class="settings-file" style="display: none;" />
+            <button type="button" class="settings-save" onclick="document.getElementById('teamALogoInput').click()" style="flex: 1;">
+              ⬆️ Upload New
+            </button>
+          </div>
         </div>
         
         <div class="settings-section">
@@ -289,7 +305,15 @@
         
         <div class="settings-section">
           <label for="teamBLogoInput">Away Team Logo</label>
-          <input type="file" accept="image/*" id="teamBLogoInput" class="settings-file" />
+          <div style="display: flex; gap: 8px; align-items: center;">
+            <button type="button" class="settings-save" onclick="openLogoGallery('teamB')" style="flex: 1; background: var(--accent-secondary);">
+              📁 Choose from Gallery
+            </button>
+            <input type="file" accept="image/*" id="teamBLogoInput" class="settings-file" style="display: none;" />
+            <button type="button" class="settings-save" onclick="document.getElementById('teamBLogoInput').click()" style="flex: 1;">
+              ⬆️ Upload New
+            </button>
+          </div>
         </div>
         
         <h3 style="margin-top: 24px; margin-bottom: 12px; font-size: 1.1em; color: var(--text-primary);">Visibility Settings</h3>
@@ -474,6 +498,25 @@
       </div>
     </div>
 
+  </div>
+
+  <!-- Logo Gallery Modal -->
+  <div id="logoGalleryModal" class="settings-modal" style="display: none" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="logoGalleryHeading">
+    <div class="settings-content" style="max-width: 700px;">
+      <button class="settings-close" onclick="closeLogoGallery()" type="button" aria-label="Close logo gallery">
+        &times;
+      </button>
+      <h2 id="logoGalleryHeading">Choose Logo</h2>
+      
+      <div class="settings-section">
+        <div id="logoGalleryGrid" class="logo-gallery-grid">
+          <!-- Logo thumbnails will be dynamically inserted here -->
+        </div>
+        <p id="logoGalleryEmpty" style="text-align: center; color: var(--text-secondary); padding: 40px; display: none;">
+          No logos in gallery yet. Upload one to get started!
+        </p>
+      </div>
+    </div>
   </div>
 
   <!-- Firebase Config -->

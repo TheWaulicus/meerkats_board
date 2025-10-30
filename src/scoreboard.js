@@ -643,6 +643,7 @@ function applySettings() {
   // Handle logo uploads
   const leagueLogoInput = document.getElementById("leagueLogoInput");
   if (leagueLogoInput.files[0]) {
+    const file = leagueLogoInput.files[0];
     const reader = new FileReader();
     reader.onload = (e) => {
       leagueLogo = e.target.result;
@@ -652,31 +653,39 @@ function applySettings() {
         navbarLeagueLogo.style.display = 'block';
       }
       updatePageBranding();
+      // Save to gallery
+      saveLogoToGallery('league', leagueLogo, file.name);
       saveStateToFirestore();
     };
-    reader.readAsDataURL(leagueLogoInput.files[0]);
+    reader.readAsDataURL(file);
   }
   
   const teamALogoInput = document.getElementById("teamALogoInput");
   if (teamALogoInput.files[0]) {
+    const file = teamALogoInput.files[0];
     const reader = new FileReader();
     reader.onload = (e) => {
       teamState.A.logo = e.target.result;
       document.getElementById("teamALogo").src = teamState.A.logo;
+      // Save to gallery
+      saveLogoToGallery('team', teamState.A.logo, file.name);
       saveStateToFirestore();
     };
-    reader.readAsDataURL(teamALogoInput.files[0]);
+    reader.readAsDataURL(file);
   }
   
   const teamBLogoInput = document.getElementById("teamBLogoInput");
   if (teamBLogoInput.files[0]) {
+    const file = teamBLogoInput.files[0];
     const reader = new FileReader();
     reader.onload = (e) => {
       teamState.B.logo = e.target.result;
       document.getElementById("teamBLogo").src = teamState.B.logo;
+      // Save to gallery
+      saveLogoToGallery('team', teamState.B.logo, file.name);
       saveStateToFirestore();
     };
-    reader.readAsDataURL(teamBLogoInput.files[0]);
+    reader.readAsDataURL(file);
   }
   
   toggleSettings(false);
@@ -1370,6 +1379,174 @@ function exportCurrentGame() {
   } else {
     alert('Game cleanup module not loaded');
   }
+}
+
+// ============================================================================
+// LOGO GALLERY MANAGEMENT
+// ============================================================================
+
+let currentLogoType = null; // 'league', 'teamA', or 'teamB'
+
+/**
+ * Get logos from localStorage
+ */
+function getLogosFromGallery(type) {
+  const key = type === 'league' ? 'leagueLogos' : 'teamLogos';
+  const stored = localStorage.getItem(key);
+  return stored ? JSON.parse(stored) : [];
+}
+
+/**
+ * Save logo to gallery
+ */
+function saveLogoToGallery(type, base64Data, filename) {
+  const key = type === 'league' ? 'leagueLogos' : 'teamLogos';
+  const logos = getLogosFromGallery(type);
+  
+  // Check if logo already exists (avoid duplicates)
+  if (logos.some(logo => logo.url === base64Data)) {
+    return;
+  }
+  
+  // Add new logo
+  logos.unshift({
+    url: base64Data,
+    name: filename || 'Untitled',
+    timestamp: Date.now()
+  });
+  
+  // Keep only last 20 logos
+  if (logos.length > 20) {
+    logos.splice(20);
+  }
+  
+  localStorage.setItem(key, JSON.stringify(logos));
+}
+
+/**
+ * Delete logo from gallery
+ */
+function deleteLogoFromGallery(type, index) {
+  const key = type === 'league' ? 'leagueLogos' : 'teamLogos';
+  const logos = getLogosFromGallery(type);
+  logos.splice(index, 1);
+  localStorage.setItem(key, JSON.stringify(logos));
+  
+  // Refresh gallery display
+  renderLogoGallery(type);
+}
+
+/**
+ * Open logo gallery modal
+ */
+function openLogoGallery(type) {
+  currentLogoType = type;
+  const modal = document.getElementById('logoGalleryModal');
+  const heading = document.getElementById('logoGalleryHeading');
+  
+  // Update heading based on type
+  const titles = {
+    'league': 'Choose League Logo',
+    'teamA': 'Choose Home Team Logo',
+    'teamB': 'Choose Away Team Logo'
+  };
+  heading.textContent = titles[type] || 'Choose Logo';
+  
+  // Render logos
+  renderLogoGallery(type);
+  
+  // Show modal
+  modal.style.display = 'flex';
+  modal.setAttribute('aria-hidden', 'false');
+}
+
+/**
+ * Close logo gallery modal
+ */
+function closeLogoGallery() {
+  const modal = document.getElementById('logoGalleryModal');
+  modal.style.display = 'none';
+  modal.setAttribute('aria-hidden', 'true');
+  currentLogoType = null;
+}
+
+/**
+ * Render logo gallery grid
+ */
+function renderLogoGallery(type) {
+  const galleryType = type === 'league' ? 'league' : 'team';
+  const logos = getLogosFromGallery(galleryType);
+  const grid = document.getElementById('logoGalleryGrid');
+  const emptyMessage = document.getElementById('logoGalleryEmpty');
+  
+  if (logos.length === 0) {
+    grid.style.display = 'none';
+    emptyMessage.style.display = 'block';
+    return;
+  }
+  
+  grid.style.display = 'grid';
+  emptyMessage.style.display = 'none';
+  grid.innerHTML = '';
+  
+  logos.forEach((logo, index) => {
+    const item = document.createElement('div');
+    item.className = 'logo-gallery-item';
+    item.onclick = () => selectLogoFromGallery(type, logo.url);
+    
+    const img = document.createElement('img');
+    img.src = logo.url;
+    img.alt = logo.name;
+    
+    const deleteBtn = document.createElement('button');
+    deleteBtn.className = 'delete-logo';
+    deleteBtn.innerHTML = '×';
+    deleteBtn.title = 'Delete logo';
+    deleteBtn.onclick = (e) => {
+      e.stopPropagation();
+      if (confirm('Delete this logo from gallery?')) {
+        deleteLogoFromGallery(galleryType, index);
+      }
+    };
+    
+    item.appendChild(img);
+    item.appendChild(deleteBtn);
+    grid.appendChild(item);
+  });
+}
+
+/**
+ * Select logo from gallery
+ */
+function selectLogoFromGallery(type, base64Data) {
+  // Apply the logo based on type
+  if (type === 'league') {
+    leagueLogo = base64Data;
+    const navbarLeagueLogo = document.getElementById('navbarLeagueLogo');
+    if (navbarLeagueLogo) {
+      navbarLeagueLogo.src = leagueLogo;
+      navbarLeagueLogo.style.display = 'block';
+    }
+    updatePageBranding();
+  } else if (type === 'teamA') {
+    teamState.A.logo = base64Data;
+    const teamALogo = document.getElementById('teamALogo');
+    if (teamALogo) {
+      teamALogo.src = base64Data;
+    }
+  } else if (type === 'teamB') {
+    teamState.B.logo = base64Data;
+    const teamBLogo = document.getElementById('teamBLogo');
+    if (teamBLogo) {
+      teamBLogo.src = base64Data;
+    }
+  }
+  
+  // Save to Firestore
+  saveStateToFirestore();
+  
+  // Close gallery
+  closeLogoGallery();
 }
 
 // Wait for DOM to be ready
