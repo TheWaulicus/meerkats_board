@@ -1689,12 +1689,15 @@ function selectLogoFromGallery(type, base64Data) {
 function setupLogoUploadListeners() {
   // League logo upload
   const leagueLogoInput = document.getElementById('leagueLogoInput');
+  console.log('League logo input element:', leagueLogoInput);
   if (leagueLogoInput) {
     leagueLogoInput.addEventListener('change', async (e) => {
+      console.log('League logo file selected:', e.target.files[0]);
       if (e.target.files[0]) {
         const file = e.target.files[0];
         const reader = new FileReader();
         reader.onload = async (e) => {
+          console.log('League logo file read, size:', e.target.result.length);
           leagueLogo = e.target.result;
           const navbarLeagueLogo = document.getElementById('navbarLeagueLogo');
           if (navbarLeagueLogo) {
@@ -1703,7 +1706,9 @@ function setupLogoUploadListeners() {
           }
           updatePageBranding();
           // Save to gallery
+          console.log('Saving league logo to gallery...');
           await saveLogoToGallery('league', leagueLogo, file.name);
+          console.log('Saving to Firestore...');
           saveStateToFirestore();
           alert('✅ League logo uploaded successfully!');
         };
