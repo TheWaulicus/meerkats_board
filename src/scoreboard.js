@@ -1440,15 +1440,14 @@ async function getLogosFromGallery(type) {
       // Keep only last 20 logos of this type
       return logos.slice(0, 20);
     } catch (error) {
-      console.error('Error fetching logos from Firebase:', error);
-      // Fall back to localStorage on error
+      console.error('❌ Error fetching logos from Firebase:', error);
+      alert('Error loading logos from Firebase: ' + error.message);
+      return []; // Return empty array on error
     }
+  } else {
+    console.warn('⚠️ User not authenticated, cannot load logos');
+    return []; // Return empty array if not authenticated
   }
-  
-  // Fall back to localStorage for non-authenticated users or on error
-  const key = type === 'league' ? 'leagueLogos' : 'teamLogos';
-  const stored = localStorage.getItem(key);
-  return stored ? JSON.parse(stored) : [];
 }
 
 /**
@@ -1496,35 +1495,15 @@ async function saveLogoToGallery(type, base64Data, filename) {
       return downloadURL;
     } catch (error) {
       console.error('❌ Error saving logo to Firebase:', error);
-      // Fall back to localStorage on error
+      alert('Error uploading logo to Firebase: ' + error.message);
+      throw error; // Don't fall back, let caller handle error
     }
   } else {
-    console.log('User not authenticated or Firebase not available, using localStorage');
+    // User must be authenticated to save logos
+    console.error('❌ Cannot save logo: User not authenticated or Firebase not available');
+    alert('Please sign in to upload logos. Firebase Storage requires authentication.');
+    throw new Error('User not authenticated');
   }
-  
-  // Fall back to localStorage for non-authenticated users or on error
-  const key = type === 'league' ? 'leagueLogos' : 'teamLogos';
-  const stored = localStorage.getItem(key);
-  const logos = stored ? JSON.parse(stored) : [];
-  
-  // Check if logo already exists (avoid duplicates)
-  if (logos.some(logo => logo.url === base64Data)) {
-    return;
-  }
-  
-  // Add new logo
-  logos.unshift({
-    url: base64Data,
-    name: filename || 'Untitled',
-    timestamp: Date.now()
-  });
-  
-  // Keep only last 20 logos
-  if (logos.length > 20) {
-    logos.splice(20);
-  }
-  
-  localStorage.setItem(key, JSON.stringify(logos));
 }
 
 /**
@@ -1556,17 +1535,15 @@ async function deleteLogoFromGallery(type, logoIdOrIndex) {
         // Delete from Firestore
         await docRef.delete();
         
-        console.log('Logo deleted from Firebase');
+        console.log('✅ Logo deleted from Firebase');
       }
     } catch (error) {
-      console.error('Error deleting logo from Firebase:', error);
+      console.error('❌ Error deleting logo from Firebase:', error);
+      alert('Error deleting logo: ' + error.message);
     }
   } else {
-    // Fall back to localStorage (logoIdOrIndex is array index)
-    const key = type === 'league' ? 'leagueLogos' : 'teamLogos';
-    const logos = await getLogosFromGallery(type);
-    logos.splice(logoIdOrIndex, 1);
-    localStorage.setItem(key, JSON.stringify(logos));
+    console.error('❌ Cannot delete logo: User not authenticated');
+    alert('Please sign in to delete logos.');
   }
   
   // Refresh gallery display
