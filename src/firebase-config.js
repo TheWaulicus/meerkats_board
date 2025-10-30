@@ -51,6 +51,26 @@ if (!initializeStorage()) {
   }, 100);
 }
 
+// Initialize Firebase App Check (protection against abuse)
+// NOTE: You need to set up reCAPTCHA v3 in Firebase Console first
+// Go to: https://console.firebase.google.com/project/meerkats-74de5/appcheck
+if (typeof firebase !== 'undefined' && firebase.appCheck) {
+  try {
+    // IMPORTANT: Replace 'YOUR_RECAPTCHA_V3_SITE_KEY' with your actual reCAPTCHA v3 site key
+    // Get it from: https://www.google.com/recaptcha/admin
+    // Then enable App Check in Firebase Console
+    
+    // Uncomment and add your site key when ready:
+    // const appCheck = firebase.appCheck();
+    // appCheck.activate('YOUR_RECAPTCHA_V3_SITE_KEY', true);
+    // console.log('✅ Firebase App Check activated');
+    
+    console.log('⚠️ App Check SDK loaded but not activated. Add your reCAPTCHA site key to activate.');
+  } catch (error) {
+    console.error('Error initializing App Check:', error);
+  }
+}
+
 // Scoreboard document reference (set dynamically based on game ID)
 let SCOREBOARD_DOC = null;
 
