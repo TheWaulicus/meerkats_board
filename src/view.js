@@ -191,6 +191,28 @@ function applyVisibilitySettings() {
       scoresSection.style.display = '';
     }
   }
+  
+  // Force hide team logos
+  const teamLogos = document.querySelectorAll('.team-logo');
+  teamLogos.forEach(logo => {
+    if (!visibilitySettings.showTeamLogosView) {
+      logo.style.display = 'none';
+      console.log('Force hiding team logo');
+    } else {
+      logo.style.display = '';
+    }
+  });
+  
+  // Force hide team names
+  const teamNames = document.querySelectorAll('.team-name');
+  teamNames.forEach(name => {
+    if (!visibilitySettings.showTeamNamesView) {
+      name.style.display = 'none';
+      console.log('Force hiding team name');
+    } else {
+      name.style.display = '';
+    }
+  });
 }
 
 // ============================================================================
