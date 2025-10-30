@@ -180,6 +180,17 @@ function applyVisibilitySettings() {
   if (!visibilitySettings.showLeagueView) scoreboard.classList.add('hide-league-view');
   
   console.log('Applied classes to scoreboard:', scoreboard.className);
+  
+  // Force hide elements with inline styles as backup (for debugging)
+  const scoresSection = document.querySelector('.scores-section');
+  if (scoresSection) {
+    if (!visibilitySettings.showScoresView) {
+      scoresSection.style.display = 'none';
+      console.log('Force hiding scores section');
+    } else {
+      scoresSection.style.display = '';
+    }
+  }
 }
 
 // ============================================================================
