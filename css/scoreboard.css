@@ -761,17 +761,17 @@ body {
 
   /* Timer stays LARGE even on mobile */
   .timer-outline {
-    padding: 20px 12px;
-    max-width: 88vw;
-    width: 100%;
-    border-width: 4px;
-    container-type: inline-size;
+    padding: 20px 12px !important;
+    max-width: 88vw !important;
+    width: 100% !important;
+    border-width: 4px !important;
+    container-type: inline-size !important;
   }
   
   .timer-display {
-    font-size: 18cqi;
-    letter-spacing: -0.02em;
-    width: 100%;
+    font-size: 18cqi !important;
+    letter-spacing: -0.02em !important;
+    width: 100% !important;
   }
   
   .timer-block {
