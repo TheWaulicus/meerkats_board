@@ -1438,14 +1438,14 @@ select:focus-visible {
 /* View Mode Mobile Optimizations */
 @media (max-width: 600px) {
   .view-mode .timer-display {
-    font-size: clamp(5rem, 18vw, 10rem) !important;
-    letter-spacing: 0.01em;
+    font-size: clamp(4.5rem, 16vw, 9rem) !important;
+    letter-spacing: 0em;
   }
 
   .view-mode .timer-outline {
-    padding: 30px 12px !important;
+    padding: 30px 10px !important;
     border-width: 4px;
-    max-width: 92vw;
+    max-width: 90vw;
   }
   
   .view-mode .timer-block {
@@ -1461,18 +1461,18 @@ select:focus-visible {
   
   /* When scores are hidden on mobile, make timer fit screen */
   .view-mode .scoreboard.hide-scores-view .timer-display {
-    font-size: clamp(6rem, 18vw, 12rem) !important;
-    letter-spacing: 0.01em;
+    font-size: clamp(5.5rem, 16vw, 11rem) !important;
+    letter-spacing: 0em;
   }
   
   .view-mode .scoreboard.hide-scores-view .timer-outline {
-    padding: 35px 16px !important;
-    max-width: 92vw;
+    padding: 35px 14px !important;
+    max-width: 90vw;
   }
   
   /* When both scores and period hidden on mobile */
   .view-mode .scoreboard.hide-scores-view.hide-period-view .timer-display {
-    font-size: clamp(7rem, 20vw, 14rem) !important;
-    letter-spacing: 0.01em;
+    font-size: clamp(6.5rem, 18vw, 13rem) !important;
+    letter-spacing: 0em;
   }
 }
