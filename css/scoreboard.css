@@ -746,7 +746,7 @@ body {
   }
 }
 
-@media (max-width: 600px) {
+@media (max-width: 900px) {
   .scoreboard {
     width: 100vw;
     min-height: 100vh;
@@ -1447,7 +1447,7 @@ select:focus-visible {
 }
 
 /* View Mode Mobile Optimizations */
-@media (max-width: 600px) {
+@media (max-width: 900px) {
   .view-mode .timer-display {
     font-size: clamp(4.5rem, 16vw, 9rem) !important;
     letter-spacing: 0em;
