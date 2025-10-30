@@ -19,6 +19,24 @@ let teamState = {
 let leagueName = "Juice Box Hockey";
 let leagueLogo = "assets/images/juice_box.png";
 
+/**
+ * Update the page title and favicon to match the league branding
+ */
+function updatePageBranding() {
+  // Update page title
+  document.title = `${leagueName} - Display`;
+  
+  // Update favicon
+  let favicon = document.querySelector("link[rel*='icon']");
+  if (!favicon) {
+    favicon = document.createElement('link');
+    favicon.rel = 'icon';
+    favicon.type = 'image/png';
+    document.head.appendChild(favicon);
+  }
+  favicon.href = leagueLogo;
+}
+
 // Visibility settings
 let visibilitySettings = {
   showPeriodControl: true,
@@ -118,6 +136,7 @@ function updateDisplayInfo() {
     navbarLeagueLogo.src = leagueLogo;
     navbarLeagueLogo.style.display = 'block';
   }
+  updatePageBranding();
 }
 
 /**
