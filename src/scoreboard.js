@@ -1515,6 +1515,29 @@ async function saveLogoToGallery(type, base64Data, filename) {
   }
   
   try {
+    const galleryType = type === 'league' ? 'league' : 'team';
+    
+    // Check if this exact logo already exists in gallery (avoid duplicates)
+    const existingLogos = await window.db
+      .collection('users')
+      .doc(user.uid)
+      .collection('logoGallery')
+      .where('type', '==', galleryType)
+      .where('name', '==', filename)
+      .limit(1)
+      .get();
+    
+    // If logo with same name exists and was uploaded recently (within 5 seconds), skip
+    if (!existingLogos.empty) {
+      const existingDoc = existingLogos.docs[0];
+      const existingData = existingDoc.data();
+      const timeDiff = Date.now() - existingData.timestamp;
+      if (timeDiff < 5000) {
+        console.log('Logo already exists, skipping duplicate upload');
+        return existingData.url;
+      }
+    }
+    
     // Check file size (base64 is ~33% larger than actual file)
     const estimatedSizeMB = (base64Data.length * 0.75) / (1024 * 1024);
     
@@ -1537,7 +1560,6 @@ async function saveLogoToGallery(type, base64Data, filename) {
     
     // Create storage path
     const timestamp = Date.now();
-    const galleryType = type === 'league' ? 'league' : 'team';
     const storagePath = `logos/${user.uid}/${galleryType}/${timestamp}-${filename}`;
     
     // Upload to Firebase Storage
