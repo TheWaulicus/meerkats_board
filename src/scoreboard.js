@@ -1456,26 +1456,34 @@ async function getLogosFromGallery(type) {
  */
 async function saveLogoToGallery(type, base64Data, filename) {
   const user = firebase.auth().currentUser;
+  console.log('saveLogoToGallery called:', { type, filename, userAuthenticated: !!user });
   
   // If user is authenticated, save to Firebase Storage
   if (user && window.storage && window.db) {
     try {
+      console.log('Attempting Firebase Storage upload...');
       // Convert base64 to blob
       const blob = base64ToBlob(base64Data);
+      console.log('Blob created, size:', blob.size);
       
       // Create storage path
       const timestamp = Date.now();
       const galleryType = type === 'league' ? 'league' : 'team';
       const storagePath = `logos/${user.uid}/${galleryType}/${timestamp}-${filename}`;
+      console.log('Storage path:', storagePath);
       
       // Upload to Firebase Storage
       const storageRef = window.storage.ref().child(storagePath);
+      console.log('Uploading to Firebase Storage...');
       const uploadTask = await storageRef.put(blob);
+      console.log('Upload complete!');
       
       // Get download URL
       const downloadURL = await uploadTask.ref.getDownloadURL();
+      console.log('Download URL:', downloadURL);
       
       // Save metadata to Firestore
+      console.log('Saving metadata to Firestore...');
       await window.db.collection('users').doc(user.uid).collection('logoGallery').add({
         url: downloadURL,
         name: filename || 'Untitled',
@@ -1484,12 +1492,14 @@ async function saveLogoToGallery(type, base64Data, filename) {
         timestamp: timestamp
       });
       
-      console.log('Logo saved to Firebase Storage:', downloadURL);
+      console.log('✅ Logo saved to Firebase Storage successfully:', downloadURL);
       return downloadURL;
     } catch (error) {
-      console.error('Error saving logo to Firebase:', error);
+      console.error('❌ Error saving logo to Firebase:', error);
       // Fall back to localStorage on error
     }
+  } else {
+    console.log('User not authenticated or Firebase not available, using localStorage');
   }
   
   // Fall back to localStorage for non-authenticated users or on error
