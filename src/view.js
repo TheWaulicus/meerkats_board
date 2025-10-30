@@ -16,7 +16,7 @@ let teamState = {
   B: { name: "Away Team", logo: "", score: 0 }
 };
 
-let leagueName = "Juice Box Hockey";
+let leagueName = "Juicebox League";
 let leagueLogo = "assets/images/juice_box.png";
 
 /**

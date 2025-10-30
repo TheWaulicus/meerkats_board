@@ -17,7 +17,7 @@ let teamState = {
   B: { name: "Away Team", logo: "", score: 0 }
 };
 
-let leagueName = "Juice Box Hockey";
+let leagueName = "Juicebox League";
 let leagueLogo = "assets/images/juice_box.png";
 
 /**
@@ -1388,9 +1388,61 @@ function exportCurrentGame() {
 let currentLogoType = null; // 'league', 'teamA', or 'teamB'
 
 /**
- * Get logos from localStorage
+ * Convert base64 data URL to Blob
  */
-function getLogosFromGallery(type) {
+function base64ToBlob(base64Data) {
+  const parts = base64Data.split(';base64,');
+  const contentType = parts[0].split(':')[1];
+  const raw = window.atob(parts[1]);
+  const rawLength = raw.length;
+  const uInt8Array = new Uint8Array(rawLength);
+  
+  for (let i = 0; i < rawLength; ++i) {
+    uInt8Array[i] = raw.charCodeAt(i);
+  }
+  
+  return new Blob([uInt8Array], { type: contentType });
+}
+
+/**
+ * Get logos from Firebase or localStorage
+ */
+async function getLogosFromGallery(type) {
+  const user = firebase.auth().currentUser;
+  
+  // If user is authenticated, fetch from Firestore
+  if (user && window.db) {
+    try {
+      const galleryType = type === 'league' ? 'league' : 'team';
+      const snapshot = await window.db
+        .collection('users')
+        .doc(user.uid)
+        .collection('logoGallery')
+        .where('type', '==', galleryType)
+        .orderBy('timestamp', 'desc')
+        .limit(20)
+        .get();
+      
+      const logos = [];
+      snapshot.forEach(doc => {
+        const data = doc.data();
+        logos.push({
+          id: doc.id,
+          url: data.url,
+          name: data.name,
+          timestamp: data.timestamp,
+          storagePath: data.storagePath
+        });
+      });
+      
+      return logos;
+    } catch (error) {
+      console.error('Error fetching logos from Firebase:', error);
+      // Fall back to localStorage on error
+    }
+  }
+  
+  // Fall back to localStorage for non-authenticated users or on error
   const key = type === 'league' ? 'leagueLogos' : 'teamLogos';
   const stored = localStorage.getItem(key);
   return stored ? JSON.parse(stored) : [];
@@ -1399,7 +1451,45 @@ function getLogosFromGallery(type) {
 /**
  * Save logo to gallery
  */
-function saveLogoToGallery(type, base64Data, filename) {
+async function saveLogoToGallery(type, base64Data, filename) {
+  const user = firebase.auth().currentUser;
+  
+  // If user is authenticated, save to Firebase Storage
+  if (user && window.storage && window.db) {
+    try {
+      // Convert base64 to blob
+      const blob = base64ToBlob(base64Data);
+      
+      // Create storage path
+      const timestamp = Date.now();
+      const galleryType = type === 'league' ? 'league' : 'team';
+      const storagePath = `logos/${user.uid}/${galleryType}/${timestamp}-${filename}`;
+      
+      // Upload to Firebase Storage
+      const storageRef = window.storage.ref().child(storagePath);
+      const uploadTask = await storageRef.put(blob);
+      
+      // Get download URL
+      const downloadURL = await uploadTask.ref.getDownloadURL();
+      
+      // Save metadata to Firestore
+      await window.db.collection('users').doc(user.uid).collection('logoGallery').add({
+        url: downloadURL,
+        name: filename || 'Untitled',
+        type: galleryType,
+        storagePath: storagePath,
+        timestamp: timestamp
+      });
+      
+      console.log('Logo saved to Firebase Storage:', downloadURL);
+      return downloadURL;
+    } catch (error) {
+      console.error('Error saving logo to Firebase:', error);
+      // Fall back to localStorage on error
+    }
+  }
+  
+  // Fall back to localStorage for non-authenticated users or on error
   const key = type === 'league' ? 'leagueLogos' : 'teamLogos';
   const logos = getLogosFromGallery(type);
   
@@ -1426,11 +1516,44 @@ function saveLogoToGallery(type, base64Data, filename) {
 /**
  * Delete logo from gallery
  */
-function deleteLogoFromGallery(type, index) {
-  const key = type === 'league' ? 'leagueLogos' : 'teamLogos';
-  const logos = getLogosFromGallery(type);
-  logos.splice(index, 1);
-  localStorage.setItem(key, JSON.stringify(logos));
+async function deleteLogoFromGallery(type, logoIdOrIndex) {
+  const user = firebase.auth().currentUser;
+  
+  // If user is authenticated and logoIdOrIndex is a string (Firebase document ID)
+  if (user && window.db && window.storage && typeof logoIdOrIndex === 'string') {
+    try {
+      // Get the logo document to get storage path
+      const docRef = window.db
+        .collection('users')
+        .doc(user.uid)
+        .collection('logoGallery')
+        .doc(logoIdOrIndex);
+      
+      const doc = await docRef.get();
+      
+      if (doc.exists) {
+        const data = doc.data();
+        
+        // Delete from Storage
+        if (data.storagePath) {
+          await window.storage.ref().child(data.storagePath).delete();
+        }
+        
+        // Delete from Firestore
+        await docRef.delete();
+        
+        console.log('Logo deleted from Firebase');
+      }
+    } catch (error) {
+      console.error('Error deleting logo from Firebase:', error);
+    }
+  } else {
+    // Fall back to localStorage (logoIdOrIndex is array index)
+    const key = type === 'league' ? 'leagueLogos' : 'teamLogos';
+    const logos = await getLogosFromGallery(type);
+    logos.splice(logoIdOrIndex, 1);
+    localStorage.setItem(key, JSON.stringify(logos));
+  }
   
   // Refresh gallery display
   renderLogoGallery(type);
@@ -1473,11 +1596,17 @@ function closeLogoGallery() {
 /**
  * Render logo gallery grid
  */
-function renderLogoGallery(type) {
+async function renderLogoGallery(type) {
   const galleryType = type === 'league' ? 'league' : 'team';
-  const logos = getLogosFromGallery(galleryType);
   const grid = document.getElementById('logoGalleryGrid');
   const emptyMessage = document.getElementById('logoGalleryEmpty');
+  
+  // Show loading state
+  grid.innerHTML = '<p style="text-align: center; padding: 40px; color: var(--text-secondary);">Loading logos...</p>';
+  grid.style.display = 'block';
+  emptyMessage.style.display = 'none';
+  
+  const logos = await getLogosFromGallery(galleryType);
   
   if (logos.length === 0) {
     grid.style.display = 'none';
@@ -1488,6 +1617,8 @@ function renderLogoGallery(type) {
   grid.style.display = 'grid';
   emptyMessage.style.display = 'none';
   grid.innerHTML = '';
+  
+  const user = firebase.auth().currentUser;
   
   logos.forEach((logo, index) => {
     const item = document.createElement('div');
@@ -1505,7 +1636,9 @@ function renderLogoGallery(type) {
     deleteBtn.onclick = (e) => {
       e.stopPropagation();
       if (confirm('Delete this logo from gallery?')) {
-        deleteLogoFromGallery(galleryType, index);
+        // Use logo ID for Firebase, index for localStorage
+        const identifier = (user && logo.id) ? logo.id : index;
+        deleteLogoFromGallery(galleryType, identifier);
       }
     };
     
