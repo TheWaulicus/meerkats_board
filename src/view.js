@@ -153,6 +153,8 @@ function applyVisibilitySettings() {
   const scoreboard = document.querySelector('.scoreboard');
   if (!scoreboard) return;
   
+  console.log('Applying visibility settings:', visibilitySettings);
+  
   // Remove all visibility classes first
   scoreboard.classList.remove(
     'hide-period-control', 'hide-period-view',
@@ -176,6 +178,8 @@ function applyVisibilitySettings() {
   if (!visibilitySettings.showTeamNamesView) scoreboard.classList.add('hide-team-names-view');
   if (!visibilitySettings.showLeagueControl) scoreboard.classList.add('hide-league-control');
   if (!visibilitySettings.showLeagueView) scoreboard.classList.add('hide-league-view');
+  
+  console.log('Applied classes to scoreboard:', scoreboard.className);
 }
 
 // ============================================================================
