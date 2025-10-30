@@ -1494,7 +1494,8 @@ async function saveLogoToGallery(type, base64Data, filename) {
   
   // Fall back to localStorage for non-authenticated users or on error
   const key = type === 'league' ? 'leagueLogos' : 'teamLogos';
-  const logos = getLogosFromGallery(type);
+  const stored = localStorage.getItem(key);
+  const logos = stored ? JSON.parse(stored) : [];
   
   // Check if logo already exists (avoid duplicates)
   if (logos.some(logo => logo.url === base64Data)) {
