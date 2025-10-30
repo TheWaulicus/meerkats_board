@@ -1418,24 +1418,27 @@ async function getLogosFromGallery(type) {
         .collection('users')
         .doc(user.uid)
         .collection('logoGallery')
-        .where('type', '==', galleryType)
         .orderBy('timestamp', 'desc')
-        .limit(20)
+        .limit(50)
         .get();
       
+      // Filter by type in client-side
       const logos = [];
       snapshot.forEach(doc => {
         const data = doc.data();
-        logos.push({
-          id: doc.id,
-          url: data.url,
-          name: data.name,
-          timestamp: data.timestamp,
-          storagePath: data.storagePath
-        });
+        if (data.type === galleryType) {
+          logos.push({
+            id: doc.id,
+            url: data.url,
+            name: data.name,
+            timestamp: data.timestamp,
+            storagePath: data.storagePath
+          });
+        }
       });
       
-      return logos;
+      // Keep only last 20 logos of this type
+      return logos.slice(0, 20);
     } catch (error) {
       console.error('Error fetching logos from Firebase:', error);
       // Fall back to localStorage on error
