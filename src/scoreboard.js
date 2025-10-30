@@ -139,12 +139,12 @@ function loadAudioFiles() {
   
   // Try to load minute beep audio file (optional)
   minuteBeepAudio = new Audio();
-  minuteBeepAudio.src = 'assets/sounds/minute-beep.wav';
+  minuteBeepAudio.src = 'assets/sounds/hockey-buzzer.wav';
   minuteBeepAudio.volume = 0.3;
   
   // Fallback to MP3
   minuteBeepAudio.addEventListener('error', () => {
-    minuteBeepAudio.src = 'assets/sounds/minute-beep.mp3';
+    minuteBeepAudio.src = 'assets/sounds/hockey-buzzer.mp3';
     minuteBeepAudio.addEventListener('error', () => {
       console.log('Custom minute beep not found, using synthesized sound');
       minuteBeepAudio = null;
