@@ -320,26 +320,14 @@ function startTimer() {
   initAudioContext();
   
   timerRunning = true;
+  timerStartedAt = Date.now(); // Record when timer started
+  timerInitialSeconds = timerSeconds; // Record starting duration
   hasPlayedEndBuzzers = false; // Reset end buzzer flag
   
-  timerInterval = setInterval(() => {
-    if (timerSeconds > 0) {
-      timerSeconds--;
-      updateTimerDisplay();
-      checkMinuteBeep(); // Check for audio alarms AFTER decrementing
-      saveStateToFirestore();
-    } else {
-      // Timer reached 0:00 - STOP COMPLETELY
-      clearInterval(timerInterval); // Clear the interval immediately
-      timerInterval = null;
-      timerRunning = false; // Set running flag to false
-      checkMinuteBeep(); // Play end sequence
-      updateTimerDisplay(); // Update display to show 0:00
-      saveStateToFirestore(); // Save stopped state to Firebase
-      return; // Exit the interval callback
-    }
-  }, 1000);
+  // Update every 100ms for smooth countdown (no Firestore writes in loop)
+  timerInterval = setInterval(updateTimer, 100);
   
+  // Write to Firestore ONCE when starting
   saveStateToFirestore();
 }
 
