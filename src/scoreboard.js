@@ -335,9 +335,22 @@ function startTimer() {
  * Stop the countdown timer
  */
 function stopTimer() {
+  if (!timerRunning) return;
+  
+  // Calculate final time before stopping
+  if (timerStartedAt && timerInitialSeconds !== null) {
+    const elapsed = Math.floor((Date.now() - timerStartedAt) / 1000);
+    timerSeconds = Math.max(0, timerInitialSeconds - elapsed);
+  }
+  
   timerRunning = false;
+  timerStartedAt = null;
+  timerInitialSeconds = null;
   clearInterval(timerInterval);
-  saveStateToFirestore();
+  timerInterval = null;
+  
+  updateTimerDisplay();
+  saveStateToFirestore(); // Write ONCE with final value
 }
 
 /**
