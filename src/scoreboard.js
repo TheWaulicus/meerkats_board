@@ -283,6 +283,28 @@ function updateTimerDisplay() {
 }
 
 /**
+ * Update timer based on elapsed time from start timestamp
+ * Called every 100ms for smooth countdown
+ */
+function updateTimer() {
+  if (!timerRunning || !timerStartedAt || timerInitialSeconds === null) {
+    return;
+  }
+  
+  // Calculate elapsed time in seconds
+  const elapsed = Math.floor((Date.now() - timerStartedAt) / 1000);
+  timerSeconds = Math.max(0, timerInitialSeconds - elapsed);
+  
+  updateTimerDisplay();
+  checkMinuteBeep();
+  
+  // Stop automatically when reaching 0
+  if (timerSeconds === 0) {
+    stopTimer();
+  }
+}
+
+/**
  * Start the countdown timer
  */
 function startTimer() {
