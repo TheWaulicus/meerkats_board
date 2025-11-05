@@ -396,6 +396,11 @@ document.addEventListener('DOMContentLoaded', function() {
  * @param {string} value - Timer input value
  */
 function parseAndSetTimer(value) {
+  // If timer is running, stop it first
+  if (timerRunning) {
+    stopTimer();
+  }
+  
   const val = value.replace(/[^0-9:]/g, "");
   const parts = val.split(":");
   

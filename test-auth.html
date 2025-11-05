@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Authentication Test</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 800px;
+      margin: 50px auto;
+      padding: 20px;
+      background: #1a1d22;
+      color: #fff;
+    }
+    .status {
+      padding: 20px;
+      margin: 10px 0;
+      border-radius: 8px;
+      border: 2px solid #00bcd4;
+      background: #2a2d32;
+    }
+    .error {
+      border-color: #ff4444;
+      background: #3a2222;
+    }
+    .success {
+      border-color: #44ff44;
+      background: #223a22;
+    }
+    button {
+      padding: 12px 24px;
+      font-size: 16px;
+      border-radius: 8px;
+      border: none;
+      background: #00bcd4;
+      color: white;
+      cursor: pointer;
+      margin: 5px;
+    }
+    button:hover {
+      background: #0097a7;
+    }
+    input {
+      padding: 10px;
+      font-size: 16px;
+      border-radius: 4px;
+      border: 1px solid #00bcd4;
+      background: #2a2d32;
+      color: white;
+      width: 100%;
+      margin: 5px 0;
+    }
+    pre {
+      background: #000;
+      padding: 10px;
+      border-radius: 4px;
+      overflow-x: auto;
+    }
+  </style>
+</head>
+<body>
+  <h1>🔍 Firebase Authentication Test</h1>
+  
+  <div id="status" class="status">
+    <h2>Status: Loading...</h2>
+    <p id="statusText">Initializing Firebase...</p>
+  </div>
+
+  <div class="status">
+    <h2>Test Login</h2>
+    <input type="email" id="testEmail" placeholder="Email" value="">
+    <input type="password" id="testPassword" placeholder="Password" value="">
+    <button onclick="testLogin()">Test Login</button>
+    <div id="loginResult"></div>
+  </div>
+
+  <div class="status">
+    <h2>Debug Info</h2>
+    <button onclick="checkAuth()">Check Auth Status</button>
+    <button onclick="checkModal()">Check Modal</button>
+    <button onclick="testLogout()">Test Logout</button>
+    <pre id="debug"></pre>
+  </div>
+
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+
+  <!-- Firebase Config -->
+  <script src="src/firebase-config.js"></script>
+
+  <script>
+    const statusDiv = document.getElementById('status');
+    const statusText = document.getElementById('statusText');
+    const debugPre = document.getElementById('debug');
+    const loginResult = document.getElementById('loginResult');
+
+    function log(message, isError = false) {
+      console.log(message);
+      debugPre.textContent += message + '\n';
+      if (isError) {
+        debugPre.style.color = '#ff4444';
+      }
+    }
+
+    // Check initial state
+    setTimeout(() => {
+      checkAuth();
+    }, 1000);
+
+    // Auth state listener
+    firebase.auth().onAuthStateChanged((user) => {
+      if (user) {
+        statusDiv.className = 'status success';
+        statusText.innerHTML = `
+          ✅ User Authenticated<br>
+          Email: ${user.email || 'Anonymous'}<br>
+          UID: ${user.uid}
+        `;
+        log('✅ Auth state: User logged in');
+        log('Email: ' + (user.email || 'Anonymous'));
+      } else {
+        statusDiv.className = 'status error';
+        statusText.innerHTML = '❌ No user authenticated<br>Login modal should show on index.html';
+        log('❌ Auth state: No user logged in');
+      }
+    });
+
+    async function testLogin() {
+      const email = document.getElementById('testEmail').value;
+      const password = document.getElementById('testPassword').value;
+      
+      if (!email || !password) {
+        loginResult.innerHTML = '<p style="color: #ff4444;">Please enter email and password</p>';
+        return;
+      }
+
+      loginResult.innerHTML = '<p>Logging in...</p>';
+      
+      try {
+        const result = await signInWithEmail(email, password);
+        loginResult.innerHTML = '<p style="color: #44ff44;">✅ Login successful!</p>';
+        log('✅ Login successful: ' + result.user.email);
+      } catch (error) {
+        loginResult.innerHTML = `<p style="color: #ff4444;">❌ Login failed: ${error.message}</p>`;
+        log('❌ Login error: ' + error.code + ' - ' + error.message, true);
+      }
+    }
+
+    function checkAuth() {
+      log('\n=== Checking Auth ===');
+      const user = firebase.auth().currentUser;
+      log('Current user: ' + (user ? user.email || user.uid : 'null'));
+      log('Auth initialized: ' + (firebase.auth() ? 'Yes' : 'No'));
+    }
+
+    function checkModal() {
+      log('\n=== Checking Modal ===');
+      const modal = document.getElementById('loginModal');
+      log('Modal element: ' + (modal ? 'Found' : 'Not found'));
+      if (modal) {
+        log('Modal display: ' + modal.style.display);
+      }
+    }
+
+    async function testLogout() {
+      try {
+        await signOut();
+        loginResult.innerHTML = '<p style="color: #44ff44;">✅ Logged out</p>';
+        log('✅ Logged out successfully');
+      } catch (error) {
+        log('❌ Logout error: ' + error.message, true);
+      }
+    }
+
+    // Check for Firebase errors
+    window.addEventListener('error', (e) => {
+      log('❌ ERROR: ' + e.message, true);
+    });
+  </script>
+</body>
+</html>

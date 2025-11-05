@@ -52,30 +52,20 @@ if (!initializeStorage()) {
 }
 
 // Initialize Firebase App Check (protection against abuse)
-// TEMPORARILY DISABLED: Need to register in Firebase Console first
-// To enable:
-// 1. Go to: https://console.firebase.google.com/project/meerkats-74de5/appcheck
-// 2. Click "Apps" → Select your web app
-// 3. Register with reCAPTCHA v3 site key: 6LfO1PsrAAAAAG1tPsUfbTFg-HW-hdozR4WD8yKJ
-// 4. Set APIs to "Monitor" mode
-// 5. Uncomment the code below
-
-/*
 if (typeof firebase !== 'undefined' && firebase.appCheck) {
   try {
     const appCheck = firebase.appCheck();
     appCheck.activate(
       new firebase.appCheck.ReCaptchaV3Provider('6LfO1PsrAAAAAG1tPsUfbTFg-HW-hdozR4WD8yKJ'),
-      true
+      true // Auto-refresh tokens
     );
     console.log('✅ Firebase App Check activated - protection enabled');
   } catch (error) {
-    console.error('Error initializing App Check:', error);
+    console.error('❌ Error initializing App Check:', error);
   }
+} else {
+  console.warn('⚠️ Firebase App Check SDK not available');
 }
-*/
-
-console.log('⚠️ App Check ready but disabled - complete Firebase Console setup first');
 
 // Scoreboard document reference (set dynamically based on game ID)
 let SCOREBOARD_DOC = null;

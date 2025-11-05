@@ -21,6 +21,33 @@
   --shadow-accent: #38bdf833;
   --glow-primary: #38bdf8;
   --glow-secondary: #7dd3fc;
+  
+  /* Responsive Spacing Scale */
+  --space-xs: clamp(0.25rem, 0.5vw, 0.5rem);
+  --space-sm: clamp(0.5rem, 1vw, 0.75rem);
+  --space-md: clamp(0.75rem, 1.5vw, 1rem);
+  --space-lg: clamp(1rem, 2vw, 1.5rem);
+  --space-xl: clamp(1.5rem, 3vw, 2rem);
+  --space-2xl: clamp(2rem, 4vw, 3rem);
+  
+  /* Fluid Typography Scale */
+  --font-size-xs: clamp(0.75rem, 1.5vw, 0.875rem);
+  --font-size-sm: clamp(0.875rem, 1.75vw, 1rem);
+  --font-size-base: clamp(1rem, 2vw, 1.125rem);
+  --font-size-lg: clamp(1.125rem, 2.25vw, 1.25rem);
+  --font-size-xl: clamp(1.25rem, 2.5vw, 1.5rem);
+  --font-size-2xl: clamp(1.5rem, 3vw, 2rem);
+  --font-size-3xl: clamp(2rem, 4vw, 3rem);
+  --font-size-4xl: clamp(3rem, 6vw, 4rem);
+  --font-size-5xl: clamp(4rem, 8vw, 6rem);
+  --font-size-6xl: clamp(6rem, 12vw, 8rem);
+  
+  /* Breakpoints (for reference in JS if needed) */
+  --breakpoint-sm: 640px;
+  --breakpoint-md: 768px;
+  --breakpoint-lg: 1024px;
+  --breakpoint-xl: 1280px;
+  --breakpoint-2xl: 1920px;
 }
 
 [data-theme="light"] {
@@ -59,6 +86,7 @@ body {
   padding: 0;
   color: var(--text-primary);
   min-height: 100vh;
+  min-height: 100dvh; /* Dynamic viewport height for mobile */
   display: flex;
   align-items: center;
   justify-content: center;
@@ -82,17 +110,20 @@ body {
 .scoreboard {
   width: 100vw;
   min-height: calc(100vh - 80px);
+  min-height: calc(100dvh - 80px); /* Dynamic viewport height for mobile */
   max-width: 100vw;
   margin: 80px auto 20px;
   background: linear-gradient(135deg, var(--bg-secondary) 80%, var(--bg-secondary) 100%);
   border-radius: 0;
   box-shadow: 0 8px 40px var(--shadow-color), 0 1.5px 0 var(--border-color) inset;
-  padding: 12px;
+  padding: var(--space-md);
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: var(--space-md);
   position: relative;
   transition: background 0.3s ease, box-shadow 0.3s ease;
+  container-type: inline-size;
+  container-name: scoreboard;
 }
 
 /* Fixed Navbar at Top */
@@ -101,13 +132,13 @@ body {
   top: 0;
   left: 0;
   right: 0;
-  height: 60px;
+  height: clamp(3.5rem, 10vh, 4rem);
   background: var(--bg-secondary);
   border-bottom: 2px solid var(--border-color);
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 24px;
+  padding: 0 var(--space-xl);
   z-index: 100;
   box-shadow: 0 2px 8px var(--shadow-color);
 }
@@ -115,20 +146,20 @@ body {
 .navbar-brand {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: var(--space-md);
 }
 
 .navbar-logo {
-  width: 40px;
-  height: 40px;
-  border-radius: 8px;
+  width: clamp(2rem, 5vw, 2.5rem);
+  height: clamp(2rem, 5vw, 2.5rem);
+  border-radius: 0.5rem;
   object-fit: contain;
   border: 1px solid var(--border-color);
   background: var(--bg-tertiary);
 }
 
 .navbar-title {
-  font-size: 1.5em;
+  font-size: var(--font-size-xl);
   font-weight: 900;
   color: var(--accent-primary);
   letter-spacing: 0.05em;
@@ -138,22 +169,22 @@ body {
 .navbar-game-id {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: var(--space-sm);
   background: var(--bg-tertiary);
-  padding: 6px 12px;
-  border-radius: 8px;
+  padding: var(--space-sm) var(--space-md);
+  border-radius: 0.5rem;
   border: 1px solid var(--border-color);
 }
 
 .game-id-label {
-  font-size: 0.9em;
+  font-size: var(--font-size-sm);
   color: var(--text-secondary);
   font-weight: 600;
 }
 
 .game-id-display {
-  font-family: 'Courier New', monospace;
-  font-size: 0.95em;
+  font-family: "Inter", sans-serif;
+  font-size: var(--font-size-sm);
   font-weight: 700;
   color: var(--accent-primary);
   letter-spacing: 0.05em;
@@ -184,7 +215,7 @@ body {
 /* Header Controls (Settings, Display Link) */
 .header-controls {
   display: flex;
-  gap: 12px;
+  gap: var(--space-md);
   align-items: center;
 }
 
@@ -193,16 +224,16 @@ body {
   border: none;
   cursor: pointer;
   color: var(--accent-primary);
-  padding: 8px 12px;
-  border-radius: 8px;
+  padding: var(--space-sm) var(--space-md);
+  border-radius: 0.5rem;
   transition: all 0.2s;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 6px;
+  gap: var(--space-sm);
   text-decoration: none;
   font-weight: 600;
-  font-size: 0.95em;
+  font-size: var(--font-size-sm);
 }
 
 .navbar-link:hover {
@@ -224,12 +255,14 @@ body {
   border: none;
   cursor: pointer;
   color: var(--accent-primary);
-  padding: 8px;
-  border-radius: 8px;
+  padding: var(--space-sm);
+  border-radius: 0.5rem;
   transition: all 0.2s;
   display: flex;
   align-items: center;
   justify-content: center;
+  min-width: 2.75rem;
+  min-height: 2.75rem;
 }
 
 .settings-open:hover {
@@ -242,14 +275,22 @@ body {
   outline-offset: 2px;
 }
 
-/* Hide link text on small screens */
-@media (max-width: 600px) {
+/* Responsive navbar adjustments */
+@media (max-width: 640px) {
+  .navbar {
+    padding: 0 var(--space-md);
+  }
+  
   .navbar-link-text {
     display: none;
   }
   
   .navbar-title {
-    font-size: 1.2em;
+    font-size: var(--font-size-lg);
+  }
+  
+  .navbar-brand {
+    gap: var(--space-sm);
   }
 }
 
@@ -258,13 +299,15 @@ body {
   border: 1px solid var(--border-color);
   cursor: pointer;
   color: var(--accent-primary);
-  padding: 8px 12px;
-  border-radius: 8px;
+  padding: var(--space-sm) var(--space-md);
+  border-radius: 0.5rem;
   transition: all 0.2s;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 6px;
+  gap: var(--space-sm);
+  min-width: 2.75rem;
+  min-height: 2.75rem;
 }
 
 .theme-toggle-inline:hover {
@@ -304,50 +347,54 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 8px;
+  gap: var(--space-sm);
   background: linear-gradient(135deg, var(--bg-tertiary) 80%, var(--bg-secondary) 100%);
-  border-radius: 18px;
+  border-radius: 1.125rem;
   box-shadow: 0 0 32px 4px var(--border-color), 0 2px 12px var(--shadow-color) inset;
-  padding: 16px;
+  padding: var(--space-lg);
   border: 2.5px solid var(--accent-primary);
   transition: all 0.3s ease;
   flex: 1;
-  min-height: 200px;
+  min-height: clamp(12.5rem, 30vh, 18.75rem);
+  container-type: inline-size;
+  container-name: timer-block;
 }
 
 /* Period Controls */
 .timer-controls {
   display: flex;
   align-items: center;
-  gap: 18px;
+  gap: var(--space-lg);
   flex-wrap: wrap;
   justify-content: center;
 }
 
 .period-label {
-  font-size: 1.3em;
+  font-size: var(--font-size-xl);
   font-weight: 800;
   color: var(--text-primary);
   letter-spacing: 0.08em;
   text-shadow: 0 2px 8px var(--shadow-accent), 0 1px 0 var(--shadow-color);
-  margin: 0 8px;
+  margin: 0 var(--space-sm);
   text-transform: uppercase;
+  padding: var(--space-sm) var(--space-md);
+  border-radius: 0.5rem;
 }
 
 /* Timer Display */
 .timer-outline {
-  border: 4px solid var(--accent-primary);
-  border-radius: 20px;
-  padding: 40px 32px;
+  border: clamp(3px, 0.5vw, 5px) solid var(--accent-primary);
+  border-radius: 1.25rem;
+  padding: clamp(2rem, 5vh, 3rem) clamp(1.5rem, 4vw, 2.5rem);
   background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-tertiary) 100%);
   display: flex;
   justify-content: center;
   align-items: center;
-  min-width: 220px;
+  min-width: clamp(13.75rem, 30vw, 18.75rem);
   max-width: 100%;
   width: 100%;
   margin: 0 auto;
-  min-height: 180px;
+  min-height: clamp(11.25rem, 25vh, 15rem);
   box-shadow: 
     0 0 40px 12px var(--shadow-accent),
     0 0 80px 20px var(--shadow-accent),
@@ -356,6 +403,8 @@ body {
   transition: all 0.3s ease;
   position: relative;
   overflow: hidden;
+  container-type: inline-size;
+  container-name: timer-outline;
 }
 
 [data-theme="dark"] .timer-outline {
@@ -374,8 +423,8 @@ body {
 }
 
 .timer-display {
-  font-family: "Orbitron", "Share Tech Mono", "Courier New", Courier, monospace;
-  font-size: clamp(8rem, 18vw, 20rem);
+  font-family: "Orbitron", monospace;
+  font-size: clamp(6rem, 15cqi, 20rem);
   font-weight: 900;
   width: 100%;
   max-width: 100%;
@@ -419,15 +468,15 @@ body {
 .settings-save,
 .settings-close,
 .reset-all-btn {
-  border-radius: 10px;
+  border-radius: 0.625rem;
   border: 2px solid var(--accent-primary);
   background: linear-gradient(135deg, var(--bg-secondary) 80%, var(--bg-tertiary) 100%);
   color: var(--text-primary);
-  font-size: 1.15em;
+  font-size: var(--font-size-base);
   font-weight: 700;
-  padding: 12px 24px;
-  min-width: 56px;
-  min-height: 48px;
+  padding: var(--space-md) var(--space-xl);
+  min-width: 3.5rem;
+  min-height: 2.75rem;
   box-shadow: 0 2px 8px var(--shadow-accent), 0 1px 0 var(--shadow-color) inset;
   cursor: pointer;
   outline: none;
@@ -435,7 +484,7 @@ body {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  font-family: inherit;
+  font-family: "Inter", sans-serif;
 }
 
 .timer-btn:hover,
@@ -486,27 +535,29 @@ body {
   display: grid;
   grid-template-columns: 1fr 1fr;
   align-items: flex-start;
-  gap: 40px;
-  margin: 12px 0;
+  gap: var(--space-2xl);
+  margin: var(--space-md) 0;
   width: 100%;
   max-width: 100%;
   margin-left: auto;
   margin-right: auto;
   transition: all 0.3s ease;
   flex: 1;
+  container-type: inline-size;
+  container-name: scores-section;
 }
 
 .team-score {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 16px;
+  gap: var(--space-lg);
 }
 
 .team-logo {
-  width: clamp(200px, 25vw, 350px);
-  height: clamp(200px, 25vw, 350px);
-  border-radius: 32px;
+  width: clamp(12.5rem, 25vw, 21.875rem);
+  height: clamp(12.5rem, 25vw, 21.875rem);
+  border-radius: 2rem;
   object-fit: contain;
   background: var(--bg-tertiary);
   border: 2.5px solid var(--accent-primary);
@@ -515,28 +566,31 @@ body {
 }
 
 .team-name {
-  font-size: clamp(2em, 4vw, 4em);
+  font-size: clamp(2rem, 4vw, 4rem);
   font-weight: 900;
   color: var(--text-primary);
   text-align: center;
   text-shadow: 0 2px 8px var(--shadow-accent);
-  margin-bottom: 8px;
+  margin-bottom: var(--space-sm);
+  font-family: "Orbitron", monospace;
+  letter-spacing: 0.02em;
 }
 
 .score-row {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 16px;
+  gap: var(--space-lg);
 }
 
 .score-value {
-  font-size: clamp(4em, 8vw, 8em);
+  font-size: clamp(4rem, 8vw, 8rem);
   font-weight: 900;
-  min-width: 100px;
+  min-width: clamp(6.25rem, 12vw, 11.25rem);
   text-align: center;
   color: var(--text-primary);
   text-shadow: 0 2px 16px var(--accent-primary), 0 1px 0 var(--shadow-color);
+  font-family: "Orbitron", monospace;
 }
 
 /* League Info (Center) */
@@ -545,15 +599,15 @@ body {
   flex-direction: column;
   align-items: center;
   justify-content: flex-start;
-  gap: 12px;
-  min-width: 120px;
-  padding-top: 20px;
+  gap: var(--space-md);
+  min-width: clamp(7.5rem, 15vw, 9.375rem);
+  padding-top: var(--space-lg);
 }
 
 .league-logo {
-  width: 90px;
-  height: 90px;
-  border-radius: 12px;
+  width: clamp(4.5rem, 10vw, 5.625rem);
+  height: clamp(4.5rem, 10vw, 5.625rem);
+  border-radius: 0.75rem;
   background: var(--bg-tertiary);
   object-fit: contain;
   border: 2px solid var(--accent-primary);
@@ -562,12 +616,13 @@ body {
 }
 
 .league-name {
-  font-size: 1.4em;
+  font-size: var(--font-size-xl);
   font-weight: 700;
   color: var(--text-primary);
   letter-spacing: 0.04em;
   text-shadow: 0 2px 8px var(--shadow-accent);
   text-align: center;
+  font-family: "Orbitron", monospace;
 }
 
 /* Settings Modal */
@@ -577,6 +632,7 @@ body {
   left: 0;
   width: 100vw;
   height: 100vh;
+  height: 100dvh; /* Dynamic viewport height for mobile */
   background: rgba(0, 0, 0, 0.7);
   backdrop-filter: blur(4px);
   display: flex;
@@ -597,11 +653,12 @@ body {
 
 .settings-content {
   background: var(--bg-secondary);
-  border-radius: 14px;
-  padding: 48px 24px 24px 24px;
-  min-width: 400px;
+  border-radius: 0.875rem;
+  padding: clamp(2rem, 5vh, 3rem) var(--space-xl) var(--space-xl) var(--space-xl);
+  min-width: clamp(20rem, 50vw, 25rem);
   max-width: 90vw;
   max-height: 90vh;
+  max-height: 90dvh; /* Dynamic viewport height for mobile */
   overflow-y: auto;
   box-shadow: 0 8px 32px var(--shadow-color);
   position: relative;
@@ -622,26 +679,29 @@ body {
 }
 
 .settings-content h2 {
-  margin-bottom: 24px;
-  font-size: 1.8em;
+  margin-bottom: var(--space-xl);
+  font-size: var(--font-size-2xl);
   color: var(--text-primary);
   text-align: center;
+  font-family: "Inter", sans-serif;
 }
 
 .settings-close {
   position: absolute;
-  top: 16px;
-  right: 16px;
+  top: var(--space-lg);
+  right: var(--space-lg);
   background: var(--bg-tertiary);
   border: 1px solid var(--border-color);
-  border-radius: 8px;
-  font-size: 1.5em;
+  border-radius: 0.5rem;
+  font-size: var(--font-size-xl);
   color: var(--text-secondary);
   cursor: pointer;
-  padding: 8px 12px;
+  padding: var(--space-sm) var(--space-md);
   line-height: 1;
   transition: all 0.2s;
   z-index: 10;
+  min-width: 2.75rem;
+  min-height: 2.75rem;
 }
 
 .settings-close:hover {
@@ -651,28 +711,30 @@ body {
 }
 
 .settings-section {
-  margin-bottom: 20px;
+  margin-bottom: var(--space-lg);
 }
 
 .settings-section label {
   display: block;
-  margin-bottom: 6px;
+  margin-bottom: var(--space-sm);
   font-weight: 600;
   color: var(--text-secondary);
-  font-size: 0.95em;
+  font-size: var(--font-size-sm);
+  font-family: "Inter", sans-serif;
 }
 
 .settings-input,
 .settings-file {
   width: 100%;
-  padding: 10px 12px;
+  padding: var(--space-sm) var(--space-md);
   border: 1px solid var(--border-color);
-  border-radius: 6px;
-  font-size: 1em;
+  border-radius: 0.375rem;
+  font-size: var(--font-size-base);
   background: var(--bg-tertiary);
   color: var(--text-primary);
   transition: border-color 0.2s, box-shadow 0.2s;
-  font-family: inherit;
+  font-family: "Inter", sans-serif;
+  min-height: 2.75rem;
 }
 
 .settings-input:focus,
@@ -683,13 +745,13 @@ body {
 }
 
 .settings-file {
-  padding: 8px;
+  padding: var(--space-sm);
   cursor: pointer;
 }
 
 .settings-checkbox {
-  width: 18px;
-  height: 18px;
+  width: clamp(1.125rem, 3vw, 1.5rem);
+  height: clamp(1.125rem, 3vw, 1.5rem);
   cursor: pointer;
   accent-color: var(--accent-primary);
 }
@@ -699,9 +761,10 @@ body {
   background: var(--accent-primary);
   color: var(--bg-secondary);
   border: none;
-  margin-top: 12px;
-  font-size: 1.2em;
-  padding: 14px;
+  margin-top: var(--space-md);
+  font-size: var(--font-size-lg);
+  padding: var(--space-md);
+  min-height: 3rem;
 }
 
 .settings-save:hover {
@@ -709,63 +772,131 @@ body {
   color: var(--accent-primary);
 }
 
-/* Responsive Design */
-@media (max-width: 900px) {
+/* ============================================
+   RESPONSIVE DESIGN - MOBILE FIRST APPROACH
+   ============================================ */
+
+/* Small devices (landscape phones, 640px and up) */
+@media (max-width: 640px) {
+  :root {
+    --space-xs: 0.25rem;
+    --space-sm: 0.5rem;
+    --space-md: 0.75rem;
+    --space-lg: 1rem;
+    --space-xl: 1.25rem;
+    --space-2xl: 1.5rem;
+  }
+  
+  .navbar {
+    height: 3.5rem;
+  }
+  
+  .scoreboard {
+    margin-top: 3.5rem;
+    min-height: calc(100dvh - 3.5rem);
+  }
+}
+
+/* Medium devices (tablets, 768px and down) */
+@media (max-width: 768px) {
   .scores-section {
     grid-template-columns: 1fr;
-    gap: 32px;
+    gap: var(--space-xl);
   }
 
   .league-info {
     order: -1;
   }
 
-  /* Timer remains prominent on tablets */
   .timer-display {
-    font-size: clamp(6rem, 16vw, 14rem);
+    font-size: clamp(5rem, 14cqi, 12rem);
     letter-spacing: 0.04em;
   }
   
   .timer-outline {
     max-width: 100%;
-    padding: 35px 30px;
+    padding: clamp(1.5rem, 4vh, 2.5rem) clamp(1rem, 3vw, 2rem);
   }
   
   .timer-block {
-    gap: 6px;
-    padding: 8px;
+    gap: var(--space-sm);
+    padding: var(--space-md);
   }
   
-  /* Scores scale down but remain visible */
   .score-value {
-    font-size: clamp(2.5em, 8vw, 4em);
+    font-size: clamp(2.5rem, 8vw, 4rem);
   }
   
   .team-name {
-    font-size: clamp(1.3em, 4vw, 1.8em);
+    font-size: clamp(1.3rem, 4vw, 1.8rem);
+  }
+  
+  .settings-content {
+    min-width: 0;
+    width: 95vw;
+    padding: var(--space-xl) var(--space-lg);
   }
 }
 
+/* Large tablets and small desktops (1024px and down) */
+@media (max-width: 1024px) {
+  .team-logo {
+    width: clamp(10rem, 20vw, 15rem);
+    height: clamp(10rem, 20vw, 15rem);
+  }
+  
+  .score-value {
+    font-size: clamp(3rem, 7vw, 6rem);
+  }
+}
+
+/* Large displays (1920px and up) - Arena Mode */
+@media (min-width: 1920px) {
+  :root {
+    --space-xs: 0.5rem;
+    --space-sm: 0.75rem;
+    --space-md: 1rem;
+    --space-lg: 1.5rem;
+    --space-xl: 2rem;
+    --space-2xl: 3rem;
+  }
+  
+  .timer-display {
+    font-size: clamp(10rem, 18cqi, 24rem);
+  }
+  
+  .score-value {
+    font-size: clamp(6rem, 10vw, 12rem);
+  }
+  
+  .team-logo {
+    width: clamp(18rem, 28vw, 28rem);
+    height: clamp(18rem, 28vw, 28rem);
+  }
+}
+
+/* Mobile specific adjustments */
 @media (max-width: 900px) {
   .scoreboard {
     width: 100vw;
     min-height: 100vh;
+    min-height: 100dvh;
     border-radius: 0;
-    padding: 8px;
+    padding: var(--space-sm);
   }
 
   .timer-block {
-    padding: 12px 8px;
+    padding: var(--space-md) var(--space-sm);
     flex: 2;
+    min-height: 18.75rem;
   }
 
   /* Timer stays LARGE even on mobile */
   .timer-outline {
-    padding: 20px 12px !important;
+    padding: clamp(1.25rem, 3vh, 2rem) var(--space-md) !important;
     max-width: 88vw !important;
     width: 100% !important;
     border-width: 4px !important;
-    container-type: inline-size !important;
   }
   
   .timer-display {
@@ -773,50 +904,36 @@ body {
     letter-spacing: -0.02em !important;
     width: 100% !important;
   }
-  
-  .timer-block {
-    gap: 8px;
-    padding: 8px;
-    min-height: 300px;
-  }
 
   /* Scale other elements appropriately */
   .score-value {
-    font-size: clamp(2em, 8vw, 3em);
+    font-size: clamp(2rem, 8vw, 3rem);
   }
 
   .team-name {
-    font-size: clamp(1.2em, 5vw, 1.5em);
+    font-size: clamp(1.2rem, 5vw, 1.5rem);
   }
 
   .league-name {
-    font-size: clamp(0.9em, 3vw, 1.1em);
+    font-size: clamp(0.9rem, 3vw, 1.1rem);
   }
 
   .timer-btn,
   .score-btn,
   .period-btn {
-    font-size: 1em;
-    padding: 10px 16px;
-    min-height: 44px;
-  }
-
-  .settings-content {
-    min-width: 0;
-    width: 95vw;
-    padding: 24px 16px;
+    font-size: var(--font-size-sm);
+    padding: var(--space-sm) var(--space-lg);
+    min-height: 2.75rem;
   }
 
   .header-controls {
-    top: 12px;
-    right: 12px;
+    gap: var(--space-sm);
   }
   
   /* Control mode - when scores are hidden on mobile */
   .scoreboard.hide-scores-control:not(.view-mode) .timer-outline {
-    padding: 25px 14px !important;
+    padding: clamp(1.5rem, 4vh, 2.5rem) var(--space-md) !important;
     max-width: 88vw;
-    container-type: inline-size;
   }
   
   .scoreboard.hide-scores-control:not(.view-mode) .timer-display {
@@ -828,10 +945,9 @@ body {
   /* Timer-only mode on mobile = MASSIVE */
   .scoreboard.hide-scores-control.hide-period-control:not(.view-mode) .timer-outline,
   .view-mode .scoreboard.hide-scores-view.hide-period-view .timer-outline {
-    padding: 30px 14px !important;
+    padding: clamp(1.875rem, 5vh, 3rem) var(--space-md) !important;
     max-width: 88vw;
     border-width: 4px;
-    container-type: inline-size;
   }
   
   .scoreboard.hide-scores-control.hide-period-control:not(.view-mode) .timer-display,
@@ -843,7 +959,7 @@ body {
   
   .scoreboard.hide-scores-control.hide-period-control:not(.view-mode) .timer-block,
   .view-mode .scoreboard.hide-scores-view.hide-period-view .timer-block {
-    gap: 8px;
+    gap: var(--space-sm);
   }
 }
 
@@ -1042,6 +1158,42 @@ body {
   gap: 16px;
 }
 
+/* ============================================
+   CONTAINER QUERIES FOR ADAPTIVE SCALING
+   ============================================ */
+
+/* Timer block container queries */
+@container timer-block (min-width: 600px) {
+  .timer-outline {
+    padding: clamp(2.5rem, 6vh, 3.5rem) clamp(2rem, 5vw, 3rem);
+  }
+  
+  .timer-display {
+    font-size: clamp(8rem, 16cqi, 18rem);
+  }
+}
+
+@container timer-block (max-width: 400px) {
+  .timer-display {
+    font-size: clamp(4rem, 12cqi, 8rem);
+  }
+  
+  .period-label {
+    font-size: var(--font-size-base);
+  }
+}
+
+/* Scoreboard container queries */
+@container scoreboard (min-width: 1400px) {
+  .scores-section {
+    gap: clamp(3rem, 5vw, 5rem);
+  }
+  
+  .timer-block {
+    padding: var(--space-xl);
+  }
+}
+
 /* Accessibility enhancements */
 @media (prefers-reduced-motion: reduce) {
   *,
@@ -1071,6 +1223,10 @@ body {
    ACCESSIBILITY & MOBILE IMPROVEMENTS
    ============================================ */
 
+/* ============================================
+   ACCESSIBILITY & TOUCH TARGET IMPROVEMENTS
+   ============================================ */
+
 /* Improve contrast for better readability */
 :root {
   --success-color: #22c55e;
@@ -1078,23 +1234,16 @@ body {
   --info-color: #3b82f6;
 }
 
-/* Ensure minimum touch target size (44x44px) */
+/* Ensure minimum touch target size (44x44px / 2.75rem) */
 .timer-btn,
 .settings-save,
 button {
-  min-height: 44px;
-  min-width: 44px;
-  padding: 12px 20px;
+  min-height: 2.75rem;
+  min-width: 2.75rem;
+  padding: var(--space-md) var(--space-lg);
 }
 
-/* Larger touch targets for icon buttons */
-.settings-close {
-  min-width: 44px;
-  min-height: 44px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
+/* Larger touch targets for icon buttons - already set above */
 
 /* Mobile-optimized modal */
 @media (max-width: 768px) {
@@ -1112,19 +1261,19 @@ button {
   
   /* Larger text on mobile */
   .settings-content h2 {
-    font-size: 1.5rem;
+    font-size: var(--font-size-2xl);
   }
   
   .settings-content h3 {
-    font-size: 1.2rem;
+    font-size: var(--font-size-xl);
   }
   
   /* Better button layout on mobile */
   .timer-btn,
   .settings-save {
-    padding: 14px 20px;
-    font-size: 1rem;
-    min-height: 48px;
+    padding: var(--space-md) var(--space-lg);
+    font-size: var(--font-size-base);
+    min-height: 3rem;
   }
   
   /* Stack buttons vertically on mobile */
@@ -1229,27 +1378,27 @@ select:focus-visible {
   .settings-input,
   input[type="text"],
   input[type="number"] {
-    font-size: 16px; /* Prevents zoom on iOS */
-    padding: 12px;
-    min-height: 48px;
+    font-size: 1rem; /* Prevents zoom on iOS */
+    padding: var(--space-md);
+    min-height: 3rem;
   }
 }
 
 /* Better spacing for modal sections on mobile */
 @media (max-width: 768px) {
   .settings-section {
-    padding: 16px 12px;
-    margin-bottom: 12px;
+    padding: var(--space-lg) var(--space-md);
+    margin-bottom: var(--space-md);
   }
 }
 
 /* Logo Gallery Styles */
 .logo-gallery-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-  gap: 16px;
-  padding: 16px;
-  max-height: 400px;
+  grid-template-columns: repeat(auto-fill, minmax(7.5rem, 1fr));
+  gap: var(--space-lg);
+  padding: var(--space-lg);
+  max-height: clamp(20rem, 50vh, 25rem);
   overflow-y: auto;
 }
 
@@ -1257,7 +1406,7 @@ select:focus-visible {
   position: relative;
   aspect-ratio: 1;
   border: 3px solid var(--border);
-  border-radius: 12px;
+  border-radius: 0.75rem;
   overflow: hidden;
   cursor: pointer;
   transition: all 0.3s ease;
@@ -1274,20 +1423,20 @@ select:focus-visible {
   width: 100%;
   height: 100%;
   object-fit: contain;
-  padding: 8px;
+  padding: var(--space-sm);
 }
 
 .logo-gallery-item .delete-logo {
   position: absolute;
-  top: 4px;
-  right: 4px;
+  top: var(--space-xs);
+  right: var(--space-xs);
   background: var(--error-color);
   color: white;
   border: none;
   border-radius: 50%;
-  width: 24px;
-  height: 24px;
-  font-size: 14px;
+  width: 1.5rem;
+  height: 1.5rem;
+  font-size: var(--font-size-xs);
   cursor: pointer;
   display: none;
   align-items: center;
@@ -1320,8 +1469,8 @@ select:focus-visible {
 
 /* Prevent layout shift during loading */
 .team-logo {
-  min-height: 80px;
-  min-width: 80px;
+  min-height: 5rem;
+  min-width: 5rem;
 }
 
 /* Improve button contrast */
