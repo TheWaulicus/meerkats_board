@@ -8,6 +8,8 @@
 let timerInterval = null;
 let timerSeconds = 18 * 60; // Default 18 minutes (standard hockey period)
 let timerRunning = false;
+let timerStartedAt = null; // Timestamp when timer was started (for sync)
+let timerInitialSeconds = null; // Duration at start (for sync)
 let period = 1;
 let gamePhase = "REG"; // REG, OT, SO
 const REGULATION_PERIODS = 3;
