@@ -826,6 +826,8 @@ function saveStateToFirestore() {
   const state = {
     timerSeconds,
     timerRunning,
+    timerStartedAt, // NEW: For synchronized timer
+    timerInitialSeconds, // NEW: For synchronized timer
     period,
     gamePhase,
     teamA: teamState.A,
