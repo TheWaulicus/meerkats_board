@@ -908,6 +908,11 @@ function loadStateFromSnapshot(snapshot, isFromCache = false) {
     if (state.timerSeconds !== undefined) {
       timerSeconds = state.timerSeconds;
     }
+    
+    // Load synchronized timer fields
+    timerStartedAt = state.timerStartedAt || null;
+    timerInitialSeconds = state.timerInitialSeconds || null;
+    
     period = state.period || 1;
     gamePhase = state.gamePhase || "REG";
     
