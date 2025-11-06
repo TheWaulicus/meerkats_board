@@ -21,6 +21,7 @@
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
 </head>
 <body data-theme="dark" class="view-mode">
   
@@ -68,6 +69,16 @@
         🎮
       </button>
     </div>
+    <div class="header-controls">
+      <!-- Viewer Count Badge -->
+      <div class="viewer-count-badge" id="viewerCountBadge" title="Active viewers">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+          <circle cx="12" cy="12" r="3"></circle>
+        </svg>
+        <span id="viewerCountText">0</span>
+      </div>
+    </div>
   </nav>
 
   <!-- Main Scoreboard (Display Only) -->
@@ -113,6 +124,9 @@
 
   <!-- Firebase Config -->
   <script src="src/firebase-config.js"></script>
+  
+  <!-- Presence Tracking -->
+  <script src="src/presence.js"></script>
   
   <!-- Game History Manager -->
   <script src="src/game-history.js"></script>

@@ -22,6 +22,7 @@
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-storage.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app-check.js"></script>
   
   <!-- QR Code Library -->
@@ -425,6 +426,15 @@
       </button>
     </div>
     <div class="header-controls">
+      <!-- Viewer Count Badge -->
+      <div class="viewer-count-badge" id="viewerCountBadge" title="Active viewers">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+          <circle cx="12" cy="12" r="3"></circle>
+        </svg>
+        <span id="viewerCountText">0</span>
+      </div>
+      
       <a href="view.html" class="navbar-link" title="Open Display View" aria-label="Open display view" target="_blank">
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
@@ -523,6 +533,9 @@
 
   <!-- Firebase Config -->
   <script src="src/firebase-config.js"></script>
+  
+  <!-- Presence Tracking -->
+  <script src="src/presence.js"></script>
   
   <!-- Game History Manager -->
   <script src="src/game-history.js"></script>

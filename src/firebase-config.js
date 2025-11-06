@@ -6,6 +6,7 @@
 const firebaseConfig = {
   apiKey: "AIzaSyAlH1akwhAgGwAN8ll2Q5Ytyg0izzVogsM",
   authDomain: "meerkats-74de5.firebaseapp.com",
+  databaseURL: "https://meerkats-74de5-default-rtdb.firebaseio.com",
   projectId: "meerkats-74de5",
   storageBucket: "meerkats-74de5.firebasestorage.app",
   messagingSenderId: "1035049140619",
@@ -18,6 +19,9 @@ firebase.initializeApp(firebaseConfig);
 
 // Initialize Firestore
 const db = firebase.firestore();
+
+// Initialize Firebase Realtime Database (for presence tracking)
+const realtimeDb = firebase.database();
 
 // Initialize Firebase Authentication
 const auth = firebase.auth();

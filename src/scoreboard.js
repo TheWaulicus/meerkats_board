@@ -1921,3 +1921,50 @@ if (document.readyState === 'loading') {
   initializeApp();
   setupLogoUploadListeners();
 }
+
+// ============================================================================
+// PRESENCE TRACKING INTEGRATION
+// ============================================================================
+
+// Initialize presence tracking after game ID is available
+function initializePresenceTracking() {
+  const gameId = getCurrentGameId();
+  
+  if (gameId && typeof presenceTracker !== 'undefined') {
+    // Initialize as controller
+    presenceTracker.initialize(gameId, 'controller');
+    
+    // Listen for presence changes and update UI
+    presenceTracker.onPresenceChange((controllers, viewers, total) => {
+      updateViewerCountBadge(controllers, viewers, total);
+    });
+    
+    console.log('[Scoreboard] Presence tracking initialized for game:', gameId);
+  } else {
+    console.warn('[Scoreboard] Presence tracking not available or no game ID');
+  }
+}
+
+// Update viewer count badge in UI
+function updateViewerCountBadge(controllers, viewers, total) {
+  const badge = document.getElementById('viewerCountBadge');
+  const text = document.getElementById('viewerCountText');
+  
+  if (text) {
+    text.textContent = total;
+    
+    // Update title with breakdown
+    if (badge) {
+      badge.title = `${total} active: ${controllers} controller${controllers !== 1 ? 's' : ''}, ${viewers} viewer${viewers !== 1 ? 's' : ''}`;
+      
+      // Add pulse animation on change
+      badge.classList.add('updated');
+      setTimeout(() => badge.classList.remove('updated'), 600);
+    }
+  }
+}
+
+// Initialize presence after a short delay to ensure game ID is set
+setTimeout(() => {
+  initializePresenceTracking();
+}, 1000);
