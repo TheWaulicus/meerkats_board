@@ -1734,3 +1734,66 @@ select:focus-visible {
     width: 100%;
   }
 }
+
+/* ============================================
+   VIEWER COUNT BADGE
+   ============================================ */
+
+.viewer-count-badge {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-color);
+  border-radius: 0.5rem;
+  padding: var(--space-sm) var(--space-md);
+  color: var(--accent-primary);
+  cursor: default;
+  transition: all 0.2s;
+  font-family: "Inter", sans-serif;
+  min-height: 2.75rem;
+}
+
+.viewer-count-badge:hover {
+  background: rgba(56, 189, 248, 0.1);
+  border-color: var(--accent-primary);
+  box-shadow: 0 0 12px rgba(56, 189, 248, 0.2);
+}
+
+.viewer-count-badge svg {
+  flex-shrink: 0;
+}
+
+.viewer-count-badge #viewerCountText {
+  font-size: var(--font-size-base);
+  font-weight: 700;
+  color: var(--text-primary);
+  min-width: 1.5rem;
+  text-align: center;
+}
+
+/* Pulsing animation when count changes */
+@keyframes pulse-glow {
+  0%, 100% {
+    box-shadow: 0 0 0 rgba(56, 189, 248, 0);
+  }
+  50% {
+    box-shadow: 0 0 12px rgba(56, 189, 248, 0.4);
+  }
+}
+
+.viewer-count-badge.updated {
+  animation: pulse-glow 0.6s ease;
+}
+
+/* Mobile responsive */
+@media (max-width: 640px) {
+  .viewer-count-badge {
+    padding: var(--space-xs) var(--space-sm);
+    min-height: 2.5rem;
+  }
+  
+  .viewer-count-badge #viewerCountText {
+    font-size: var(--font-size-sm);
+  }
+}

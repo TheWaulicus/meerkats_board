@@ -1,14 +1,15 @@
 // Service Worker for Meerkats Hockey Scoreboard PWA
-// Version 1.0.0
+// Version 1.1.0
 
-const CACHE_NAME = 'meerkats-scoreboard-v1';
-const RUNTIME_CACHE = 'meerkats-runtime-v1';
+const CACHE_NAME = 'meerkats-scoreboard-v2';
+const RUNTIME_CACHE = 'meerkats-runtime-v2';
 
 // Assets to cache on install
 const PRECACHE_ASSETS = [
   '/',
   '/index.html',
   '/view.html',
+  '/offline.html',
   '/manifest.json',
   '/css/scoreboard.css',
   '/src/firebase-config.js',
@@ -19,6 +20,7 @@ const PRECACHE_ASSETS = [
   '/src/scoreboard.js',
   '/src/url-shortener.js',
   '/src/view.js',
+  '/src/presence.js',
   '/assets/icons/icon-192x192.png',
   '/assets/icons/icon-512x512.png',
   '/assets/icons/apple-touch-icon.png',
@@ -123,10 +125,18 @@ async function cacheFirst(request) {
   } catch (error) {
     console.error('[Service Worker] Fetch failed:', error);
     
-    // Return a custom offline page if available
-    const offlineResponse = await cache.match('/index.html');
-    if (offlineResponse) {
-      return offlineResponse;
+    // Return offline page for navigation requests
+    if (request.mode === 'navigate') {
+      const offlineResponse = await cache.match('/offline.html');
+      if (offlineResponse) {
+        return offlineResponse;
+      }
+    }
+    
+    // For other requests, try to return cached version or fallback
+    const cachedFallback = await cache.match('/index.html');
+    if (cachedFallback) {
+      return cachedFallback;
     }
     
     // Return a generic error response
