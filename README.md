@@ -1,10 +1,11 @@
 # 🏒 Meerkats Board - Hockey Scoreboard
 
-A professional web-based hockey scoreboard with real-time synchronization, multi-game support, and dual interface system. Perfect for hockey rinks, tournaments, and practice sessions.
+A professional web-based hockey scoreboard with real-time synchronization, multi-game support, and Progressive Web App capabilities. Features responsive design, offline support, and real-time viewer tracking. Perfect for hockey rinks, tournaments, and practice sessions.
 
-![Version](https://img.shields.io/badge/version-2.0.0-blue)
+![Version](https://img.shields.io/badge/version-2.1.0-blue)
 ![License](https://img.shields.io/badge/license-open--source-green)
 ![Status](https://img.shields.io/badge/status-production--ready-brightgreen)
+![PWA](https://img.shields.io/badge/PWA-enabled-purple)
 
 ## ✨ Features
 
@@ -33,12 +34,29 @@ A professional web-based hockey scoreboard with real-time synchronization, multi
 - **Dark/Light Themes** - Toggle between themes with instant sync
 - **Flexible Visibility** - Show/hide any element (timer, scores, period, logos, names, league)
 
-### 📱 Display & Performance
-- **Fully Responsive** - Optimized for mobile, tablet, and desktop
-- **Maximized Space Usage** - 95% screen utilization, up from 70%
-- **Large Timer Display** - 60-100% larger timer for better visibility
-- **Mobile Optimized** - Massive timer on mobile (60% larger than previous)
-- **Edge-to-Edge Layout** - No wasted space on any screen size
+### 📱 Modern Design & Performance
+- **Fully Responsive** - Fluid typography and spacing that adapts to any screen size
+- **Container Queries** - Components adapt based on their container, not just viewport
+- **Dynamic Viewport Heights** - Better mobile browser support (dvh units)
+- **Orbitron Display Font** - Bold, modern monospace font for timer and scores
+- **Fluid Typography System** - Text scales smoothly from mobile to 4K displays
+- **Maximized Space Usage** - 95% screen utilization with edge-to-edge layout
+- **Arena Mode** - Optimized for large displays (1920px+) and projectors
+
+### 📱 Progressive Web App (PWA)
+- **Install to Home Screen** - Add app to mobile/desktop home screen
+- **Offline Support** - Works without internet connection using service worker
+- **Smart Caching** - Cache-first for static assets, network-first for dynamic content
+- **Auto-Updates** - Notifies users when new version is available
+- **Beautiful Offline Page** - Branded fallback with auto-retry connection
+- **Cross-Platform** - Works on Android, iOS, and desktop as native-like app
+
+### 👁️ Real-Time Viewer Tracking
+- **Active Viewer Count** - See how many people are watching in real-time
+- **Controller vs Viewer** - Distinguishes between operators and spectators
+- **Zero Additional Cost** - Uses aggregated counts, stays within Firebase free tier
+- **Privacy-Friendly** - No individual session tracking or PII storage
+- **Auto-Updates** - Count refreshes every 15 seconds automatically
 
 ## 🚀 Quick Start
 
@@ -77,7 +95,13 @@ Firebase enables real-time sync between control and display screens, and is requ
    - Start in **production mode** (we'll configure rules next)
    - Choose a location close to your users
 
-3. **Configure Firestore Rules**:
+3. **Enable Realtime Database** (for viewer count):
+   - In your Firebase project, go to "Realtime Database"
+   - Click "Create database"
+   - Start in **locked mode** (we'll configure rules next)
+   - Choose same location as Firestore
+
+4. **Configure Firestore Rules**:
    - In Firestore, go to the "Rules" tab
    - Update rules to allow read/write access:
    ```
@@ -92,14 +116,32 @@ Firebase enables real-time sync between control and display screens, and is requ
    ```
    - Click "Publish"
 
-4. **Get Firebase Config**:
+5. **Configure Realtime Database Rules**:
+   - In Realtime Database, go to the "Rules" tab
+   - Update rules to allow read/write access for presence tracking:
+   ```
+   {
+     "rules": {
+       "presence": {
+         "$gameId": {
+           ".read": true,
+           ".write": true
+         }
+       }
+     }
+   }
+   ```
+   - Click "Publish"
+
+6. **Get Firebase Config**:
    - Go to Project Settings (gear icon)
    - Scroll to "Your apps" section
    - Click the web icon (`</>`) to add a web app
    - Register your app with a nickname (e.g., "Meerkats Board")
    - Copy the Firebase configuration object
+   - **Important**: Make sure to include the `databaseURL` field for Realtime Database
 
-5. **Update firebase-config.js**:
+7. **Update firebase-config.js**:
    - Open `src/firebase-config.js`
    - Replace the placeholder config with your Firebase config
 
@@ -108,6 +150,7 @@ Firebase enables real-time sync between control and display screens, and is requ
 ### Control Interface (`index.html`)
 
 **Navbar**:
+- **Viewer Count Badge** (👁️) - Shows real-time count of active viewers and controllers
 - **Game Button** (🎮) - Manage games, create new games, join existing games
 - **Display Button** - Open display interface in new window
 - **Settings** (⚙️) - Configure scoreboard settings
@@ -145,9 +188,28 @@ Firebase enables real-time sync between control and display screens, and is requ
 
 - **Read-only** - No controls, clean display for audience
 - **Auto-sync** - Real-time updates from control interface via Firebase
+- **Viewer Count Badge** - Shows same real-time count as control interface
 - **Game Selection** - Join different games using game ID
 - **Theme Sync** - Automatically matches control interface theme
 - Perfect for projectors, TVs, and spectator screens
+
+### Progressive Web App (PWA) Features
+
+**Installation**:
+- **Mobile (Android/iOS)**: Visit the site, tap browser menu → "Add to Home Screen"
+- **Desktop (Chrome/Edge)**: Click install icon in address bar or browser menu → "Install"
+- **Benefits**: Faster loading, works offline, app-like experience
+
+**Offline Mode**:
+- Automatically caches pages and assets for offline use
+- Shows beautiful offline page if connection lost
+- Auto-retries connection every 5 seconds
+- Reconnects automatically when back online
+
+**Updates**:
+- Checks for updates every minute in background
+- Shows "Update Available" banner when new version ready
+- Click "Update Now" to refresh with latest features
 
 ## 🔊 Audio System
 
@@ -169,10 +231,16 @@ The scoreboard uses **Web Audio API** for synthesized sounds (no external files 
   - `/docs` - Documentation
 
 ### Firebase Architecture
-- Uses Firestore real-time listeners (`onSnapshot`)
-- Document structure: `/scoreboards/{gameId}`
+- **Firestore**: Game state (scores, timer, team info, settings)
+  - Document structure: `/scoreboards/{gameId}`
+  - Real-time listeners (`onSnapshot`)
+  - Automatic conflict resolution
+- **Realtime Database**: Presence tracking (viewer counts)
+  - Data structure: `/presence/{gameId}`
+  - Transaction-based count updates
+  - Automatic cleanup on disconnect
+- **Storage**: Team logos and league branding (optional)
 - Multi-game support with unique game IDs
-- Automatic conflict resolution
 - Offline support (syncs when reconnected)
 
 ### Browser Compatibility
@@ -232,5 +300,29 @@ Built for hockey enthusiasts who need a reliable, feature-rich scoreboard soluti
 
 ---
 
-**Version**: 2.0.0  
-**Last Updated**: October 29, 2025
+## 📋 Changelog
+
+### Version 2.1.0 (November 2025)
+- ✨ **Progressive Web App (PWA)**: Install to home screen, offline support, auto-updates
+- ✨ **Active Viewer Count**: Real-time tracking of controllers and viewers
+- ✨ **Responsive Design Overhaul**: Fluid typography, container queries, dynamic viewport heights
+- ✨ **Orbitron Display Font**: Modern monospace font for timer and scores
+- ✨ **Offline Fallback Page**: Beautiful branded page with auto-retry
+- 🔧 Service worker v1.1.0 with improved caching
+- 🔧 Firebase Realtime Database integration for presence tracking
+- 🎨 CSS custom properties for responsive spacing and typography
+- 📱 Better mobile browser support with dvh units
+- ⚡ Zero additional Firebase cost (stays within free tier)
+
+### Version 2.0.0 (October 2025)
+- Initial multi-game system release
+- Game history and management
+- QR code generation
+- Export/import functionality
+- Authentication support
+
+---
+
+**Version**: 2.1.0  
+**Last Updated**: November 2025  
+**Firebase Cost**: $0/month (Free Tier)
