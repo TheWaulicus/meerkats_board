@@ -2,6 +2,123 @@
 // Includes audio alarms: beeps every minute + 3 buzzers at end
 
 // ============================================================================
+// PWA SERVICE WORKER REGISTRATION
+// ============================================================================
+
+let deferredInstallPrompt = null;
+
+// Register service worker
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/service-worker.js')
+      .then((registration) => {
+        console.log('✅ Service Worker registered:', registration.scope);
+        
+        // Check for updates periodically
+        setInterval(() => {
+          registration.update();
+        }, 60000); // Check every minute
+        
+        // Listen for updates
+        registration.addEventListener('updatefound', () => {
+          const newWorker = registration.installing;
+          newWorker.addEventListener('statechange', () => {
+            if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+              // New version available
+              console.log('🔄 New version available! Reload to update.');
+              showUpdateNotification();
+            }
+          });
+        });
+      })
+      .catch((error) => {
+        console.error('❌ Service Worker registration failed:', error);
+      });
+  });
+}
+
+// Handle install prompt
+window.addEventListener('beforeinstallprompt', (event) => {
+  console.log('💾 Install prompt available');
+  
+  // Prevent the mini-infobar from appearing on mobile
+  event.preventDefault();
+  
+  // Store the event so it can be triggered later
+  deferredInstallPrompt = event;
+  
+  // Show custom install button
+  showInstallPrompt();
+});
+
+// Track installation
+window.addEventListener('appinstalled', () => {
+  console.log('✅ PWA installed successfully');
+  deferredInstallPrompt = null;
+  hideInstallPrompt();
+});
+
+// Show update notification
+function showUpdateNotification() {
+  const updateBanner = document.getElementById('updateBanner');
+  if (updateBanner) {
+    updateBanner.style.display = 'flex';
+  }
+}
+
+// Show install prompt
+function showInstallPrompt() {
+  const installBanner = document.getElementById('installBanner');
+  if (installBanner) {
+    installBanner.style.display = 'flex';
+  }
+}
+
+// Hide install prompt
+function hideInstallPrompt() {
+  const installBanner = document.getElementById('installBanner');
+  if (installBanner) {
+    installBanner.style.display = 'none';
+  }
+}
+
+// Install the PWA
+async function installPWA() {
+  if (!deferredInstallPrompt) {
+    console.log('Install prompt not available');
+    return;
+  }
+  
+  // Show the install prompt
+  deferredInstallPrompt.prompt();
+  
+  // Wait for the user to respond
+  const { outcome } = await deferredInstallPrompt.userChoice;
+  console.log(`Install prompt outcome: ${outcome}`);
+  
+  // Clear the deferred prompt
+  deferredInstallPrompt = null;
+  hideInstallPrompt();
+}
+
+// Dismiss install prompt
+function dismissInstallPrompt() {
+  hideInstallPrompt();
+  // Store dismissal in localStorage to not show again for a while
+  localStorage.setItem('pwaInstallDismissed', Date.now().toString());
+}
+
+// Check if install prompt should be shown
+function shouldShowInstallPrompt() {
+  const dismissed = localStorage.getItem('pwaInstallDismissed');
+  if (!dismissed) return true;
+  
+  // Show again after 7 days
+  const sevenDaysInMs = 7 * 24 * 60 * 60 * 1000;
+  return Date.now() - parseInt(dismissed) > sevenDaysInMs;
+}
+
+// ============================================================================
 // STATE MANAGEMENT
 // ============================================================================
 
