@@ -689,6 +689,48 @@ function initializeAdvancedSettingsForm() {
   }
 }
 
+function populateVisibilityGrid() {
+  const grid = document.getElementById('visibilityGrid');
+  if (!grid) return;
+
+  const elements = [
+    { key: 'Period', label: 'Period / Phase', controlId: 'showPeriodControl', viewId: 'showPeriodView', icon: '🕒' },
+    { key: 'Timer', label: 'Timer', controlId: 'showTimerControl', viewId: 'showTimerView', icon: '⏱️' },
+    { key: 'Scores', label: 'Scores', controlId: 'showScoresControl', viewId: 'showScoresView', icon: '🏒' },
+    { key: 'Logos', label: 'Team Logos', controlId: 'showTeamLogosControl', viewId: 'showTeamLogosView', icon: '🛡️' },
+    { key: 'Names', label: 'Team Names', controlId: 'showTeamNamesControl', viewId: 'showTeamNamesView', icon: '🏷️' },
+    { key: 'League', label: 'League Info', controlId: 'showLeagueControl', viewId: 'showLeagueView', icon: '🏆' },
+  ];
+
+  grid.innerHTML = '';
+
+  elements.forEach((element) => {
+    const card = document.createElement('div');
+    card.className = 'visibility-card';
+    card.innerHTML = `
+      <div class="visibility-card-header">
+        <span class="visibility-card-icon">${element.icon}</span>
+        <div>
+          <h4>${element.label}</h4>
+          <p class="settings-help">Toggle separately for controller and display.</p>
+        </div>
+      </div>
+      <div class="visibility-card-toggles">
+        <label>
+          <input type="checkbox" id="${element.controlId}" class="settings-checkbox" ${visibilitySettings[`show${element.key}Control`] ? 'checked' : ''}>
+          <span>Control</span>
+        </label>
+        <label>
+          <input type="checkbox" id="${element.viewId}" class="settings-checkbox" ${visibilitySettings[`show${element.key}View`] ? 'checked' : ''}>
+          <span>Display</span>
+        </label>
+      </div>
+    `;
+
+    grid.appendChild(card);
+  });
+}
+
 /**
  * Apply visibility settings to the scoreboard
  */
@@ -719,6 +761,8 @@ function applyVisibilitySettings() {
   if (!visibilitySettings.showTeamNamesView) scoreboard.classList.add('hide-team-names-view');
   if (!visibilitySettings.showLeagueControl) scoreboard.classList.add('hide-league-control');
   if (!visibilitySettings.showLeagueView) scoreboard.classList.add('hide-league-view');
+
+  populateVisibilityGrid();
 }
 
 /**
