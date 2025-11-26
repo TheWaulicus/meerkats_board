@@ -331,89 +331,19 @@
           </div>
 
           <div class="settings-tab-panel" data-settings-panel="visibility" id="settings-panel-visibility" role="tabpanel" aria-labelledby="settings-tab-visibility" aria-hidden="true">
-            <h3 style="margin-bottom: 12px; font-size: 1.1em; color: var(--text-primary);">Visibility Settings</h3>
             <div class="settings-section">
-              <p style="font-size: 0.9em; color: var(--text-secondary); margin-bottom: 16px;">
-                Control which elements appear on the <strong>📋 Control Interface</strong> (operator view with buttons) and the <strong>📺 Display Interface</strong> (audience view without buttons). Each interface can be customized independently.
+              <h3>Visibility Settings</h3>
+              <p class="settings-help" style="margin-bottom: var(--space-lg);">
+                Control which elements appear on the <strong>📋 Control Interface</strong> and the <strong>📺 Display Interface</strong>. Toggle them independently.
               </p>
 
-              <div class="visibility-table-wrapper">
-                <table class="visibility-table">
-                  <thead>
-                    <tr>
-                      <th>Element</th>
-                      <th>
-                        📋 Control<br/>
-                        <span>(Operator)</span>
-                      </th>
-                      <th>
-                        📺 Display<br/>
-                        <span>(Audience)</span>
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td>Period/Phase</td>
-                      <td>
-                        <input type="checkbox" id="showPeriodControl" class="settings-checkbox" checked />
-                      </td>
-                      <td>
-                        <input type="checkbox" id="showPeriodView" class="settings-checkbox" checked />
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>Timer</td>
-                      <td>
-                        <input type="checkbox" id="showTimerControl" class="settings-checkbox" checked />
-                      </td>
-                      <td>
-                        <input type="checkbox" id="showTimerView" class="settings-checkbox" checked />
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>Scores</td>
-                      <td>
-                        <input type="checkbox" id="showScoresControl" class="settings-checkbox" checked />
-                      </td>
-                      <td>
-                        <input type="checkbox" id="showScoresView" class="settings-checkbox" checked />
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>Team Logos</td>
-                      <td>
-                        <input type="checkbox" id="showTeamLogosControl" class="settings-checkbox" checked />
-                      </td>
-                      <td>
-                        <input type="checkbox" id="showTeamLogosView" class="settings-checkbox" checked />
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>Team Names</td>
-                      <td>
-                        <input type="checkbox" id="showTeamNamesControl" class="settings-checkbox" checked />
-                      </td>
-                      <td>
-                        <input type="checkbox" id="showTeamNamesView" class="settings-checkbox" checked />
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>League Info</td>
-                      <td>
-                        <input type="checkbox" id="showLeagueControl" class="settings-checkbox" checked />
-                      </td>
-                      <td>
-                        <input type="checkbox" id="showLeagueView" class="settings-checkbox" checked />
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
+              <div class="visibility-grid" id="visibilityGrid">
+                <!-- Cards injected here -->
               </div>
 
               <div class="visibility-tip">
                 <p>
-                  <strong>💡 Tip:</strong> Uncheck items in the Display column to hide them from the audience view while keeping them visible in your control interface.
+                  <strong>💡 Tip:</strong> Use display toggles to hide elements from the audience while keeping them on your controller.
                 </p>
               </div>
             </div>
