@@ -128,7 +128,7 @@ body {
 
 /* Fixed Navbar at Top */
 .navbar {
-  position: fixed;
+  position: sticky;
   top: 0;
   left: 0;
   right: 0;
@@ -279,6 +279,16 @@ body {
 @media (max-width: 640px) {
   .navbar {
     padding: 0 var(--space-md);
+    flex-wrap: wrap;
+    gap: var(--space-sm);
+    height: auto;
+  }
+  
+  .navbar-brand,
+  .navbar-game-id,
+  .header-controls {
+    width: 100%;
+    justify-content: space-between;
   }
   
   .navbar-link-text {
