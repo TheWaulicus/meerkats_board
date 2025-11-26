@@ -249,164 +249,215 @@
       </button>
       <h2 id="settingsHeading">Settings</h2>
       <form id="settingsForm" onsubmit="event.preventDefault(); applySettings();">
-        
-        <div class="settings-section">
-          <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; justify-content: space-between;">
-            <span style="font-weight: 600; color: var(--text-secondary);">Theme</span>
-            <button id="themeToggleButtonInSettings" class="theme-toggle-inline" onclick="event.preventDefault(); toggleTheme();" title="Toggle Light/Dark Mode" aria-label="Toggle light or dark theme" type="button">
-              <svg class="theme-icon sun-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <circle cx="12" cy="12" r="5"/>
-                <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
-              </svg>
-              <svg class="theme-icon moon-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
-              </svg>
-            </button>
-          </label>
+        <div class="settings-tabs" role="tablist">
+          <button type="button" class="settings-tab-button active" data-settings-tab="branding" id="settings-tab-branding" aria-controls="settings-panel-branding" aria-selected="true">Branding</button>
+          <button type="button" class="settings-tab-button" data-settings-tab="teams" id="settings-tab-teams" aria-controls="settings-panel-teams" aria-selected="false">Teams</button>
+          <button type="button" class="settings-tab-button" data-settings-tab="visibility" id="settings-tab-visibility" aria-controls="settings-panel-visibility" aria-selected="false">Visibility</button>
+          <button type="button" class="settings-tab-button" data-settings-tab="advanced" id="settings-tab-advanced" aria-controls="settings-panel-advanced" aria-selected="false">Advanced</button>
         </div>
-        
-        <div class="settings-section">
-          <label for="leagueNameInput">League Name</label>
-          <input type="text" id="leagueNameInput" class="settings-input" placeholder="Enter league name" />
-        </div>
-        
-        <div class="settings-section">
-          <label for="leagueLogoInput">League Logo</label>
-          <div style="display: flex; gap: 8px; align-items: center;">
-            <button type="button" class="settings-save" onclick="openLogoGallery('league')" style="flex: 1; background: var(--accent-secondary);">
-              📁 Choose from Gallery
-            </button>
-            <input type="file" accept="image/*" id="leagueLogoInput" class="settings-file" style="display: none;" />
-            <button type="button" class="settings-save" onclick="document.getElementById('leagueLogoInput').click()" style="flex: 1;">
-              ⬆️ Upload New
-            </button>
+
+        <div class="settings-tab-panels">
+          <div class="settings-tab-panel active" data-settings-panel="branding" id="settings-panel-branding" role="tabpanel" aria-labelledby="settings-tab-branding">
+            <div class="settings-section">
+              <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; justify-content: space-between;">
+                <span style="font-weight: 600; color: var(--text-secondary);">Theme</span>
+                <button id="themeToggleButtonInSettings" class="theme-toggle-inline" onclick="event.preventDefault(); toggleTheme();" title="Toggle Light/Dark Mode" aria-label="Toggle light or dark theme" type="button">
+                  <svg class="theme-icon sun-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="5"/>
+                    <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
+                  </svg>
+                  <svg class="theme-icon moon-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+                  </svg>
+                </button>
+              </label>
+            </div>
+
+            <div class="settings-section">
+              <label for="leagueNameInput">League Name</label>
+              <input type="text" id="leagueNameInput" class="settings-input" placeholder="Enter league name" />
+            </div>
+
+            <div class="settings-section">
+              <label for="leagueLogoInput">League Logo</label>
+              <div class="settings-field-row">
+                <button type="button" class="settings-save" onclick="openLogoGallery('league')" style="flex: 1; background: var(--accent-secondary);">
+                  📁 Choose from Gallery
+                </button>
+                <input type="file" accept="image/*" id="leagueLogoInput" class="settings-file" style="display: none;" />
+                <button type="button" class="settings-save" onclick="document.getElementById('leagueLogoInput').click()" style="flex: 1;">
+                  ⬆️ Upload New
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div class="settings-tab-panel" data-settings-panel="teams" id="settings-panel-teams" role="tabpanel" aria-labelledby="settings-tab-teams" aria-hidden="true">
+            <div class="settings-section">
+              <label for="teamANameInput">Home Team Name</label>
+              <input type="text" id="teamANameInput" class="settings-input" placeholder="Enter home team name" />
+            </div>
+
+            <div class="settings-section">
+              <label for="teamALogoInput">Home Team Logo</label>
+              <div class="settings-field-row">
+                <button type="button" class="settings-save" onclick="openLogoGallery('teamA')" style="flex: 1; background: var(--accent-secondary);">
+                  📁 Choose from Gallery
+                </button>
+                <input type="file" accept="image/*" id="teamALogoInput" class="settings-file" style="display: none;" />
+                <button type="button" class="settings-save" onclick="document.getElementById('teamALogoInput').click()" style="flex: 1;">
+                  ⬆️ Upload New
+                </button>
+              </div>
+            </div>
+
+            <div class="settings-section">
+              <label for="teamBNameInput">Away Team Name</label>
+              <input type="text" id="teamBNameInput" class="settings-input" placeholder="Enter away team name" />
+            </div>
+
+            <div class="settings-section">
+              <label for="teamBLogoInput">Away Team Logo</label>
+              <div class="settings-field-row">
+                <button type="button" class="settings-save" onclick="openLogoGallery('teamB')" style="flex: 1; background: var(--accent-secondary);">
+                  📁 Choose from Gallery
+                </button>
+                <input type="file" accept="image/*" id="teamBLogoInput" class="settings-file" style="display: none;" />
+                <button type="button" class="settings-save" onclick="document.getElementById('teamBLogoInput').click()" style="flex: 1;">
+                  ⬆️ Upload New
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div class="settings-tab-panel" data-settings-panel="visibility" id="settings-panel-visibility" role="tabpanel" aria-labelledby="settings-tab-visibility" aria-hidden="true">
+            <h3 style="margin-bottom: 12px; font-size: 1.1em; color: var(--text-primary);">Visibility Settings</h3>
+            <div class="settings-section">
+              <p style="font-size: 0.9em; color: var(--text-secondary); margin-bottom: 16px;">
+                Control which elements appear on the <strong>📋 Control Interface</strong> (operator view with buttons) and the <strong>📺 Display Interface</strong> (audience view without buttons). Each interface can be customized independently.
+              </p>
+
+              <div class="visibility-table-wrapper">
+                <table class="visibility-table">
+                  <thead>
+                    <tr>
+                      <th>Element</th>
+                      <th>
+                        📋 Control<br/>
+                        <span>(Operator)</span>
+                      </th>
+                      <th>
+                        📺 Display<br/>
+                        <span>(Audience)</span>
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>Period/Phase</td>
+                      <td>
+                        <input type="checkbox" id="showPeriodControl" class="settings-checkbox" checked />
+                      </td>
+                      <td>
+                        <input type="checkbox" id="showPeriodView" class="settings-checkbox" checked />
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>Timer</td>
+                      <td>
+                        <input type="checkbox" id="showTimerControl" class="settings-checkbox" checked />
+                      </td>
+                      <td>
+                        <input type="checkbox" id="showTimerView" class="settings-checkbox" checked />
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>Scores</td>
+                      <td>
+                        <input type="checkbox" id="showScoresControl" class="settings-checkbox" checked />
+                      </td>
+                      <td>
+                        <input type="checkbox" id="showScoresView" class="settings-checkbox" checked />
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>Team Logos</td>
+                      <td>
+                        <input type="checkbox" id="showTeamLogosControl" class="settings-checkbox" checked />
+                      </td>
+                      <td>
+                        <input type="checkbox" id="showTeamLogosView" class="settings-checkbox" checked />
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>Team Names</td>
+                      <td>
+                        <input type="checkbox" id="showTeamNamesControl" class="settings-checkbox" checked />
+                      </td>
+                      <td>
+                        <input type="checkbox" id="showTeamNamesView" class="settings-checkbox" checked />
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>League Info</td>
+                      <td>
+                        <input type="checkbox" id="showLeagueControl" class="settings-checkbox" checked />
+                      </td>
+                      <td>
+                        <input type="checkbox" id="showLeagueView" class="settings-checkbox" checked />
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+
+              <div class="visibility-tip">
+                <p>
+                  <strong>💡 Tip:</strong> Uncheck items in the Display column to hide them from the audience view while keeping them visible in your control interface.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div class="settings-tab-panel" data-settings-panel="advanced" id="settings-panel-advanced" role="tabpanel" aria-labelledby="settings-tab-advanced" aria-hidden="true">
+            <div class="settings-section">
+              <label for="defaultPeriodLengthInput">Default Period Length (minutes)</label>
+              <input type="number" id="defaultPeriodLengthInput" class="settings-input" min="1" max="60" step="1" placeholder="18" />
+              <p class="settings-help">Used when resetting the timer or creating new games.</p>
+            </div>
+
+            <div class="settings-section">
+              <label for="autoHornToggle" style="display: flex; align-items: center; gap: 8px;">
+                <input type="checkbox" id="autoHornToggle" class="settings-checkbox" />
+                <span>Auto buzzer each minute</span>
+              </label>
+              <p class="settings-help">Turn off if you only want buzzers at 0:00.</p>
+            </div>
+
+            <div class="settings-section">
+              <label for="syncPrecisionSelect">Timer Sync Precision</label>
+              <select id="syncPrecisionSelect" class="settings-input">
+                <option value="100">High (100ms updates)</option>
+                <option value="250">Balanced (250ms)</option>
+                <option value="500">Battery saver (500ms)</option>
+              </select>
+              <p class="settings-help">Higher precision keeps displays in tighter sync at the cost of more updates.</p>
+            </div>
+
+            <div class="settings-section">
+              <label>Game Management</label>
+              <div class="settings-field-row">
+                <button type="button" class="timer-btn" onclick="exportCurrentGame()" style="flex: 1;">
+                  💾 Export Game Data
+                </button>
+                <button type="button" class="timer-btn" onclick="showResetModal()" style="flex: 1; background: var(--error-color);">
+                  🔄 Reset Game
+                </button>
+              </div>
+            </div>
           </div>
         </div>
-        
-        <div class="settings-section">
-          <label for="teamANameInput">Home Team Name</label>
-          <input type="text" id="teamANameInput" class="settings-input" placeholder="Enter home team name" />
-        </div>
-        
-        <div class="settings-section">
-          <label for="teamALogoInput">Home Team Logo</label>
-          <div style="display: flex; gap: 8px; align-items: center;">
-            <button type="button" class="settings-save" onclick="openLogoGallery('teamA')" style="flex: 1; background: var(--accent-secondary);">
-              📁 Choose from Gallery
-            </button>
-            <input type="file" accept="image/*" id="teamALogoInput" class="settings-file" style="display: none;" />
-            <button type="button" class="settings-save" onclick="document.getElementById('teamALogoInput').click()" style="flex: 1;">
-              ⬆️ Upload New
-            </button>
-          </div>
-        </div>
-        
-        <div class="settings-section">
-          <label for="teamBNameInput">Away Team Name</label>
-          <input type="text" id="teamBNameInput" class="settings-input" placeholder="Enter away team name" />
-        </div>
-        
-        <div class="settings-section">
-          <label for="teamBLogoInput">Away Team Logo</label>
-          <div style="display: flex; gap: 8px; align-items: center;">
-            <button type="button" class="settings-save" onclick="openLogoGallery('teamB')" style="flex: 1; background: var(--accent-secondary);">
-              📁 Choose from Gallery
-            </button>
-            <input type="file" accept="image/*" id="teamBLogoInput" class="settings-file" style="display: none;" />
-            <button type="button" class="settings-save" onclick="document.getElementById('teamBLogoInput').click()" style="flex: 1;">
-              ⬆️ Upload New
-            </button>
-          </div>
-        </div>
-        
-        <h3 style="margin-top: 24px; margin-bottom: 12px; font-size: 1.1em; color: var(--text-primary);">Visibility Settings</h3>
-        
-        <div class="settings-section">
-          <p style="font-size: 0.9em; color: var(--text-secondary); margin-bottom: 16px;">
-            Control which elements appear on the <strong>📋 Control Interface</strong> (operator view with buttons) and the <strong>📺 Display Interface</strong> (audience view without buttons). Each interface can be customized independently.
-          </p>
-          
-          <div style="overflow-x: auto;">
-            <table style="width: 100%; border-collapse: collapse; margin-top: 12px;">
-              <thead>
-                <tr style="border-bottom: 2px solid var(--border);">
-                  <th style="text-align: left; padding: 12px 8px; font-weight: 600; color: var(--text-secondary);">Element</th>
-                  <th style="text-align: center; padding: 12px 8px; font-weight: 600; color: var(--text-secondary);">
-                    📋 Control<br/>
-                    <span style="font-size: 0.75em; font-weight: normal; opacity: 0.8;">(Operator)</span>
-                  </th>
-                  <th style="text-align: center; padding: 12px 8px; font-weight: 600; color: var(--text-secondary);">
-                    📺 Display<br/>
-                    <span style="font-size: 0.75em; font-weight: normal; opacity: 0.8;">(Audience)</span>
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr style="border-bottom: 1px solid var(--border);">
-                  <td style="padding: 12px 8px; font-weight: 500;">Period/Phase</td>
-                  <td style="text-align: center; padding: 12px 8px;">
-                    <input type="checkbox" id="showPeriodControl" class="settings-checkbox" checked style="width: 20px; height: 20px; cursor: pointer;" />
-                  </td>
-                  <td style="text-align: center; padding: 12px 8px;">
-                    <input type="checkbox" id="showPeriodView" class="settings-checkbox" checked style="width: 20px; height: 20px; cursor: pointer;" />
-                  </td>
-                </tr>
-                <tr style="border-bottom: 1px solid var(--border);">
-                  <td style="padding: 12px 8px; font-weight: 500;">Timer</td>
-                  <td style="text-align: center; padding: 12px 8px;">
-                    <input type="checkbox" id="showTimerControl" class="settings-checkbox" checked style="width: 20px; height: 20px; cursor: pointer;" />
-                  </td>
-                  <td style="text-align: center; padding: 12px 8px;">
-                    <input type="checkbox" id="showTimerView" class="settings-checkbox" checked style="width: 20px; height: 20px; cursor: pointer;" />
-                  </td>
-                </tr>
-                <tr style="border-bottom: 1px solid var(--border);">
-                  <td style="padding: 12px 8px; font-weight: 500;">Scores</td>
-                  <td style="text-align: center; padding: 12px 8px;">
-                    <input type="checkbox" id="showScoresControl" class="settings-checkbox" checked style="width: 20px; height: 20px; cursor: pointer;" />
-                  </td>
-                  <td style="text-align: center; padding: 12px 8px;">
-                    <input type="checkbox" id="showScoresView" class="settings-checkbox" checked style="width: 20px; height: 20px; cursor: pointer;" />
-                  </td>
-                </tr>
-                <tr style="border-bottom: 1px solid var(--border);">
-                  <td style="padding: 12px 8px; font-weight: 500;">Team Logos</td>
-                  <td style="text-align: center; padding: 12px 8px;">
-                    <input type="checkbox" id="showTeamLogosControl" class="settings-checkbox" checked style="width: 20px; height: 20px; cursor: pointer;" />
-                  </td>
-                  <td style="text-align: center; padding: 12px 8px;">
-                    <input type="checkbox" id="showTeamLogosView" class="settings-checkbox" checked style="width: 20px; height: 20px; cursor: pointer;" />
-                  </td>
-                </tr>
-                <tr style="border-bottom: 1px solid var(--border);">
-                  <td style="padding: 12px 8px; font-weight: 500;">Team Names</td>
-                  <td style="text-align: center; padding: 12px 8px;">
-                    <input type="checkbox" id="showTeamNamesControl" class="settings-checkbox" checked style="width: 20px; height: 20px; cursor: pointer;" />
-                  </td>
-                  <td style="text-align: center; padding: 12px 8px;">
-                    <input type="checkbox" id="showTeamNamesView" class="settings-checkbox" checked style="width: 20px; height: 20px; cursor: pointer;" />
-                  </td>
-                </tr>
-                <tr>
-                  <td style="padding: 12px 8px; font-weight: 500;">League Info</td>
-                  <td style="text-align: center; padding: 12px 8px;">
-                    <input type="checkbox" id="showLeagueControl" class="settings-checkbox" checked style="width: 20px; height: 20px; cursor: pointer;" />
-                  </td>
-                  <td style="text-align: center; padding: 12px 8px;">
-                    <input type="checkbox" id="showLeagueView" class="settings-checkbox" checked style="width: 20px; height: 20px; cursor: pointer;" />
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-          
-          <div style="margin-top: 16px; padding: 12px; background: var(--bg-tertiary); border-radius: 8px; border-left: 4px solid var(--accent-primary);">
-            <p style="font-size: 0.85em; color: var(--text-secondary); margin: 0;">
-              <strong>💡 Tip:</strong> Uncheck items in the Display column to hide them from the audience view while keeping them visible in your control interface.
-            </p>
-          </div>
-        </div>
-        
+
         <button type="submit" class="settings-save">Save Settings</button>
       </form>
     </div>

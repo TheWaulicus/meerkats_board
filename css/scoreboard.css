@@ -655,8 +655,8 @@ body {
   background: var(--bg-secondary);
   border-radius: 0.875rem;
   padding: clamp(2rem, 5vh, 3rem) var(--space-xl) var(--space-xl) var(--space-xl);
-  min-width: clamp(20rem, 50vw, 25rem);
-  max-width: 90vw;
+  min-width: clamp(20rem, 50vw, 28rem);
+  max-width: 900px;
   max-height: 90vh;
   max-height: 90dvh; /* Dynamic viewport height for mobile */
   overflow-y: auto;
@@ -686,6 +686,136 @@ body {
   font-family: "Inter", sans-serif;
 }
 
+.settings-tabs {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr));
+  gap: var(--space-sm);
+  margin-bottom: var(--space-lg);
+  background: var(--bg-tertiary);
+  padding: var(--space-sm);
+  border-radius: 0.75rem;
+  border: 1px solid var(--border-color);
+}
+
+.settings-tab-button {
+  background: transparent;
+  border: 1px solid transparent;
+  padding: 0 var(--space-md);
+  border-radius: 0.5rem;
+  color: var(--text-secondary);
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 3rem;
+  font-size: 0.95rem;
+}
+
+.settings-tab-button.active {
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  border-color: var(--accent-primary);
+  box-shadow: 0 4px 12px var(--shadow-accent);
+}
+
+.settings-tab-button:focus-visible {
+  outline: 2px solid var(--accent-primary);
+  outline-offset: 2px;
+}
+
+.settings-tab-panels {
+  border: 1px solid var(--border-color);
+  border-radius: 1rem;
+  padding: var(--space-lg);
+  background: var(--bg-tertiary);
+  box-shadow: 0 8px 24px var(--shadow-color);
+  min-height: clamp(26rem, 50vh, 32rem);
+  display: flex;
+  flex-direction: column;
+}
+
+.settings-tab-panel {
+  display: none;
+  height: 100%;
+  opacity: 0;
+  transform: translateY(12px);
+  transition: opacity 200ms ease, transform 200ms ease;
+}
+
+.settings-tab-panel.active {
+  display: block;
+  flex: 1;
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.settings-tab-panel.active > .settings-section:last-child {
+  margin-bottom: 0;
+}
+
+.settings-field-row {
+  display: flex;
+  gap: var(--space-sm);
+  align-items: center;
+}
+
+@media (max-width: 768px) {
+  .settings-field-row {
+    flex-direction: column;
+  }
+}
+
+.visibility-table-wrapper {
+  overflow-x: auto;
+}
+
+.visibility-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.visibility-table th,
+.visibility-table td {
+  padding: 12px 8px;
+  text-align: center;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.visibility-table th:first-child,
+.visibility-table td:first-child {
+  text-align: left;
+}
+
+.visibility-table thead th {
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.visibility-tip {
+  margin-top: var(--space-md);
+  padding: var(--space-md);
+  background: var(--bg-quaternary);
+  border-radius: 0.75rem;
+  border-left: 4px solid var(--accent-primary);
+  font-size: 0.95em;
+}
+
+.settings-tip {
+  background: var(--bg-tertiary);
+  padding: var(--space-md);
+  border-radius: 0.75rem;
+  border-left: 4px solid var(--accent-primary);
+}
+
+.settings-tip p,
+.settings-help {
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: 0.9em;
+}
+
 .settings-close {
   position: absolute;
   top: var(--space-lg);
@@ -712,6 +842,10 @@ body {
 
 .settings-section {
   margin-bottom: var(--space-lg);
+}
+
+.settings-tab-panel .settings-section:last-child {
+  margin-bottom: 0;
 }
 
 .settings-section label {
@@ -833,7 +967,7 @@ body {
   
   .settings-content {
     min-width: 0;
-    width: 95vw;
+    width: calc(100% - 24px);
     padding: var(--space-xl) var(--space-lg);
   }
 }

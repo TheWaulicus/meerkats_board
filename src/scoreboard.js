@@ -7,6 +7,7 @@
 
 let timerInterval = null;
 let timerSeconds = 18 * 60; // Default 18 minutes (standard hockey period)
+let syncIntervalMs = 100;
 let timerRunning = false;
 let timerStartedAt = null; // Timestamp when timer was started (for sync)
 let timerInitialSeconds = null; // Duration at start (for sync)
@@ -19,8 +20,25 @@ let teamState = {
   B: { name: "Away Team", logo: "", score: 0 }
 };
 
+function setTeamLogoElement(elementId, logoUrl) {
+  const logoEl = document.getElementById(elementId);
+  if (!logoEl) return;
+  if (logoUrl) {
+    logoEl.src = logoUrl;
+    logoEl.style.display = "";
+  } else {
+    logoEl.removeAttribute("src");
+    logoEl.style.display = "none";
+  }
+}
+
 let leagueName = "Juicebox League";
 let leagueLogo = "assets/images/juice_box.png";
+let advancedSettings = {
+  defaultPeriodMinutes: 18,
+  autoMinuteHorn: true,
+  syncPrecisionMs: 100,
+};
 
 /**
  * Update the page title and favicon to match the league branding
@@ -296,7 +314,9 @@ function updateTimer() {
   timerSeconds = Math.max(0, timerInitialSeconds - elapsed);
   
   updateTimerDisplay();
-  checkMinuteBeep();
+  if (advancedSettings.autoMinuteHorn) {
+    checkMinuteBeep();
+  }
   
   // Stop automatically when reaching 0
   if (timerSeconds === 0) {
@@ -389,6 +409,10 @@ document.addEventListener('DOMContentLoaded', function() {
       }
     });
   }
+
+  setupSettingsTabs();
+  updateSyncInterval();
+  initializeAdvancedSettingsForm();
 });
 
 /**
@@ -531,6 +555,19 @@ function toggleSettings(show) {
     document.getElementById("leagueNameInput").value = leagueName;
     document.getElementById("teamANameInput").value = teamState.A.name;
     document.getElementById("teamBNameInput").value = teamState.B.name;
+
+    const defaultPeriodInput = document.getElementById("defaultPeriodLengthInput");
+    if (defaultPeriodInput) {
+      defaultPeriodInput.value = advancedSettings.defaultPeriodMinutes;
+    }
+    const autoHornToggle = document.getElementById("autoHornToggle");
+    if (autoHornToggle) {
+      autoHornToggle.checked = advancedSettings.autoMinuteHorn;
+    }
+    const syncPrecisionSelect = document.getElementById("syncPrecisionSelect");
+    if (syncPrecisionSelect) {
+      syncPrecisionSelect.value = String(advancedSettings.syncPrecisionMs);
+    }
     
     // Populate visibility checkboxes
     document.getElementById("showPeriodControl").checked = visibilitySettings.showPeriodControl;
@@ -549,6 +586,8 @@ function toggleSettings(show) {
     lastFocusedElement = document.activeElement;
     modal.style.display = "flex";
     modal.setAttribute("aria-hidden", "false");
+
+    activateSettingsTab('branding');
 
     // Focus trap
     const focusableElements = modal.querySelectorAll(
@@ -590,6 +629,63 @@ function toggleSettings(show) {
     if (lastFocusedElement && typeof lastFocusedElement.focus === "function") {
       lastFocusedElement.focus();
     }
+  }
+}
+
+/**
+ * Handle settings tabs
+ */
+function activateSettingsTab(tabId) {
+  const tabButtons = document.querySelectorAll('.settings-tab-button');
+  const tabPanels = document.querySelectorAll('.settings-tab-panel');
+
+  tabButtons.forEach(button => {
+    const isActive = button.dataset.settingsTab === tabId;
+    button.classList.toggle('active', isActive);
+    button.setAttribute('aria-selected', String(isActive));
+  });
+
+  tabPanels.forEach(panel => {
+    const isActive = panel.dataset.settingsPanel === tabId;
+    panel.classList.toggle('active', isActive);
+    panel.setAttribute('aria-hidden', String(!isActive));
+  });
+}
+
+function setupSettingsTabs() {
+  const tabButtons = document.querySelectorAll('.settings-tab-button');
+  tabButtons.forEach(button => {
+    button.addEventListener('click', () => {
+      activateSettingsTab(button.dataset.settingsTab);
+    });
+    button.addEventListener('keydown', (event) => {
+      if (event.key === 'ArrowRight' || event.key === 'ArrowLeft') {
+        event.preventDefault();
+        const direction = event.key === 'ArrowRight' ? 1 : -1;
+        const buttonsArray = Array.from(tabButtons);
+        const currentIndex = buttonsArray.indexOf(button);
+        let nextIndex = currentIndex + direction;
+        if (nextIndex < 0) nextIndex = buttonsArray.length - 1;
+        if (nextIndex >= buttonsArray.length) nextIndex = 0;
+        buttonsArray[nextIndex].focus();
+        activateSettingsTab(buttonsArray[nextIndex].dataset.settingsTab);
+      }
+    });
+  });
+}
+
+function initializeAdvancedSettingsForm() {
+  const defaultPeriodInput = document.getElementById("defaultPeriodLengthInput");
+  if (defaultPeriodInput) {
+    defaultPeriodInput.value = advancedSettings.defaultPeriodMinutes;
+  }
+  const autoHornToggle = document.getElementById("autoHornToggle");
+  if (autoHornToggle) {
+    autoHornToggle.checked = advancedSettings.autoMinuteHorn;
+  }
+  const syncPrecisionSelect = document.getElementById("syncPrecisionSelect");
+  if (syncPrecisionSelect) {
+    syncPrecisionSelect.value = String(advancedSettings.syncPrecisionMs);
   }
 }
 
@@ -653,6 +749,24 @@ function applySettings() {
     document.getElementById("teamBName").textContent = teamState.B.name;
   }
   
+  // Update advanced settings
+  const defaultPeriodInput = document.getElementById("defaultPeriodLengthInput");
+  if (defaultPeriodInput) {
+    const minutesValue = Number(defaultPeriodInput.value);
+    if (!Number.isNaN(minutesValue) && minutesValue >= 1 && minutesValue <= 60) {
+      advancedSettings.defaultPeriodMinutes = minutesValue;
+    }
+  }
+  const autoHornToggle = document.getElementById("autoHornToggle");
+  if (autoHornToggle) {
+    advancedSettings.autoMinuteHorn = autoHornToggle.checked;
+  }
+  const syncPrecisionSelect = document.getElementById("syncPrecisionSelect");
+  if (syncPrecisionSelect) {
+    advancedSettings.syncPrecisionMs = Number(syncPrecisionSelect.value);
+  }
+  updateSyncInterval();
+
   // Update visibility settings
   visibilitySettings.showPeriodControl = document.getElementById("showPeriodControl").checked;
   visibilitySettings.showPeriodView = document.getElementById("showPeriodView").checked;
@@ -696,7 +810,7 @@ function applySettings() {
     const reader = new FileReader();
     reader.onload = (e) => {
       teamState.A.logo = e.target.result;
-      document.getElementById("teamALogo").src = teamState.A.logo;
+      setTeamLogoElement("teamALogo", teamState.A.logo);
       // Save to gallery
       saveLogoToGallery('team', teamState.A.logo, file.name);
       saveStateToFirestore();
@@ -710,7 +824,7 @@ function applySettings() {
     const reader = new FileReader();
     reader.onload = (e) => {
       teamState.B.logo = e.target.result;
-      document.getElementById("teamBLogo").src = teamState.B.logo;
+      setTeamLogoElement("teamBLogo", teamState.B.logo);
       // Save to gallery
       saveLogoToGallery('team', teamState.B.logo, file.name);
       saveStateToFirestore();
@@ -787,7 +901,7 @@ function initializeTheme() {
  */
 function getDefaultState() {
   return {
-    timerSeconds: 18 * 60,
+    timerSeconds: advancedSettings.defaultPeriodMinutes * 60,
     timerRunning: false,
     period: 1,
     gamePhase: "REG",
@@ -804,6 +918,7 @@ function getDefaultState() {
     leagueName: "Juice Box Hockey",
     leagueLogo: "assets/images/juice_box.png",
     theme: "dark",
+    advancedSettings,
     visibilitySettings: {
       showPeriodControl: true,
       showPeriodView: true,
@@ -841,6 +956,7 @@ function saveStateToFirestore() {
     leagueLogo,
     theme: document.body.getAttribute('data-theme') || 'dark',
     visibilitySettings: visibilitySettings,
+    advancedSettings,
     lastUpdate: firebase.firestore.FieldValue.serverTimestamp()
   };
   
@@ -945,12 +1061,8 @@ function loadStateFromSnapshot(snapshot, isFromCache = false) {
     document.getElementById("teamAScore").textContent = teamState.A.score;
     document.getElementById("teamBScore").textContent = teamState.B.score;
     
-    if (teamState.A.logo) {
-      document.getElementById("teamALogo").src = teamState.A.logo;
-    }
-    if (teamState.B.logo) {
-      document.getElementById("teamBLogo").src = teamState.B.logo;
-    }
+    setTeamLogoElement("teamALogo", teamState.A.logo);
+    setTeamLogoElement("teamBLogo", teamState.B.logo);
     
     // Update navbar with league info
     const navbarLeagueName = document.getElementById("navbarLeagueName");
@@ -975,6 +1087,15 @@ function loadStateFromSnapshot(snapshot, isFromCache = false) {
     if (state.visibilitySettings) {
       visibilitySettings = state.visibilitySettings;
       applyVisibilitySettings();
+    }
+
+    if (state.advancedSettings) {
+      advancedSettings = state.advancedSettings;
+      if (!timerRunning) {
+        timerSeconds = advancedSettings.defaultPeriodMinutes * 60;
+        updateTimerDisplay();
+      }
+      updateSyncInterval();
     }
   }
   
@@ -1825,15 +1946,10 @@ function selectLogoFromGallery(type, logoUrl) {
   } else if (type === 'teamA') {
     teamState.A.logo = logoUrl;
     const teamALogo = document.getElementById('teamALogo');
-    if (teamALogo) {
-      teamALogo.src = logoUrl;
-    }
+    setTeamLogoElement('teamALogo', teamState.A.logo);
   } else if (type === 'teamB') {
     teamState.B.logo = logoUrl;
-    const teamBLogo = document.getElementById('teamBLogo');
-    if (teamBLogo) {
-      teamBLogo.src = logoUrl;
-    }
+    setTeamLogoElement('teamBLogo', teamState.B.logo);
   }
   
   // Save to Firestore (saves the scoreboard state, not the logo to gallery)
@@ -1879,7 +1995,7 @@ function setupLogoUploadListeners() {
         const reader = new FileReader();
         reader.onload = async (e) => {
           teamState.A.logo = e.target.result;
-          document.getElementById('teamALogo').src = teamState.A.logo;
+          setTeamLogoElement('teamALogo', teamState.A.logo);
           // Save to gallery
           await saveLogoToGallery('team', teamState.A.logo, file.name);
           saveStateToFirestore();
@@ -1899,7 +2015,7 @@ function setupLogoUploadListeners() {
         const reader = new FileReader();
         reader.onload = async (e) => {
           teamState.B.logo = e.target.result;
-          document.getElementById('teamBLogo').src = teamState.B.logo;
+          setTeamLogoElement('teamBLogo', teamState.B.logo);
           // Save to gallery
           await saveLogoToGallery('team', teamState.B.logo, file.name);
           saveStateToFirestore();

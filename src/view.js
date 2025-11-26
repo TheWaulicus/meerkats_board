@@ -119,11 +119,23 @@ function updateDisplayInfo() {
   // Update team logos
   const teamALogoEl = document.getElementById("teamALogo");
   const teamBLogoEl = document.getElementById("teamBLogo");
-  if (teamALogoEl && teamState.A.logo) {
-    teamALogoEl.src = teamState.A.logo;
+  if (teamALogoEl) {
+    if (teamState.A.logo) {
+      teamALogoEl.src = teamState.A.logo;
+      teamALogoEl.style.display = "";
+    } else {
+      teamALogoEl.removeAttribute("src");
+      teamALogoEl.style.display = "none";
+    }
   }
-  if (teamBLogoEl && teamState.B.logo) {
-    teamBLogoEl.src = teamState.B.logo;
+  if (teamBLogoEl) {
+    if (teamState.B.logo) {
+      teamBLogoEl.src = teamState.B.logo;
+      teamBLogoEl.style.display = "";
+    } else {
+      teamBLogoEl.removeAttribute("src");
+      teamBLogoEl.style.display = "none";
+    }
   }
   
   // Update navbar with league info
