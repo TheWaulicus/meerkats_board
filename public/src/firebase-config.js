@@ -55,8 +55,9 @@ if (!initializeStorage()) {
   }, 100);
 }
 
-// Initialize Firebase App Check (production key)
-if (typeof firebase !== 'undefined' && firebase.appCheck) {
+// Initialize Firebase App Check (skip on preview hosts)
+const shouldEnableAppCheck = typeof window !== 'undefined' && !window.location.hostname.includes('preview-');
+if (shouldEnableAppCheck && typeof firebase !== 'undefined' && firebase.appCheck) {
   try {
     const appCheck = firebase.appCheck();
     appCheck.activate(
@@ -68,7 +69,7 @@ if (typeof firebase !== 'undefined' && firebase.appCheck) {
     console.error('❌ Error initializing App Check:', error);
   }
 } else {
-  console.warn('⚠️ Firebase App Check SDK not available');
+  console.warn('⚠️ Firebase App Check disabled for this host (preview or SDK unavailable)');
 }
 
 // Scoreboard document reference (set dynamically based on game ID)
