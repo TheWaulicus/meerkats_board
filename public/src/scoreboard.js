@@ -1268,7 +1268,7 @@ async function updateGameIdDisplay(gameId) {
  * Toggle game manager modal
  * @param {boolean} show - Whether to show or hide
  */
-let lastFocusedElement = null;
+let gameModalLastFocusedElement = null;
 
 async function toggleGameModal(show) {
   const modal = document.getElementById('gameModal');
@@ -1276,7 +1276,7 @@ async function toggleGameModal(show) {
   if (!modal) return;
   
   if (show) {
-    lastFocusedElement = document.activeElement;
+    gameModalLastFocusedElement = document.activeElement;
     const gameId = window.GameManager ? window.GameManager.getCurrentGameId() : 'main';
     
     const modalDisplay = document.getElementById('currentGameIdDisplay');
@@ -1307,8 +1307,8 @@ async function toggleGameModal(show) {
     }
     modal.style.display = 'none';
     modal.setAttribute('aria-hidden', 'true');
-    if (lastFocusedElement && typeof lastFocusedElement.focus === 'function') {
-      lastFocusedElement.focus();
+    if (gameModalLastFocusedElement && typeof gameModalLastFocusedElement.focus === 'function') {
+      gameModalLastFocusedElement.focus();
     }
   }
 }
