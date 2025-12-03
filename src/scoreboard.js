@@ -378,7 +378,7 @@ function stopTimer() {
  */
 function resetTimer() {
   stopTimer();
-  timerSeconds = 18 * 60;
+  timerSeconds = advancedSettings.defaultPeriodMinutes * 60;
   hasPlayedEndBuzzers = false;
   lastBeepSecond = -1;
   updateTimerDisplay();
@@ -1145,9 +1145,14 @@ function loadStateFromSnapshot(snapshot, isFromCache = false) {
     }
 
     if (state.advancedSettings) {
+      const prevDefaultMinutes = advancedSettings.defaultPeriodMinutes;
       advancedSettings = state.advancedSettings;
       if (!timerRunning) {
-        timerSeconds = advancedSettings.defaultPeriodMinutes * 60;
+        if (state.timerSeconds !== undefined) {
+          timerSeconds = state.timerSeconds;
+        } else if (advancedSettings.defaultPeriodMinutes !== prevDefaultMinutes) {
+          timerSeconds = advancedSettings.defaultPeriodMinutes * 60;
+        }
         updateTimerDisplay();
       }
     }
