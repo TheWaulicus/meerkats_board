@@ -1,0 +1,29 @@
+{
+  "rules": {
+    "presence": {
+      "$gameId": {
+        ".read": true,
+        ".write": "auth != null",
+        "controllers": {
+          "count": {
+            ".validate": "newData.isNumber() && newData.val() >= 0"
+          },
+          "lastUpdate": {
+            ".validate": "newData.isNumber()"
+          }
+        },
+        "viewers": {
+          "count": {
+            ".validate": "newData.isNumber() && newData.val() >= 0"
+          },
+          "lastUpdate": {
+            ".validate": "newData.isNumber()"
+          }
+        },
+        "total": {
+          ".validate": "newData.isNumber() && newData.val() >= 0"
+        }
+      }
+    }
+  }
+}

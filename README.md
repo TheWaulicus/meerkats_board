@@ -305,6 +305,7 @@ allow write: if request.auth != null;  // Require authentication
 - `firebase.json` uses clean URLs and rewrites unknown routes to `index.html` for SPA navigation
 - Static assets (`css`, `js`, images) receive long cache lifetimes
 - `offline.html` serves as fallback when offline
+- `database.rules.json` contains the Realtime Database presence rules (deploy with `firebase deploy --only database`)
 
 #### GitHub Actions workflow
 - Workflow file: `.github/workflows/firebase-hosting.yml`
