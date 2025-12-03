@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Juicebox League - Hockey Scoreboard Display View">
+  <title>Juicebox League - Display</title>
+  
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="assets/images/juice_box.png">
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&family=Orbitron:wght@900&display=swap" rel="stylesheet">
+  
+  <!-- Styles -->
+  <link rel="stylesheet" href="css/scoreboard.css">
+  
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+</head>
+<body data-theme="dark" class="view-mode">
+  
+  <!-- Game Manager Modal -->
+  <div id="gameModal" class="settings-modal" style="display: none" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="gameHeading">
+    <div class="settings-content">
+      <button class="settings-close" onclick="toggleGameModal(false)" type="button" aria-label="Close game manager">
+        &times;
+      </button>
+      <h2 id="gameHeading">Game Selection</h2>
+      
+      <div class="settings-section">
+        <label>Current Game ID</label>
+        <input type="text" id="currentGameIdDisplay" class="settings-input" readonly />
+      </div>
+      
+      <div class="settings-section">
+        <label for="joinGameInput">Join Different Game</label>
+        <div style="display: flex; gap: 8px;">
+          <input type="text" id="joinGameInput" class="settings-input" placeholder="Enter game ID" style="flex: 1;" />
+          <button class="settings-save" onclick="joinExistingGame()" style="width: auto; padding: 12px 24px;">
+            Join
+          </button>
+        </div>
+      </div>
+      
+      <div class="settings-section" style="background: var(--bg-tertiary); padding: 12px; border-radius: 8px; margin-top: 16px;">
+        <p style="font-size: 0.9em; color: var(--text-secondary); margin: 0;">
+          💡 Enter the game ID from the control interface to sync this display.
+        </p>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Fixed Navbar (Display Only) -->
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <img src="assets/images/juice_box.png" alt="League Logo" class="navbar-logo" id="navbarLeagueLogo" onerror="this.style.display='none'" />
+      <span class="navbar-title" id="navbarLeagueName">Juice Box Hockey</span>
+    </div>
+    <div class="navbar-game-id">
+      <span class="game-id-label">Game:</span>
+      <span class="game-id-display" id="currentGameId">MAIN</span>
+      <button class="game-btn" onclick="toggleGameModal(true)" title="Manage Game" aria-label="Manage game">
+        🎮
+      </button>
+    </div>
+    <div class="header-controls">
+      <!-- Viewer Count Badge -->
+      <div class="viewer-count-badge" id="viewerCountBadge" title="Active viewers">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+          <circle cx="12" cy="12" r="3"></circle>
+        </svg>
+        <span id="viewerCountText">0</span>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main Scoreboard (Display Only) -->
+  <div class="scoreboard">
+
+    <!-- Timer Block -->
+    <div class="timer-block">
+      <!-- Period Display -->
+      <div class="timer-controls">
+        <span class="period-label" id="periodLabel">Period 1</span>
+      </div>
+
+      <!-- Timer Display (Read-only) -->
+      <div class="timer-outline">
+        <div class="timer-display" id="timerDisplay">20:00</div>
+        <span id="timerLiveRegion" class="visually-hidden" aria-live="polite">Timer set to 20 minutes</span>
+      </div>
+    </div>
+
+    <!-- Scores Section -->
+    <div class="scores-section">
+      <!-- Home Team (Team A) -->
+      <div class="team-score">
+        <img src="" alt="Home Team Logo" class="team-logo" id="teamALogo" onerror="this.onerror=null;this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'200\' height=\'200\' viewBox=\'0 0 200 200\'><rect width=\'200\' height=\'200\' rx=\'32\' fill=\'%23e3e9f4\'/><text x=\'50%\' y=\'54%\' text-anchor=\'middle\' font-size=\'80\' fill=\'%2399aabb\' font-family=\'Arial, sans-serif\' dy=\'.3em\'>H</text></svg>'" />
+        <span class="team-name" id="teamAName">Home Team</span>
+        <div class="score-row">
+          <span class="score-value" id="teamAScore">0</span>
+        </div>
+      </div>
+
+
+      <!-- Away Team (Team B) -->
+      <div class="team-score">
+        <img src="" alt="Away Team Logo" class="team-logo" id="teamBLogo" onerror="this.onerror=null;this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'200\' height=\'200\' viewBox=\'0 0 200 200\'><rect width=\'200\' height=\'200\' rx=\'32\' fill=\'%23e3e9f4\'/><text x=\'50%\' y=\'54%\' text-anchor=\'middle\' font-size=\'80\' fill=\'%2399aabb\' font-family=\'Arial, sans-serif\' dy=\'.3em\'>A</text></svg>'" />
+        <span class="team-name" id="teamBName">Away Team</span>
+        <div class="score-row">
+          <span class="score-value" id="teamBScore">0</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Firebase Config -->
+  <script src="src/firebase-config.js"></script>
+  
+  <!-- Presence Tracking -->
+  <script src="src/presence.js"></script>
+  
+  <!-- Game History Manager -->
+  <script src="src/game-history.js"></script>
+  
+  <!-- Game Manager -->
+  <script src="src/game-manager.js"></script>
+  
+  <!-- View-only Logic -->
+  <script src="src/view.js"></script>
+  
+  <!-- Anonymous Authentication for View Mode -->
+  <script>
+    // Note: View mode works with Firestore read permissions
+    // Anonymous auth is optional if your Firestore rules allow public reads
+    console.log('View mode loaded - using Firestore read permissions');
+  </script>
+
+</body>
+</html>

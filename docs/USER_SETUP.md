@@ -161,6 +161,21 @@ async function changePassword(newPassword) {
 
 ---
 
+## 🌐 Production Hosting URL
+
+Share these links with operators once Firebase Hosting deployment is live:
+- Control interface: `https://meerkats-74de5.web.app/index.html`
+- Display view: `https://meerkats-74de5.web.app/view.html`
+
+If you map a custom domain, update your onboarding docs and ensure Firebase Auth redirect domains + App Check site keys include that host. Confirm operators bookmark the production URL instead of local files.
+
+### CI/CD Deployment Token
+- Admins generating CI tokens should run `firebase login:ci` locally and store the resulting token as the GitHub secret `FIREBASE_TOKEN`
+- GitHub Actions workflow (`.github/workflows/firebase-hosting.yml`) handles dry-run previews for feature branches and full deploys on `main`
+- Operators without CI access can still deploy manually via `firebase deploy` if they have Firebase CLI access
+
+---
+
 ## 🐛 Troubleshooting
 
 ### "Email already in use"

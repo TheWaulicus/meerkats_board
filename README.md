@@ -290,6 +290,40 @@ allow write: if request.auth != null;  // Require authentication
 - Verify Firebase is properly configured
 - Clear browser cache and reload
 
+## 🚀 Deployment
+
+### Firebase Hosting (Recommended)
+
+1. Install CLI: `npm install -g firebase-tools`
+2. Log in: `firebase login`
+3. Ensure `public/` contains the deployable assets (this repo already places HTML/CSS/JS there)
+4. Deploy: `firebase deploy --only hosting`
+5. Default URL: `https://meerkats-74de5.web.app` (or your custom domain)
+   - Update reCAPTCHA/App Check allowed domains to include the Firebase Hosting domain.
+
+#### Hosting configuration highlights
+- `firebase.json` uses clean URLs and rewrites unknown routes to `index.html` for SPA navigation
+- Static assets (`css`, `js`, images) receive long cache lifetimes
+- `offline.html` serves as fallback when offline
+
+#### GitHub Actions workflow
+- Workflow file: `.github/workflows/firebase-hosting.yml`
+- `push` and `pull_request` on feature branches run dry-run deploys (`firebase deploy --dry-run`) to validate hosting changes
+- When merged to `main`, the workflow executes a real deploy using `FIREBASE_TOKEN`
+- Requires repo secret `FIREBASE_TOKEN` (generated via `firebase login:ci`)
+
+##### Generate Firebase Token
+1. Install CLI: `npm install -g firebase-tools`
+2. Run `firebase login:ci`
+3. Complete browser login → CLI prints a token
+4. Store the token as GitHub secret `FIREBASE_TOKEN`
+5. Workflow now deploys using this token (non-interactive)
+
+### Alternative Options
+- **GitHub Pages**: Serve from `public/` or repo root for quick demos
+- **Netlify/Vercel**: Treat as static site and deploy without build step
+- **Local**: `python -m http.server 8000` for simple testing
+
 ## 📄 License
 
 Open source - Free to use for hockey rinks, sports facilities, and personal use.
