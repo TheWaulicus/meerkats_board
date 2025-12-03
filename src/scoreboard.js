@@ -1381,79 +1381,86 @@ async function saveGameName() {
 /**
  * Load and display recent games list
  */
-function loadRecentGamesList() {
-  if (!window.GameHistory) return;
-  
+async function loadRecentGamesList() {
   const listContainer = document.getElementById('recentGamesList');
-  if (!listContainer) return;
+  if (!listContainer || !window.db) return;
   
-  const recentGames = window.GameHistory.getRecentGames(10);
-  const currentGameId = window.GameManager ? window.GameManager.getCurrentGameId() : 'main';
+  listContainer.innerHTML = '<p style="text-align: center; color: var(--text-secondary); padding: 16px;">Loading games...</p>';
   
-  if (recentGames.length === 0) {
-    listContainer.innerHTML = '<p style="text-align: center; color: var(--text-secondary); padding: 16px;">No recent games</p>';
-    return;
-  }
-  
-  listContainer.innerHTML = '';
-  
-  recentGames.forEach(game => {
-    const gameItem = document.createElement('div');
-    gameItem.style.cssText = 'display: flex; align-items: center; gap: 8px; padding: 8px; border-radius: 4px; cursor: pointer; background: var(--bg-secondary); margin-bottom: 4px;';
+  try {
+    const snapshot = await window.db.collection('scoreboards').orderBy('lastUpdate', 'desc').limit(50).get();
+    const currentGameId = window.GameManager ? window.GameManager.getCurrentGameId() : 'main';
     
-    // Highlight current game
-    if (game.gameId === currentGameId) {
-      gameItem.style.background = 'var(--accent-primary)';
-      gameItem.style.color = 'white';
+    if (snapshot.empty) {
+      listContainer.innerHTML = '<p style="text-align: center; color: var(--text-secondary); padding: 16px;">No games found</p>';
+      return;
     }
     
-    // Favorite star
-    const favBtn = document.createElement('button');
-    favBtn.textContent = game.isFavorite ? '⭐' : '☆';
-    favBtn.style.cssText = 'background: none; border: none; cursor: pointer; font-size: 16px; padding: 0; width: 24px;';
-    favBtn.onclick = (e) => {
-      e.stopPropagation();
-      toggleFavoriteGame(game.gameId);
-    };
-    
-    // Game info
-    const infoDiv = document.createElement('div');
-    infoDiv.style.cssText = 'flex: 1; overflow: hidden;';
-    
-    const nameSpan = document.createElement('div');
-    nameSpan.textContent = game.friendlyName;
-    nameSpan.style.cssText = 'font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;';
-    
-    const metaSpan = document.createElement('div');
-    metaSpan.textContent = `${game.gameId} • ${window.GameHistory.formatDate(game.lastAccessed)}`;
-    metaSpan.style.cssText = 'font-size: 0.75em; opacity: 0.7;';
-    
-    infoDiv.appendChild(nameSpan);
-    infoDiv.appendChild(metaSpan);
-    
-    // Delete button
-    const deleteBtn = document.createElement('button');
-    deleteBtn.textContent = '🗑️';
-    deleteBtn.style.cssText = 'background: none; border: none; cursor: pointer; font-size: 14px; padding: 4px; opacity: 0.6;';
-    deleteBtn.title = 'Remove from history';
-    deleteBtn.onclick = (e) => {
-      e.stopPropagation();
-      removeGameFromHistory(game.gameId);
-    };
-    
-    gameItem.appendChild(favBtn);
-    gameItem.appendChild(infoDiv);
-    gameItem.appendChild(deleteBtn);
-    
-    // Click to switch games
-    gameItem.onclick = () => {
-      if (game.gameId !== currentGameId) {
-        switchToGame(game.gameId);
+    listContainer.innerHTML = '';
+  
+    snapshot.forEach(doc => {
+      const data = doc.data();
+      const gameId = doc.id;
+      const friendlyName = data.gameName || gameId;
+      const lastAccessed = data.lastUpdate?.toDate?.() ?? data.lastUpdate ?? new Date();
+      const isFavorite = window.GameHistory?.isFavorite?.(gameId) ?? false;
+      
+      const gameItem = document.createElement('div');
+      gameItem.style.cssText = 'display: flex; align-items: center; gap: 8px; padding: 8px; border-radius: 4px; cursor: pointer; background: var(--bg-secondary); margin-bottom: 4px;';
+  
+      if (gameId === currentGameId) {
+        gameItem.style.background = 'var(--accent-primary)';
+        gameItem.style.color = 'white';
       }
-    };
-    
-    listContainer.appendChild(gameItem);
-  });
+  
+      const favBtn = document.createElement('button');
+      favBtn.textContent = isFavorite ? '⭐' : '☆';
+      favBtn.style.cssText = 'background: none; border: none; cursor: pointer; font-size: 16px; padding: 0; width: 24px;';
+      favBtn.onclick = (e) => {
+        e.stopPropagation();
+        toggleFavoriteGame(gameId);
+      };
+  
+      const infoDiv = document.createElement('div');
+      infoDiv.style.cssText = 'flex: 1; overflow: hidden;';
+      
+      const nameSpan = document.createElement('div');
+      nameSpan.textContent = friendlyName;
+      nameSpan.style.cssText = 'font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;';
+      
+      const metaSpan = document.createElement('div');
+      const formattedDate = window.GameHistory?.formatDate ? window.GameHistory.formatDate(lastAccessed) : new Date(lastAccessed).toLocaleDateString();
+      metaSpan.textContent = `${gameId} • ${formattedDate}`;
+      metaSpan.style.cssText = 'font-size: 0.75em; opacity: 0.7;';
+      
+      infoDiv.appendChild(nameSpan);
+      infoDiv.appendChild(metaSpan);
+  
+      const deleteBtn = document.createElement('button');
+      deleteBtn.textContent = '🗑️';
+      deleteBtn.style.cssText = 'background: none; border: none; cursor: pointer; font-size: 14px; padding: 4px; opacity: 0.6;';
+      deleteBtn.title = 'Remove from history';
+      deleteBtn.onclick = (e) => {
+        e.stopPropagation();
+        removeGameFromHistory(gameId);
+      };
+  
+      gameItem.appendChild(favBtn);
+      gameItem.appendChild(infoDiv);
+      gameItem.appendChild(deleteBtn);
+  
+      gameItem.onclick = () => {
+        if (gameId !== currentGameId) {
+          switchToGame(gameId);
+        }
+      };
+  
+      listContainer.appendChild(gameItem);
+    });
+  } catch (error) {
+    console.error('Error loading games:', error);
+    listContainer.innerHTML = '<p style="text-align: center; color: var(--error-color); padding: 16px;">Failed to load games</p>';
+  }
 }
 
 /**

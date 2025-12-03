@@ -127,6 +127,16 @@ function toggleFavorite(gameId) {
 }
 
 /**
+ * Check if a game is marked as favorite
+ * @param {string} gameId - Game ID
+ * @returns {boolean}
+ */
+function isFavorite(gameId) {
+  const history = getGameHistory();
+  return history.some(g => g.gameId === gameId && g.isFavorite);
+}
+
+/**
  * Remove a game from history
  * @param {string} gameId - Game ID to remove
  */
@@ -310,6 +320,7 @@ if (typeof window !== 'undefined') {
     addToHistory,
     updateGameName,
     toggleFavorite,
+    isFavorite,
     removeFromHistory,
     markAsArchived,
     unmarkAsArchived,

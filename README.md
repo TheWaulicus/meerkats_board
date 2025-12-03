@@ -306,6 +306,7 @@ allow write: if request.auth != null;  // Require authentication
 - Static assets (`css`, `js`, images) receive long cache lifetimes
 - `offline.html` serves as fallback when offline
 - `database.rules.json` contains the Realtime Database presence rules (deploy with `firebase deploy --only database`)
+- Game picker pulls from Firestore `scoreboards` collection, so ensure Firestore rules permit read access and App Check is configured for preview domains
 
 #### GitHub Actions workflow
 - Workflow file: `.github/workflows/firebase-hosting.yml`
