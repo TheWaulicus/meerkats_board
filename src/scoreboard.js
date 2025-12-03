@@ -1268,37 +1268,48 @@ async function updateGameIdDisplay(gameId) {
  * Toggle game manager modal
  * @param {boolean} show - Whether to show or hide
  */
+let lastFocusedElement = null;
+
 async function toggleGameModal(show) {
   const modal = document.getElementById('gameModal');
+  const closeButton = document.querySelector('#gameModal .settings-close');
   if (!modal) return;
   
   if (show) {
+    lastFocusedElement = document.activeElement;
     const gameId = window.GameManager ? window.GameManager.getCurrentGameId() : 'main';
     
-    // Update displays
     const modalDisplay = document.getElementById('currentGameIdDisplay');
     if (modalDisplay) {
       modalDisplay.textContent = gameId;
     }
     
-    // Load game name
     const gameNameInput = document.getElementById('gameNameInput');
     if (gameNameInput && window.getGameName) {
       const gameName = await window.getGameName(gameId);
       gameNameInput.value = gameName === gameId ? '' : gameName;
     }
     
-    // Load recent games
     loadRecentGamesList();
     
+    modal.removeAttribute('aria-hidden');
     modal.style.display = 'flex';
-    modal.setAttribute('aria-hidden', 'false');
+    if (closeButton) {
+      closeButton.setAttribute('tabindex', '0');
+      closeButton.focus();
+    }
   } else {
-    // Save game name when closing modal
     await saveGameName();
     
+    if (closeButton) {
+      closeButton.blur();
+      closeButton.setAttribute('tabindex', '-1');
+    }
     modal.style.display = 'none';
     modal.setAttribute('aria-hidden', 'true');
+    if (lastFocusedElement && typeof lastFocusedElement.focus === 'function') {
+      lastFocusedElement.focus();
+    }
   }
 }
 
