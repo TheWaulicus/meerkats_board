@@ -61,7 +61,7 @@ if (shouldEnableAppCheck && typeof firebase !== 'undefined' && firebase.appCheck
   try {
     const appCheck = firebase.appCheck();
     appCheck.activate(
-      new firebase.appCheck.ReCaptchaV3Provider('6Lcq3x8sAAAAAE6WzmGyli64QH1iE4_60__6PTkS'),
+      new firebase.appCheck.ReCaptchaV3Provider('6LcpLiAsAAAAACZdd-fwzYWPunKRLQXDTF9B4ufE'),
       true
     );
     console.log('✅ Firebase App Check activated with reCAPTCHA v3');
