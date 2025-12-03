@@ -63,6 +63,7 @@ service firebase.storage {
 
 ### Firestore Rules:
 - **Scoreboard collections**: Anyone can read, only authenticated users can write
+- **App Check**: Enable App Check enforcement for `/scoreboards/{gameId}` so only trusted clients access Firestore; preview builds skip App Check automatically via hostname check
 - **Logo Gallery**: Users can only read/write their own logos (privacy protected)
 
 ### Storage Rules:

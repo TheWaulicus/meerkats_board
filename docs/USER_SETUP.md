@@ -176,7 +176,7 @@ If you map a custom domain, update your onboarding docs and ensure Firebase Auth
 
 ### Game picker behavior
 - The Game Manager modal now lists every game from the Firestore `scoreboards` collection (not just local history)
-- Make sure Firestore rules permit read access for operators or anonymous display users as needed
+- Firestore is set to App Check + auth enforcement: ensure production hosts have valid reCAPTCHA site keys and preview hosts use the built-in App Check skip
 - Favorites still sync locally; the star icon only affects your local history view for now
 
 ---
