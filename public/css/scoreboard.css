@@ -1,0 +1,1962 @@
+/* Meerkats Board - Hockey Scoreboard Styles */
+
+/* CSS Variables for Theming */
+:root {
+  /* Dark theme - Ice Hockey Classic */
+  --bg-primary: #0a141e;
+  --bg-secondary: #0f1c2e;
+  --bg-tertiary: #1a2e42;
+  --bg-quaternary: #1e3a52;
+  --text-primary: #f0f9ff;
+  --text-secondary: #94a3b8;
+  --text-muted: #cbd5e1;
+  --accent-primary: #38bdf8;
+  --accent-secondary: #f59e0b;
+  --accent-danger: #ef4444;
+  --error-color: #ef4444;
+  --success-color: #10b981;
+  --border: #38bdf866;
+  --border-color: #38bdf866;
+  --shadow-color: #00000080;
+  --shadow-accent: #38bdf833;
+  --glow-primary: #38bdf8;
+  --glow-secondary: #7dd3fc;
+  
+  /* Responsive Spacing Scale */
+  --space-xs: clamp(0.25rem, 0.5vw, 0.5rem);
+  --space-sm: clamp(0.5rem, 1vw, 0.75rem);
+  --space-md: clamp(0.75rem, 1.5vw, 1rem);
+  --space-lg: clamp(1rem, 2vw, 1.5rem);
+  --space-xl: clamp(1.5rem, 3vw, 2rem);
+  --space-2xl: clamp(2rem, 4vw, 3rem);
+  
+  /* Fluid Typography Scale */
+  --font-size-xs: clamp(0.75rem, 1.5vw, 0.875rem);
+  --font-size-sm: clamp(0.875rem, 1.75vw, 1rem);
+  --font-size-base: clamp(1rem, 2vw, 1.125rem);
+  --font-size-lg: clamp(1.125rem, 2.25vw, 1.25rem);
+  --font-size-xl: clamp(1.25rem, 2.5vw, 1.5rem);
+  --font-size-2xl: clamp(1.5rem, 3vw, 2rem);
+  --font-size-3xl: clamp(2rem, 4vw, 3rem);
+  --font-size-4xl: clamp(3rem, 6vw, 4rem);
+  --font-size-5xl: clamp(4rem, 8vw, 6rem);
+  --font-size-6xl: clamp(6rem, 12vw, 8rem);
+  
+  /* Breakpoints (for reference in JS if needed) */
+  --breakpoint-sm: 640px;
+  --breakpoint-md: 768px;
+  --breakpoint-lg: 1024px;
+  --breakpoint-xl: 1280px;
+  --breakpoint-2xl: 1920px;
+}
+
+[data-theme="light"] {
+  /* Light theme - Ice Hockey Classic */
+  --bg-primary: #f8fafc;
+  --bg-secondary: #ffffff;
+  --bg-tertiary: #e0f2fe;
+  --bg-quaternary: #bae6fd;
+  --text-primary: #0c1825;
+  --text-secondary: #475569;
+  --text-muted: #64748b;
+  --accent-primary: #0284c7;
+  --accent-secondary: #f59e0b;
+  --accent-danger: #dc2626;
+  --error-color: #dc2626;
+  --success-color: #059669;
+  --border: #0284c755;
+  --border-color: #0284c755;
+  --shadow-color: #00000015;
+  --shadow-accent: #0284c728;
+  --glow-primary: #0284c7;
+  --glow-secondary: #0ea5e9;
+}
+
+/* Global Styles */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+  background: linear-gradient(135deg, var(--bg-primary) 60%, var(--bg-secondary) 100%);
+  margin: 0;
+  padding: 0;
+  color: var(--text-primary);
+  min-height: 100vh;
+  min-height: 100dvh; /* Dynamic viewport height for mobile */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.3s ease, color 0.3s ease;
+}
+
+/* Accessibility - Screen reader only */
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Main Scoreboard Container */
+.scoreboard {
+  width: 100vw;
+  min-height: calc(100vh - 80px);
+  min-height: calc(100dvh - 80px); /* Dynamic viewport height for mobile */
+  max-width: 100vw;
+  margin: 80px auto 20px;
+  background: linear-gradient(135deg, var(--bg-secondary) 80%, var(--bg-secondary) 100%);
+  border-radius: 0;
+  box-shadow: 0 8px 40px var(--shadow-color), 0 1.5px 0 var(--border-color) inset;
+  padding: var(--space-md);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+  position: relative;
+  transition: background 0.3s ease, box-shadow 0.3s ease;
+  container-type: inline-size;
+  container-name: scoreboard;
+}
+
+/* Fixed Navbar at Top */
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: clamp(3.5rem, 10vh, 4rem);
+  background: var(--bg-secondary);
+  border-bottom: 2px solid var(--border-color);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 var(--space-xl);
+  z-index: 100;
+  box-shadow: 0 2px 8px var(--shadow-color);
+}
+
+.navbar-brand {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+}
+
+.navbar-logo {
+  width: clamp(2rem, 5vw, 2.5rem);
+  height: clamp(2rem, 5vw, 2.5rem);
+  border-radius: 0.5rem;
+  object-fit: contain;
+  border: 1px solid var(--border-color);
+  background: var(--bg-tertiary);
+}
+
+.navbar-title {
+  font-size: var(--font-size-xl);
+  font-weight: 900;
+  color: var(--accent-primary);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.navbar-game-id {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  background: var(--bg-tertiary);
+  padding: var(--space-sm) var(--space-md);
+  border-radius: 0.5rem;
+  border: 1px solid var(--border-color);
+}
+
+.game-id-label {
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+  font-weight: 600;
+}
+
+.game-id-display {
+  font-family: "Inter", sans-serif;
+  font-size: var(--font-size-sm);
+  font-weight: 700;
+  color: var(--accent-primary);
+  letter-spacing: 0.05em;
+}
+
+.game-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1.2em;
+  padding: 2px 6px;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.game-btn:hover {
+  transform: scale(1.1);
+}
+
+.game-btn:focus {
+  outline: 2px solid var(--accent-primary);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* Header Controls (Settings, Display Link) */
+.header-controls {
+  display: flex;
+  gap: var(--space-md);
+  align-items: center;
+}
+
+.navbar-link {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--accent-primary);
+  padding: var(--space-sm) var(--space-md);
+  border-radius: 0.5rem;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-sm);
+  text-decoration: none;
+  font-weight: 600;
+  font-size: var(--font-size-sm);
+}
+
+.navbar-link:hover {
+  background: var(--shadow-accent);
+  color: var(--text-primary);
+}
+
+.navbar-link:focus {
+  outline: 2px solid var(--accent-primary);
+  outline-offset: 2px;
+}
+
+.navbar-link-text {
+  display: inline;
+}
+
+.settings-open {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--accent-primary);
+  padding: var(--space-sm);
+  border-radius: 0.5rem;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 2.75rem;
+  min-height: 2.75rem;
+}
+
+.settings-open:hover {
+  background: var(--shadow-accent);
+  color: var(--text-primary);
+}
+
+.settings-open:focus {
+  outline: 2px solid var(--accent-primary);
+  outline-offset: 2px;
+}
+
+/* Responsive navbar adjustments */
+@media (max-width: 640px) {
+  .navbar {
+    padding: 0 var(--space-md);
+  }
+  
+  .navbar-link-text {
+    display: none;
+  }
+  
+  .navbar-title {
+    font-size: var(--font-size-lg);
+  }
+  
+  .navbar-brand {
+    gap: var(--space-sm);
+  }
+}
+
+.theme-toggle-inline {
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-color);
+  cursor: pointer;
+  color: var(--accent-primary);
+  padding: var(--space-sm) var(--space-md);
+  border-radius: 0.5rem;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-sm);
+  min-width: 2.75rem;
+  min-height: 2.75rem;
+}
+
+.theme-toggle-inline:hover {
+  background: var(--shadow-accent);
+  color: var(--text-primary);
+  border-color: var(--accent-primary);
+}
+
+.theme-toggle-inline:focus {
+  outline: 2px solid var(--accent-primary);
+  outline-offset: 2px;
+}
+
+.theme-icon {
+  display: none;
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+}
+
+.theme-icon.active {
+  display: block;
+}
+
+/* Show both icons in settings toggle button */
+.theme-toggle-inline .theme-icon {
+  display: block;
+  opacity: 0.3;
+}
+
+.theme-toggle-inline .theme-icon.active {
+  opacity: 1;
+}
+
+/* Timer Block */
+.timer-block {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-sm);
+  background: linear-gradient(135deg, var(--bg-tertiary) 80%, var(--bg-secondary) 100%);
+  border-radius: 1.125rem;
+  box-shadow: 0 0 32px 4px var(--border-color), 0 2px 12px var(--shadow-color) inset;
+  padding: var(--space-lg);
+  border: 2.5px solid var(--accent-primary);
+  transition: all 0.3s ease;
+  flex: 1;
+  min-height: clamp(12.5rem, 30vh, 18.75rem);
+  container-type: inline-size;
+  container-name: timer-block;
+}
+
+/* Period Controls */
+.timer-controls {
+  display: flex;
+  align-items: center;
+  gap: var(--space-lg);
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.period-label {
+  font-size: var(--font-size-xl);
+  font-weight: 800;
+  color: var(--text-primary);
+  letter-spacing: 0.08em;
+  text-shadow: 0 2px 8px var(--shadow-accent), 0 1px 0 var(--shadow-color);
+  margin: 0 var(--space-sm);
+  text-transform: uppercase;
+  padding: var(--space-sm) var(--space-md);
+  border-radius: 0.5rem;
+}
+
+/* Timer Display */
+.timer-outline {
+  border: clamp(3px, 0.5vw, 5px) solid var(--accent-primary);
+  border-radius: 1.25rem;
+  padding: clamp(2rem, 5vh, 3rem) clamp(1.5rem, 4vw, 2.5rem);
+  background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-tertiary) 100%);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-width: clamp(13.75rem, 30vw, 18.75rem);
+  max-width: 100%;
+  width: 100%;
+  margin: 0 auto;
+  min-height: clamp(11.25rem, 25vh, 15rem);
+  box-shadow: 
+    0 0 40px 12px var(--shadow-accent),
+    0 0 80px 20px var(--shadow-accent),
+    0 4px 20px var(--shadow-color),
+    inset 0 2px 8px var(--shadow-color);
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  container-type: inline-size;
+  container-name: timer-outline;
+}
+
+[data-theme="dark"] .timer-outline {
+  box-shadow: 
+    0 0 20px 6px var(--glow-primary),
+    0 0 40px 10px var(--shadow-accent),
+    0 4px 20px var(--shadow-color),
+    inset 0 2px 8px var(--shadow-color);
+}
+
+[data-theme="light"] .timer-outline {
+  box-shadow: 
+    0 8px 32px var(--shadow-color),
+    0 0 0 3px var(--accent-primary),
+    inset 0 2px 4px var(--shadow-color);
+}
+
+.timer-display {
+  font-family: "Orbitron", monospace;
+  font-size: clamp(6rem, 15cqi, 20rem);
+  font-weight: 900;
+  width: 100%;
+  max-width: 100%;
+  text-align: center;
+  border: none;
+  background: transparent;
+  outline: none;
+  color: var(--text-primary);
+  letter-spacing: 0.05em;
+  transition: all 0.3s ease;
+  line-height: 1;
+  overflow: hidden;
+  text-overflow: clip;
+}
+
+[data-theme="dark"] .timer-display {
+  text-shadow: 
+    0 0 12px var(--glow-primary),
+    0 0 24px var(--glow-secondary),
+    0 0 4px var(--text-primary),
+    0 4px 12px var(--shadow-color);
+  filter: drop-shadow(0 0 8px var(--glow-primary));
+}
+
+[data-theme="light"] .timer-display {
+  text-shadow: 
+    0 2px 4px var(--shadow-color),
+    0 0 20px var(--accent-primary);
+}
+
+.timer-display:focus {
+  outline: 2px solid var(--accent-secondary);
+  outline-offset: 4px;
+  border-radius: 8px;
+}
+
+/* Buttons */
+.timer-btn,
+.score-btn,
+.period-btn,
+.settings-save,
+.settings-close,
+.reset-all-btn {
+  border-radius: 0.625rem;
+  border: 2px solid var(--accent-primary);
+  background: linear-gradient(135deg, var(--bg-secondary) 80%, var(--bg-tertiary) 100%);
+  color: var(--text-primary);
+  font-size: var(--font-size-base);
+  font-weight: 700;
+  padding: var(--space-md) var(--space-xl);
+  min-width: 3.5rem;
+  min-height: 2.75rem;
+  box-shadow: 0 2px 8px var(--shadow-accent), 0 1px 0 var(--shadow-color) inset;
+  cursor: pointer;
+  outline: none;
+  transition: background 0.18s, border 0.18s, color 0.18s, box-shadow 0.18s, transform 0.1s;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: "Inter", sans-serif;
+}
+
+.timer-btn:hover,
+.score-btn:hover,
+.period-btn:hover,
+.settings-save:hover,
+.settings-close:hover {
+  background: var(--shadow-accent);
+  color: var(--accent-primary);
+  border-color: var(--text-primary);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px var(--shadow-accent);
+}
+
+.timer-btn:active,
+.score-btn:active,
+.period-btn:active {
+  transform: translateY(0);
+  box-shadow: 0 1px 4px var(--shadow-accent);
+}
+
+.timer-btn:focus,
+.score-btn:focus,
+.period-btn:focus,
+.settings-save:focus,
+.settings-close:focus {
+  outline: 2px solid var(--accent-secondary);
+  outline-offset: 2px;
+}
+
+/* Reset All Button - Danger Style */
+.reset-all-btn {
+  background: linear-gradient(135deg, var(--accent-danger) 80%, #cc0000 100%);
+  color: #fff;
+  border: 2px solid var(--accent-danger);
+  box-shadow: 0 2px 8px #ff2a2a33, 0 1px 0 var(--shadow-color) inset;
+}
+
+.reset-all-btn:hover {
+  background: #fff;
+  color: var(--accent-danger);
+  border-color: var(--accent-danger);
+  box-shadow: 0 4px 12px #ff2a2a66;
+}
+
+/* Scores Section */
+.scores-section {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: flex-start;
+  gap: var(--space-2xl);
+  margin: var(--space-md) 0;
+  width: 100%;
+  max-width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+  transition: all 0.3s ease;
+  flex: 1;
+  container-type: inline-size;
+  container-name: scores-section;
+}
+
+.team-score {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-lg);
+}
+
+.team-logo {
+  width: clamp(12.5rem, 25vw, 21.875rem);
+  height: clamp(12.5rem, 25vw, 21.875rem);
+  border-radius: 2rem;
+  object-fit: contain;
+  background: var(--bg-tertiary);
+  border: 2.5px solid var(--accent-primary);
+  box-shadow: 0 0 32px var(--shadow-accent);
+  transition: all 0.3s ease;
+}
+
+.team-name {
+  font-size: clamp(2rem, 4vw, 4rem);
+  font-weight: 900;
+  color: var(--text-primary);
+  text-align: center;
+  text-shadow: 0 2px 8px var(--shadow-accent);
+  margin-bottom: var(--space-sm);
+  font-family: "Orbitron", monospace;
+  letter-spacing: 0.02em;
+}
+
+.score-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-lg);
+}
+
+.score-value {
+  font-size: clamp(4rem, 8vw, 8rem);
+  font-weight: 900;
+  min-width: clamp(6.25rem, 12vw, 11.25rem);
+  text-align: center;
+  color: var(--text-primary);
+  text-shadow: 0 2px 16px var(--accent-primary), 0 1px 0 var(--shadow-color);
+  font-family: "Orbitron", monospace;
+}
+
+/* League Info (Center) */
+.league-info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  gap: var(--space-md);
+  min-width: clamp(7.5rem, 15vw, 9.375rem);
+  padding-top: var(--space-lg);
+}
+
+.league-logo {
+  width: clamp(4.5rem, 10vw, 5.625rem);
+  height: clamp(4.5rem, 10vw, 5.625rem);
+  border-radius: 0.75rem;
+  background: var(--bg-tertiary);
+  object-fit: contain;
+  border: 2px solid var(--accent-primary);
+  box-shadow: 0 0 16px var(--shadow-accent);
+  transition: all 0.3s ease;
+}
+
+.league-name {
+  font-size: var(--font-size-xl);
+  font-weight: 700;
+  color: var(--text-primary);
+  letter-spacing: 0.04em;
+  text-shadow: 0 2px 8px var(--shadow-accent);
+  text-align: center;
+  font-family: "Orbitron", monospace;
+}
+
+/* Settings Modal */
+.settings-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  height: 100dvh; /* Dynamic viewport height for mobile */
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  animation: fadeIn 0.2s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.settings-content {
+  background: var(--bg-secondary);
+  border-radius: 0.875rem;
+  padding: clamp(2rem, 5vh, 3rem) var(--space-xl) var(--space-xl) var(--space-xl);
+  min-width: clamp(20rem, 50vw, 28rem);
+  max-width: 900px;
+  max-height: 90vh;
+  max-height: 90dvh; /* Dynamic viewport height for mobile */
+  overflow-y: auto;
+  box-shadow: 0 8px 32px var(--shadow-color);
+  position: relative;
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
+  animation: slideIn 0.3s ease;
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateY(-20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.settings-content h2 {
+  margin-bottom: var(--space-xl);
+  font-size: var(--font-size-2xl);
+  color: var(--text-primary);
+  text-align: center;
+  font-family: "Inter", sans-serif;
+}
+
+.settings-tabs {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr));
+  gap: var(--space-sm);
+  margin-bottom: var(--space-lg);
+  background: var(--bg-tertiary);
+  padding: var(--space-sm);
+  border-radius: 0.75rem;
+  border: 1px solid var(--border-color);
+}
+
+.settings-tab-button {
+  background: transparent;
+  border: 1px solid transparent;
+  padding: 0 var(--space-md);
+  border-radius: 0.5rem;
+  color: var(--text-secondary);
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 3rem;
+  font-size: 0.95rem;
+}
+
+.settings-tab-button.active {
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  border-color: var(--accent-primary);
+  box-shadow: 0 4px 12px var(--shadow-accent);
+}
+
+.settings-tab-button:focus-visible {
+  outline: 2px solid var(--accent-primary);
+  outline-offset: 2px;
+}
+
+.settings-tab-panels {
+  border: 1px solid var(--border-color);
+  border-radius: 1rem;
+  padding: var(--space-lg);
+  background: var(--bg-tertiary);
+  box-shadow: 0 8px 24px var(--shadow-color);
+  min-height: clamp(26rem, 50vh, 32rem);
+  display: flex;
+  flex-direction: column;
+}
+
+.settings-tab-panel {
+  display: none;
+  height: 100%;
+  opacity: 0;
+  transform: translateY(12px);
+  transition: opacity 200ms ease, transform 200ms ease;
+}
+
+.settings-tab-panel.active {
+  display: block;
+  flex: 1;
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.settings-tab-panel.active > .settings-section:last-child {
+  margin-bottom: 0;
+}
+
+.settings-field-row {
+  display: flex;
+  gap: var(--space-sm);
+  align-items: center;
+}
+
+@media (max-width: 768px) {
+  .settings-field-row {
+    flex-direction: column;
+  }
+}
+
+.visibility-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+  gap: var(--space-md);
+}
+
+.visibility-card {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 0.75rem;
+  padding: var(--space-md);
+  box-shadow: 0 6px 18px var(--shadow-color);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.visibility-card-header {
+  display: flex;
+  gap: var(--space-md);
+  align-items: center;
+}
+
+.visibility-card-header h4 {
+  margin: 0;
+  font-size: 1rem;
+  color: var(--text-primary);
+}
+
+.visibility-card-icon {
+  font-size: 1.75rem;
+}
+
+.visibility-card-toggles {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-md);
+}
+
+.visibility-card-toggles label {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  flex: 1;
+  padding: var(--space-sm);
+  border-radius: 0.5rem;
+  background: var(--bg-tertiary);
+}
+
+@media (max-width: 640px) {
+  .visibility-card-toggles {
+    flex-direction: column;
+  }
+}
+
+.visibility-tip {
+  margin-top: var(--space-md);
+  padding: var(--space-md);
+  background: var(--bg-quaternary);
+  border-radius: 0.75rem;
+  border-left: 4px solid var(--accent-primary);
+  font-size: 0.95em;
+}
+
+.settings-tip {
+  background: var(--bg-tertiary);
+  padding: var(--space-md);
+  border-radius: 0.75rem;
+  border-left: 4px solid var(--accent-primary);
+}
+
+.settings-tip p,
+.settings-help {
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: 0.9em;
+}
+
+.settings-close {
+  position: absolute;
+  top: var(--space-lg);
+  right: var(--space-lg);
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-color);
+  border-radius: 0.5rem;
+  font-size: var(--font-size-xl);
+  color: var(--text-secondary);
+  cursor: pointer;
+  padding: var(--space-sm) var(--space-md);
+  line-height: 1;
+  transition: all 0.2s;
+  z-index: 10;
+  min-width: 2.75rem;
+  min-height: 2.75rem;
+}
+
+.settings-close:hover {
+  color: var(--accent-danger);
+  background: var(--shadow-accent);
+  border-color: var(--accent-danger);
+}
+
+.settings-section {
+  margin-bottom: var(--space-lg);
+}
+
+.settings-tab-panel .settings-section:last-child {
+  margin-bottom: 0;
+}
+
+.settings-section label {
+  display: block;
+  margin-bottom: var(--space-sm);
+  font-weight: 600;
+  color: var(--text-secondary);
+  font-size: var(--font-size-sm);
+  font-family: "Inter", sans-serif;
+}
+
+.settings-input,
+.settings-file {
+  width: 100%;
+  padding: var(--space-sm) var(--space-md);
+  border: 1px solid var(--border-color);
+  border-radius: 0.375rem;
+  font-size: var(--font-size-base);
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+  transition: border-color 0.2s, box-shadow 0.2s;
+  font-family: "Inter", sans-serif;
+  min-height: 2.75rem;
+}
+
+.settings-input:focus,
+.settings-file:focus {
+  outline: none;
+  border-color: var(--accent-primary);
+  box-shadow: 0 0 0 3px var(--shadow-accent);
+}
+
+.settings-file {
+  padding: var(--space-sm);
+  cursor: pointer;
+}
+
+.settings-checkbox {
+  width: clamp(1.125rem, 3vw, 1.5rem);
+  height: clamp(1.125rem, 3vw, 1.5rem);
+  cursor: pointer;
+  accent-color: var(--accent-primary);
+}
+
+.settings-save {
+  width: 100%;
+  background: var(--accent-primary);
+  color: var(--bg-secondary);
+  border: none;
+  margin-top: var(--space-md);
+  font-size: var(--font-size-lg);
+  padding: var(--space-md);
+  min-height: 3rem;
+}
+
+.settings-save:hover {
+  background: var(--text-primary);
+  color: var(--accent-primary);
+}
+
+/* ============================================
+   RESPONSIVE DESIGN - MOBILE FIRST APPROACH
+   ============================================ */
+
+/* Small devices (landscape phones, 640px and up) */
+@media (max-width: 640px) {
+  :root {
+    --space-xs: 0.25rem;
+    --space-sm: 0.5rem;
+    --space-md: 0.75rem;
+    --space-lg: 1rem;
+    --space-xl: 1.25rem;
+    --space-2xl: 1.5rem;
+  }
+  
+  .navbar {
+    height: 3.5rem;
+  }
+  
+  .scoreboard {
+    margin-top: 3.5rem;
+    min-height: calc(100dvh - 3.5rem);
+  }
+}
+
+/* Medium devices (tablets, 768px and down) */
+@media (max-width: 768px) {
+  .scores-section {
+    grid-template-columns: 1fr;
+    gap: var(--space-xl);
+  }
+
+  .league-info {
+    order: -1;
+  }
+
+  .timer-display {
+    font-size: clamp(5rem, 14cqi, 12rem);
+    letter-spacing: 0.04em;
+  }
+  
+  .timer-outline {
+    max-width: 100%;
+    padding: clamp(1.5rem, 4vh, 2.5rem) clamp(1rem, 3vw, 2rem);
+  }
+  
+  .timer-block {
+    gap: var(--space-sm);
+    padding: var(--space-md);
+  }
+  
+  .score-value {
+    font-size: clamp(2.5rem, 8vw, 4rem);
+  }
+  
+  .team-name {
+    font-size: clamp(1.3rem, 4vw, 1.8rem);
+  }
+  
+  .settings-content {
+    min-width: 0;
+    width: calc(100% - 24px);
+    padding: var(--space-xl) var(--space-lg);
+  }
+}
+
+/* Large tablets and small desktops (1024px and down) */
+@media (max-width: 1024px) {
+  .team-logo {
+    width: clamp(10rem, 20vw, 15rem);
+    height: clamp(10rem, 20vw, 15rem);
+  }
+  
+  .score-value {
+    font-size: clamp(3rem, 7vw, 6rem);
+  }
+}
+
+/* Large displays (1920px and up) - Arena Mode */
+@media (min-width: 1920px) {
+  :root {
+    --space-xs: 0.5rem;
+    --space-sm: 0.75rem;
+    --space-md: 1rem;
+    --space-lg: 1.5rem;
+    --space-xl: 2rem;
+    --space-2xl: 3rem;
+  }
+  
+  .timer-display {
+    font-size: clamp(10rem, 18cqi, 24rem);
+  }
+  
+  .score-value {
+    font-size: clamp(6rem, 10vw, 12rem);
+  }
+  
+  .team-logo {
+    width: clamp(18rem, 28vw, 28rem);
+    height: clamp(18rem, 28vw, 28rem);
+  }
+}
+
+/* Mobile specific adjustments */
+@media (max-width: 900px) {
+  .scoreboard {
+    width: 100vw;
+    min-height: 100vh;
+    min-height: 100dvh;
+    border-radius: 0;
+    padding: var(--space-sm);
+  }
+
+  .timer-block {
+    padding: var(--space-md) var(--space-sm);
+    flex: 2;
+    min-height: 18.75rem;
+  }
+
+  /* Timer stays LARGE even on mobile */
+  .timer-outline {
+    padding: clamp(1.25rem, 3vh, 2rem) var(--space-md) !important;
+    max-width: 88vw !important;
+    width: 100% !important;
+    border-width: 4px !important;
+  }
+  
+  .timer-display {
+    font-size: 18cqi !important;
+    letter-spacing: -0.02em !important;
+    width: 100% !important;
+  }
+
+  /* Scale other elements appropriately */
+  .score-value {
+    font-size: clamp(2rem, 8vw, 3rem);
+  }
+
+  .team-name {
+    font-size: clamp(1.2rem, 5vw, 1.5rem);
+  }
+
+  .league-name {
+    font-size: clamp(0.9rem, 3vw, 1.1rem);
+  }
+
+  .timer-btn,
+  .score-btn,
+  .period-btn {
+    font-size: var(--font-size-sm);
+    padding: var(--space-sm) var(--space-lg);
+    min-height: 2.75rem;
+  }
+
+  .header-controls {
+    gap: var(--space-sm);
+  }
+  
+  /* Control mode - when scores are hidden on mobile */
+  .scoreboard.hide-scores-control:not(.view-mode) .timer-outline {
+    padding: clamp(1.5rem, 4vh, 2.5rem) var(--space-md) !important;
+    max-width: 88vw;
+  }
+  
+  .scoreboard.hide-scores-control:not(.view-mode) .timer-display {
+    font-size: 20cqi !important;
+    letter-spacing: -0.02em;
+    width: 100%;
+  }
+  
+  /* Timer-only mode on mobile = MASSIVE */
+  .scoreboard.hide-scores-control.hide-period-control:not(.view-mode) .timer-outline,
+  .view-mode .scoreboard.hide-scores-view.hide-period-view .timer-outline {
+    padding: clamp(1.875rem, 5vh, 3rem) var(--space-md) !important;
+    max-width: 88vw;
+    border-width: 4px;
+  }
+  
+  .scoreboard.hide-scores-control.hide-period-control:not(.view-mode) .timer-display,
+  .view-mode .scoreboard.hide-scores-view.hide-period-view .timer-display {
+    font-size: 22cqi !important;
+    letter-spacing: -0.02em;
+    width: 100%;
+  }
+  
+  .scoreboard.hide-scores-control.hide-period-control:not(.view-mode) .timer-block,
+  .view-mode .scoreboard.hide-scores-view.hide-period-view .timer-block {
+    gap: var(--space-sm);
+  }
+}
+
+/* View Mode Specific Styles */
+.view-mode .header-controls,
+.view-mode .timer-controls,
+.view-mode .reset-all-btn {
+  display: none;
+}
+
+.view-mode .timer-display {
+  pointer-events: none;
+  user-select: none;
+}
+
+.view-mode .score-btn {
+  display: none;
+}
+
+/* Visibility Control Classes */
+.hide-period-control:not(.view-mode) .period-label,
+.hide-period-control:not(.view-mode) .period-btn {
+  display: none !important;
+}
+
+.view-mode .scoreboard.hide-period-view .period-label {
+  display: none !important;
+}
+
+.hide-timer-control:not(.view-mode) .timer-outline {
+  display: none !important;
+}
+
+.view-mode .scoreboard.hide-timer-view .timer-outline {
+  display: none !important;
+}
+
+.hide-scores-control:not(.view-mode) .scores-section {
+  display: none !important;
+}
+
+.view-mode .scoreboard.hide-scores-view .scores-section {
+  display: none !important;
+}
+
+.hide-team-logos-control:not(.view-mode) .team-logo {
+  display: none !important;
+}
+
+.view-mode .scoreboard.hide-team-logos-view .team-logo {
+  display: none !important;
+}
+
+.hide-team-names-control:not(.view-mode) .team-name {
+  display: none !important;
+}
+
+.view-mode .scoreboard.hide-team-names-view .team-name {
+  display: none !important;
+}
+
+.hide-league-control:not(.view-mode) .league-info {
+  display: none !important;
+}
+
+.view-mode .scoreboard.hide-league-view .league-info {
+  display: none !important;
+}
+
+/* Dynamic Scaling Based on Visible Elements */
+
+/* When only timer is visible - make it HUGE */
+.scoreboard.hide-scores-control:not(.view-mode) .timer-block,
+.view-mode .scoreboard.hide-scores-view .timer-block {
+  min-height: 60vh;
+  gap: 12px;
+}
+
+.scoreboard.hide-scores-control:not(.view-mode) .timer-display,
+.view-mode .scoreboard.hide-scores-view .timer-display {
+  font-size: clamp(12rem, 25vw, 25rem);
+  letter-spacing: 0.04em;
+}
+
+.scoreboard.hide-scores-control:not(.view-mode) .timer-outline,
+.view-mode .scoreboard.hide-scores-view .timer-outline {
+  padding: 60px 40px;
+  max-width: 100%;
+  min-height: 280px;
+}
+
+/* When period is hidden, give more space to timer */
+.scoreboard.hide-period-control:not(.view-mode) .timer-display,
+.view-mode .scoreboard.hide-period-view .timer-display {
+  font-size: clamp(8rem, 20vw, 16rem);
+  letter-spacing: 0.04em;
+}
+
+.scoreboard.hide-period-control:not(.view-mode) .timer-outline,
+.view-mode .scoreboard.hide-period-view .timer-outline {
+  padding: 48px 40px;
+  max-width: 100%;
+  min-height: 220px;
+}
+
+.scoreboard.hide-period-control:not(.view-mode) .timer-block,
+.view-mode .scoreboard.hide-period-view .timer-block {
+  gap: 10px;
+}
+
+/* When scores visible but other elements hidden, scale appropriately */
+.scoreboard.hide-team-logos-control:not(.view-mode) .score-value,
+.view-mode .scoreboard.hide-team-logos-view .score-value {
+  font-size: clamp(5em, 10vw, 10em);
+}
+
+.scoreboard.hide-team-names-control:not(.view-mode) .score-value,
+.view-mode .scoreboard.hide-team-names-view .score-value {
+  font-size: clamp(5em, 10vw, 10em);
+}
+
+/* When both logos and names hidden, make scores massive */
+.scoreboard.hide-team-logos-control.hide-team-names-control:not(.view-mode) .score-value,
+.view-mode .scoreboard.hide-team-logos-view.hide-team-names-view .score-value {
+  font-size: clamp(6em, 12vw, 12em);
+  min-width: clamp(150px, 20vw, 250px);
+}
+
+/* When league hidden, redistribute space */
+.scoreboard.hide-league-control:not(.view-mode) .scores-section,
+.view-mode .scoreboard.hide-league-view .scores-section {
+  grid-template-columns: 1fr 1fr;
+  gap: 80px;
+}
+
+.scoreboard.hide-league-control:not(.view-mode) .league-info,
+.view-mode .scoreboard.hide-league-view .league-info {
+  display: none;
+}
+
+/* Period label scaling when visible */
+.period-label {
+  font-size: clamp(1.2em, 2.5vw, 1.6em);
+  transition: all 0.3s ease;
+}
+
+/* Scale team elements when visible */
+.team-logo {
+  width: clamp(150px, 25vw, 350px);
+  height: clamp(150px, 25vw, 350px);
+  transition: all 0.3s ease;
+}
+
+.team-name {
+  font-size: clamp(1.8em, 4vw, 3em);
+  transition: all 0.3s ease;
+}
+
+.score-value {
+  font-size: clamp(4em, 8vw, 8em);
+  min-width: clamp(100px, 18vw, 180px);
+  transition: all 0.3s ease;
+}
+
+/* League scaling */
+.league-logo {
+  width: clamp(60px, 10vw, 90px);
+  height: clamp(60px, 10vw, 90px);
+  transition: all 0.3s ease;
+}
+
+.league-name {
+  font-size: clamp(1em, 2vw, 1.4em);
+  transition: all 0.3s ease;
+}
+
+/* Timer-only mode (ultimate prominence) */
+.scoreboard.hide-scores-control.hide-period-control:not(.view-mode) .timer-display,
+.view-mode .scoreboard.hide-scores-view.hide-period-view .timer-display {
+  font-size: clamp(12rem, 26vw, 24rem);
+  letter-spacing: 0.04em;
+}
+
+.scoreboard.hide-scores-control.hide-period-control:not(.view-mode) .timer-outline,
+.view-mode .scoreboard.hide-scores-view.hide-period-view .timer-outline {
+  padding: 70px 40px;
+  max-width: 100%;
+  min-height: 400px;
+  border-width: 5px;
+}
+
+.scoreboard.hide-scores-control.hide-period-control:not(.view-mode) .timer-block,
+.view-mode .scoreboard.hide-scores-view.hide-period-view .timer-block {
+  min-height: 70vh;
+  justify-content: center;
+  gap: 16px;
+}
+
+/* ============================================
+   CONTAINER QUERIES FOR ADAPTIVE SCALING
+   ============================================ */
+
+/* Timer block container queries */
+@container timer-block (min-width: 600px) {
+  .timer-outline {
+    padding: clamp(2.5rem, 6vh, 3.5rem) clamp(2rem, 5vw, 3rem);
+  }
+  
+  .timer-display {
+    font-size: clamp(8rem, 16cqi, 18rem);
+  }
+}
+
+@container timer-block (max-width: 400px) {
+  .timer-display {
+    font-size: clamp(4rem, 12cqi, 8rem);
+  }
+  
+  .period-label {
+    font-size: var(--font-size-base);
+  }
+}
+
+/* Scoreboard container queries */
+@container scoreboard (min-width: 1400px) {
+  .scores-section {
+    gap: clamp(3rem, 5vw, 5rem);
+  }
+  
+  .timer-block {
+    padding: var(--space-xl);
+  }
+}
+
+/* Accessibility enhancements */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Print styles */
+@media print {
+  .header-controls,
+  .timer-controls,
+  .score-btn,
+  .reset-all-btn {
+    display: none !important;
+  }
+
+  .scoreboard {
+    box-shadow: none;
+    border: 1px solid #000;
+  }
+}
+/* ============================================
+   ACCESSIBILITY & MOBILE IMPROVEMENTS
+   ============================================ */
+
+/* ============================================
+   ACCESSIBILITY & TOUCH TARGET IMPROVEMENTS
+   ============================================ */
+
+/* Improve contrast for better readability */
+:root {
+  --success-color: #22c55e;
+  --warning-color: #f59e0b;
+  --info-color: #3b82f6;
+}
+
+/* Ensure minimum touch target size (44x44px / 2.75rem) */
+.timer-btn,
+.settings-save,
+button {
+  min-height: 2.75rem;
+  min-width: 2.75rem;
+  padding: var(--space-md) var(--space-lg);
+}
+
+/* Larger touch targets for icon buttons - already set above */
+
+/* Mobile-optimized modal */
+@media (max-width: 768px) {
+  .settings-modal {
+    padding: 8px;
+  }
+  
+  .settings-content {
+    max-width: 100%;
+    width: calc(100% - 16px);
+    max-height: 95vh;
+    margin: 8px;
+    border-radius: 16px;
+  }
+  
+  /* Larger text on mobile */
+  .settings-content h2 {
+    font-size: var(--font-size-2xl);
+  }
+  
+  .settings-content h3 {
+    font-size: var(--font-size-xl);
+  }
+  
+  /* Better button layout on mobile */
+  .timer-btn,
+  .settings-save {
+    padding: var(--space-md) var(--space-lg);
+    font-size: var(--font-size-base);
+    min-height: 3rem;
+  }
+  
+  /* Stack buttons vertically on mobile */
+  .settings-section [style*="display: flex; gap: 8px;"] {
+    flex-direction: column !important;
+  }
+  
+  .settings-section [style*="display: flex; gap: 8px;"] > * {
+    width: 100% !important;
+    flex: none !important;
+  }
+}
+
+/* Improved game list for mobile */
+@media (max-width: 768px) {
+  #recentGamesList > div {
+    padding: 14px 12px !important;
+    margin-bottom: 8px !important;
+    min-height: 64px;
+  }
+  
+  /* Larger star/delete buttons */
+  #recentGamesList button {
+    min-width: 44px;
+    min-height: 44px;
+    font-size: 20px;
+    padding: 8px;
+  }
+  
+  /* Better text size in game list */
+  #recentGamesList > div > div > div:first-child {
+    font-size: 1rem !important;
+  }
+  
+  #recentGamesList > div > div > div:last-child {
+    font-size: 0.85rem !important;
+  }
+}
+
+/* Better focus indicators for accessibility */
+button:focus-visible,
+input:focus-visible,
+select:focus-visible {
+  outline: 3px solid var(--accent-primary);
+  outline-offset: 2px;
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  :root {
+    --text-primary: #ffffff;
+    --text-secondary: #d0d0d0;
+    --border: #0af2ff88;
+  }
+  
+  button {
+    border: 2px solid currentColor;
+  }
+}
+
+/* Reduced motion for accessibility */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Improved QR code section on mobile */
+@media (max-width: 768px) {
+  #qrSection [style*="display: grid"] {
+    grid-template-columns: 1fr !important;
+    gap: 24px !important;
+  }
+  
+  #qrCodeControl,
+  #qrCodeDisplay {
+    min-height: 250px !important;
+  }
+}
+
+/* Better visibility settings table on mobile */
+@media (max-width: 768px) {
+  .settings-section table {
+    font-size: 0.9rem;
+  }
+  
+  .settings-section table th,
+  .settings-section table td {
+    padding: 10px 6px !important;
+  }
+  
+  .settings-section table input[type="checkbox"] {
+    width: 24px !important;
+    height: 24px !important;
+  }
+}
+
+/* Improved input fields on mobile */
+@media (max-width: 768px) {
+  .settings-input,
+  input[type="text"],
+  input[type="number"] {
+    font-size: 1rem; /* Prevents zoom on iOS */
+    padding: var(--space-md);
+    min-height: 3rem;
+  }
+}
+
+/* Better spacing for modal sections on mobile */
+@media (max-width: 768px) {
+  .settings-section {
+    padding: var(--space-lg) var(--space-md);
+    margin-bottom: var(--space-md);
+  }
+}
+
+/* Logo Gallery Styles */
+.logo-gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(7.5rem, 1fr));
+  gap: var(--space-lg);
+  padding: var(--space-lg);
+  max-height: clamp(20rem, 50vh, 25rem);
+  overflow-y: auto;
+}
+
+.logo-gallery-item {
+  position: relative;
+  aspect-ratio: 1;
+  border: 3px solid var(--border);
+  border-radius: 0.75rem;
+  overflow: hidden;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  background: var(--bg-tertiary);
+}
+
+.logo-gallery-item:hover {
+  border-color: var(--accent-primary);
+  transform: scale(1.05);
+  box-shadow: 0 4px 12px var(--shadow-accent);
+}
+
+.logo-gallery-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  padding: var(--space-sm);
+}
+
+.logo-gallery-item .delete-logo {
+  position: absolute;
+  top: var(--space-xs);
+  right: var(--space-xs);
+  background: var(--error-color);
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 1.5rem;
+  height: 1.5rem;
+  font-size: var(--font-size-xs);
+  cursor: pointer;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 1;
+}
+
+.logo-gallery-item:hover .delete-logo {
+  display: flex;
+}
+
+.logo-gallery-item .delete-logo:hover {
+  background: #dc2626;
+}
+
+/* Smooth transitions for content updates */
+.team-name,
+.team-logo,
+.score-value,
+.timer-display,
+.period-label,
+#navbarLeagueName,
+#navbarLeagueLogo {
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.team-logo {
+  transition: opacity 0.3s ease;
+}
+
+/* Prevent layout shift during loading */
+.team-logo {
+  min-height: 5rem;
+  min-width: 5rem;
+}
+
+/* Improve button contrast */
+.timer-btn {
+  background: var(--accent-primary);
+  color: var(--bg-primary);
+  font-weight: 600;
+}
+
+.timer-btn:hover {
+  background: #00d4e4;
+  transform: translateY(-1px);
+}
+
+.settings-save {
+  background: var(--success-color);
+  color: white;
+  font-weight: 600;
+}
+
+.settings-save:hover {
+  background: #16a34a;
+}
+
+/* Better error/danger button contrast */
+[style*="background: var(--error-color)"],
+[style*="background: var(--accent-danger)"] {
+  background: #dc2626 !important;
+  color: white !important;
+  font-weight: 600;
+}
+
+/* Improve secondary button contrast */
+[style*="background: var(--accent-secondary)"] {
+  background: #f59e0b !important;
+  color: #1a1d22 !important;
+  font-weight: 600;
+}
+
+/* Fix game modal width on tablets */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .settings-content {
+    max-width: 700px;
+  }
+}
+
+/* Landscape phone optimization */
+@media (max-width: 900px) and (orientation: landscape) {
+  .settings-content {
+    max-height: 90vh;
+    overflow-y: auto;
+  }
+}
+
+/* ============================================
+   ENHANCED THEME IMPROVEMENTS
+   ============================================ */
+
+/* Dark theme enhancements */
+[data-theme="dark"] .scoreboard {
+  background: rgba(10, 14, 26, 0.6);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(6, 182, 212, 0.2);
+}
+
+[data-theme="dark"] .score-card {
+  background: linear-gradient(135deg, rgba(20, 24, 39, 0.9) 0%, rgba(26, 31, 53, 0.9) 100%);
+  border: 2px solid rgba(6, 182, 212, 0.3);
+  box-shadow: 
+    0 8px 32px rgba(0, 0, 0, 0.4),
+    0 0 40px rgba(6, 182, 212, 0.15);
+}
+
+[data-theme="dark"] .score-value {
+  text-shadow: 
+    0 0 10px var(--glow-primary),
+    0 0 20px var(--glow-secondary),
+    0 4px 8px rgba(0, 0, 0, 0.5);
+}
+
+[data-theme="dark"] .navbar {
+  background: rgba(10, 14, 26, 0.95);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(6, 182, 212, 0.3);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.4);
+}
+
+[data-theme="dark"] .settings-modal {
+  background: rgba(0, 0, 0, 0.85);
+  backdrop-filter: blur(10px);
+}
+
+[data-theme="dark"] .settings-content {
+  background: linear-gradient(135deg, rgba(20, 24, 39, 0.98) 0%, rgba(26, 31, 53, 0.98) 100%);
+  border: 1px solid rgba(6, 182, 212, 0.3);
+  box-shadow: 
+    0 20px 60px rgba(0, 0, 0, 0.6),
+    0 0 80px rgba(6, 182, 212, 0.2);
+}
+
+/* Light theme enhancements */
+[data-theme="light"] .scoreboard {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(2, 132, 199, 0.2);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+}
+
+[data-theme="light"] .score-card {
+  background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+  border: 2px solid rgba(2, 132, 199, 0.3);
+  box-shadow: 
+    0 4px 16px rgba(0, 0, 0, 0.1),
+    0 0 0 1px rgba(2, 132, 199, 0.1);
+}
+
+[data-theme="light"] .score-value {
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+[data-theme="light"] .navbar {
+  background: rgba(255, 255, 255, 0.98);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(2, 132, 199, 0.2);
+  box-shadow: 0 2px 16px rgba(0, 0, 0, 0.08);
+}
+
+[data-theme="light"] .settings-modal {
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(8px);
+}
+
+[data-theme="light"] .settings-content {
+  background: #ffffff;
+  border: 1px solid rgba(2, 132, 199, 0.2);
+  box-shadow: 
+    0 20px 60px rgba(0, 0, 0, 0.15),
+    0 0 0 1px rgba(2, 132, 199, 0.1);
+}
+
+/* Button improvements for both themes */
+[data-theme="dark"] .timer-btn {
+  background: linear-gradient(135deg, var(--accent-primary) 0%, var(--glow-secondary) 100%);
+  box-shadow: 
+    0 4px 16px rgba(6, 182, 212, 0.3),
+    0 0 20px rgba(6, 182, 212, 0.2);
+}
+
+[data-theme="dark"] .timer-btn:hover {
+  box-shadow: 
+    0 6px 20px rgba(6, 182, 212, 0.4),
+    0 0 30px rgba(6, 182, 212, 0.3);
+  transform: translateY(-2px);
+}
+
+[data-theme="light"] .timer-btn {
+  background: var(--accent-primary);
+  box-shadow: 0 4px 12px rgba(2, 132, 199, 0.25);
+}
+
+[data-theme="light"] .timer-btn:hover {
+  box-shadow: 0 6px 16px rgba(2, 132, 199, 0.35);
+  background: #0369a1;
+  transform: translateY(-2px);
+}
+
+/* Period label improvements */
+[data-theme="dark"] .period-label {
+  background: linear-gradient(135deg, rgba(6, 182, 212, 0.2) 0%, rgba(14, 165, 233, 0.2) 100%);
+  border: 1px solid rgba(6, 182, 212, 0.4);
+  text-shadow: 0 0 10px var(--glow-primary);
+}
+
+[data-theme="light"] .period-label {
+  background: rgba(2, 132, 199, 0.1);
+  border: 1px solid rgba(2, 132, 199, 0.3);
+}
+
+/* Enhanced glow effects for dark theme */
+[data-theme="dark"] .scoreboard.isRunning .timer-outline {
+  border-color: var(--glow-primary);
+  animation: timerPulse 2s ease-in-out infinite;
+  box-shadow: 
+    0 0 25px 8px var(--glow-primary),
+    0 0 50px 12px var(--shadow-accent),
+    0 4px 20px var(--shadow-color);
+}
+
+@keyframes timerPulse {
+  0%, 100% {
+    box-shadow: 
+      0 0 25px 8px var(--glow-primary),
+      0 0 50px 12px var(--shadow-accent),
+      0 4px 20px var(--shadow-color);
+  }
+  50% {
+    box-shadow: 
+      0 0 35px 12px var(--glow-primary),
+      0 0 70px 18px var(--shadow-accent),
+      0 4px 20px var(--shadow-color);
+  }
+}
+
+/* Light theme running state */
+[data-theme="light"] .scoreboard.isRunning .timer-outline {
+  border-color: var(--accent-primary);
+  box-shadow: 
+    0 8px 32px rgba(2, 132, 199, 0.3),
+    0 0 0 3px var(--accent-primary);
+}
+
+/* View Mode Mobile Optimizations */
+@media (max-width: 900px) {
+  .view-mode .timer-outline {
+    padding: 20px 12px !important;
+    border-width: 4px;
+    max-width: 88vw;
+    container-type: inline-size;
+  }
+  
+  .view-mode .timer-display {
+    font-size: 18cqi !important;
+    letter-spacing: -0.02em;
+    width: 100%;
+  }
+  
+  .view-mode .timer-block {
+    gap: 8px;
+    padding: 8px;
+    min-height: 300px;
+    flex: 2;
+  }
+  
+  .view-mode .scoreboard {
+    padding: 8px;
+  }
+  
+  /* When scores are hidden on mobile, make timer fit screen */
+  .view-mode .scoreboard.hide-scores-view .timer-outline {
+    padding: 25px 14px !important;
+    max-width: 88vw;
+    container-type: inline-size;
+  }
+  
+  .view-mode .scoreboard.hide-scores-view .timer-display {
+    font-size: 20cqi !important;
+    letter-spacing: -0.02em;
+    width: 100%;
+  }
+  
+  /* When both scores and period hidden on mobile */
+  .view-mode .scoreboard.hide-scores-view.hide-period-view .timer-outline {
+    padding: 30px 14px !important;
+    max-width: 88vw;
+    container-type: inline-size;
+  }
+  
+  .view-mode .scoreboard.hide-scores-view.hide-period-view .timer-display {
+    font-size: 22cqi !important;
+    letter-spacing: -0.02em;
+    width: 100%;
+  }
+}
+
+/* ============================================
+   VIEWER COUNT BADGE
+   ============================================ */
+
+.viewer-count-badge {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-color);
+  border-radius: 0.5rem;
+  padding: var(--space-sm) var(--space-md);
+  color: var(--accent-primary);
+  cursor: default;
+  transition: all 0.2s;
+  font-family: "Inter", sans-serif;
+  min-height: 2.75rem;
+}
+
+.viewer-count-badge:hover {
+  background: rgba(56, 189, 248, 0.1);
+  border-color: var(--accent-primary);
+  box-shadow: 0 0 12px rgba(56, 189, 248, 0.2);
+}
+
+.viewer-count-badge svg {
+  flex-shrink: 0;
+}
+
+.viewer-count-badge #viewerCountText {
+  font-size: var(--font-size-base);
+  font-weight: 700;
+  color: var(--text-primary);
+  min-width: 1.5rem;
+  text-align: center;
+}
+
+/* Pulsing animation when count changes */
+@keyframes pulse-glow {
+  0%, 100% {
+    box-shadow: 0 0 0 rgba(56, 189, 248, 0);
+  }
+  50% {
+    box-shadow: 0 0 12px rgba(56, 189, 248, 0.4);
+  }
+}
+
+.viewer-count-badge.updated {
+  animation: pulse-glow 0.6s ease;
+}
+
+/* Mobile responsive */
+@media (max-width: 640px) {
+  .viewer-count-badge {
+    padding: var(--space-xs) var(--space-sm);
+    min-height: 2.5rem;
+  }
+  
+  .viewer-count-badge #viewerCountText {
+    font-size: var(--font-size-sm);
+  }
+}

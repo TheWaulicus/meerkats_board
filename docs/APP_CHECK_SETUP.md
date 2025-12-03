@@ -20,6 +20,7 @@ Firebase App Check protects your app from billing abuse, phishing, and unauthori
    - **reCAPTCHA type**: Select **"reCAPTCHA v3"**
    - **Domains**: Add:
      - `thewaulicus.github.io`
+     - `meerkats-74de5.web.app`
      - `localhost` (for testing)
 4. Accept terms and click **Submit**
 5. Copy your **Site Key** (starts with `6L...`)

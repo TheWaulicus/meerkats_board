@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Juicebox League - Hockey Scoreboard Control Interface">
+  <title>Juicebox League - Control</title>
+  
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="assets/images/juice_box.png">
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&family=Orbitron:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  
+  <!-- Styles -->
+  <link rel="stylesheet" href="css/scoreboard.css">
+  
+  <!-- Firebase SDKs v8 (better CDN support) -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-storage.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app-check.js"></script>
+  
+  <!-- QR Code Library -->
+  <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+</head>
+<body data-theme="dark">
+  
+  <!-- Login Modal -->
+  <div id="loginModal" class="settings-modal" style="display: none" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="loginHeading">
+    <div class="settings-content" style="max-width: 500px;">
+      <h2 id="loginHeading">🔒 Operator Login</h2>
+      
+      <p style="color: var(--text-secondary); margin-bottom: 24px;">
+        Authentication required to access control interface.
+      </p>
+      
+      <form id="loginForm" onsubmit="event.preventDefault(); handleLogin();">
+        <div class="settings-section">
+          <label for="loginEmail">Email</label>
+          <input type="email" id="loginEmail" class="settings-input" placeholder="operator@example.com" required autofocus />
+        </div>
+        
+        <div class="settings-section">
+          <label for="loginPassword">Password</label>
+          <input type="password" id="loginPassword" class="settings-input" placeholder="Enter password" required />
+        </div>
+        
+        <div id="loginError" style="display: none; color: var(--error-color); padding: 12px; background: rgba(220, 38, 38, 0.1); border-radius: 8px; margin-bottom: 16px;">
+        </div>
+        
+        <button type="submit" id="loginButton" class="settings-save" style="width: 100%;">
+          Login
+        </button>
+      </form>
+      
+      <div style="margin-top: 24px; padding: 16px; background: var(--bg-tertiary); border-radius: 8px; border-left: 4px solid var(--accent-primary);">
+        <p style="font-size: 0.9em; color: var(--text-secondary); margin: 0;">
+          <strong>💡 First time?</strong> You need to create an operator account in Firebase Console first. See README for instructions.
+        </p>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Game Manager Modal -->
+  <div id="gameModal" class="settings-modal" style="display: none" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="gameHeading">
+    <div class="settings-content">
+      <button class="settings-close" onclick="toggleGameModal(false)" type="button" aria-label="Close game manager">
+        &times;
+      </button>
+      <h2 id="gameHeading">Game Selection</h2>
+      
+      <!-- Current Game Info -->
+      <div class="settings-section">
+        <label for="gameNameInput">Game Name</label>
+        <input type="text" id="gameNameInput" class="settings-input" placeholder="Enter game name (e.g., Meerkats vs Tigers)" maxlength="50" />
+        <p style="font-size: 0.85em; color: var(--text-secondary); margin-top: 4px;">
+          Game ID: <span id="currentGameIdDisplay" style="font-family: monospace; color: var(--text-primary);">MAIN</span>
+        </p>
+      </div>
+      
+      <!-- Share Links -->
+      <div class="settings-section">
+        <label>Share Links</label>
+        <div style="display: flex; gap: 8px; align-items: center; margin-bottom: 12px;">
+          <button class="timer-btn" onclick="copyControlLink()" title="Copy control link" style="flex: 1;">📋 Control</button>
+          <button class="timer-btn" onclick="copyDisplayLink()" title="Copy display link" style="flex: 1;">📺 Display</button>
+        </div>
+        <div style="display: flex; gap: 8px; align-items: center;">
+          <button class="timer-btn" onclick="toggleShortUrlsSection()" style="flex: 1; background: var(--success-color);">
+            🔗 Get Short Links
+          </button>
+          <button class="timer-btn" onclick="toggleQRSection()" style="flex: 1; background: var(--accent-secondary);">
+            📱 QR Codes
+          </button>
+        </div>
+      </div>
+      
+      <!-- Short URLs Section (Initially Hidden) -->
+      <div class="settings-section" id="shortUrlsSection" style="display: none;">
+        <label>🔗 Short Links (via TinyURL)</label>
+        <div id="shortUrlsContainer">
+          <!-- Short URLs will be generated here -->
+        </div>
+      </div>
+      
+      <!-- QR Codes Section (Initially Hidden) -->
+      <div class="settings-section" id="qrSection" style="display: none;">
+        <label>QR Codes for Quick Access</label>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 12px;">
+          <!-- Control QR -->
+          <div style="text-align: center;">
+            <p style="font-size: 0.9em; font-weight: 600; margin-bottom: 8px;">📋 Control</p>
+            <div id="qrCodeControl" style="min-height: 200px; display: flex; align-items: center; justify-content: center; background: white; padding: 10px; border-radius: 8px;"></div>
+            <button class="timer-btn" onclick="downloadQRCode('qrCodeControl', 'meerkats-control-qr.png')" style="margin-top: 8px; width: 100%; font-size: 0.85em;">
+              ⬇️ Download
+            </button>
+          </div>
+          
+          <!-- Display QR -->
+          <div style="text-align: center;">
+            <p style="font-size: 0.9em; font-weight: 600; margin-bottom: 8px;">📺 Display</p>
+            <div id="qrCodeDisplay" style="min-height: 200px; display: flex; align-items: center; justify-content: center; background: white; padding: 10px; border-radius: 8px;"></div>
+            <button class="timer-btn" onclick="downloadQRCode('qrCodeDisplay', 'meerkats-display-qr.png')" style="margin-top: 8px; width: 100%; font-size: 0.85em;">
+              ⬇️ Download
+            </button>
+          </div>
+        </div>
+        
+        <button class="settings-save" onclick="printQRCodes()" style="width: 100%;">
+          🖨️ Print QR Codes
+        </button>
+        
+        <p style="font-size: 0.85em; color: var(--text-secondary); margin-top: 8px; text-align: center;">
+          Scan QR codes with a phone to quickly access the scoreboard
+        </p>
+      </div>
+      
+      <!-- Recent Games -->
+      <div class="settings-section" id="recentGamesSection">
+        <label>Recent Games</label>
+        <div id="recentGamesList" style="max-height: 200px; overflow-y: auto; border: 1px solid var(--border); border-radius: 8px; padding: 8px;">
+          <p style="text-align: center; color: var(--text-secondary); padding: 16px;">No recent games</p>
+        </div>
+      </div>
+      
+      <!-- Create/Join Actions -->
+      <div class="settings-section">
+        <button class="settings-save" onclick="createNewGame()" style="background: var(--accent-secondary); width: 100%;">
+          🆕 Create New Game
+        </button>
+      </div>
+      
+      <div class="settings-section">
+        <label for="joinGameInput">Join Existing Game</label>
+        <div style="display: flex; gap: 8px;">
+          <input type="text" id="joinGameInput" class="settings-input" placeholder="Enter game ID (e.g., game-ABC123)" style="flex: 1;" />
+          <button class="settings-save" onclick="joinExistingGame()" style="width: auto; padding: 12px 24px;">
+            Join
+          </button>
+        </div>
+      </div>
+      
+      <!-- Game Actions -->
+      <div class="settings-section" style="border-top: 2px solid var(--border); padding-top: 16px;">
+        <button class="timer-btn" onclick="exportCurrentGame()" style="width: 100%; margin-bottom: 8px;">
+          💾 Export Game Data
+        </button>
+        <button class="timer-btn" onclick="showResetModal()" style="background: var(--error-color); width: 100%;">
+          🔄 Reset Game
+        </button>
+      </div>
+      
+      <div class="settings-section" style="background: var(--bg-tertiary); padding: 12px; border-radius: 8px; margin-top: 16px;">
+        <p style="font-size: 0.9em; color: var(--text-secondary); margin: 0;">
+          💡 <strong>Tip:</strong> Each game has a unique ID. Multiple games can run simultaneously without interfering with each other.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Reset Confirmation Modal -->
+  <div id="resetModal" class="settings-modal" style="display: none" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="resetHeading">
+    <div class="settings-content" style="max-width: 500px;">
+      <button class="settings-close" onclick="toggleResetModal(false)" type="button" aria-label="Close reset dialog">
+        &times;
+      </button>
+      <h2 id="resetHeading" style="color: var(--error-color);">⚠️ Reset Game</h2>
+      
+      <p style="margin-bottom: 16px; color: var(--text-secondary);">
+        Choose what to reset. Game ID and name will be preserved.
+      </p>
+      
+      <div class="settings-section">
+        <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+          <input type="checkbox" id="resetScores" checked style="width: 20px; height: 20px;" />
+          <span>Reset Scores & Shots</span>
+        </label>
+      </div>
+      
+      <div class="settings-section">
+        <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+          <input type="checkbox" id="resetTimer" checked style="width: 20px; height: 20px;" />
+          <span>Reset Timer & Period</span>
+        </label>
+      </div>
+      
+      <div class="settings-section">
+        <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+          <input type="checkbox" id="resetPenalties" checked style="width: 20px; height: 20px;" />
+          <span>Reset Penalties</span>
+        </label>
+      </div>
+      
+      <div class="settings-section">
+        <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+          <input type="checkbox" id="resetTeams" style="width: 20px; height: 20px;" />
+          <span>Reset Team Names & Logos</span>
+        </label>
+      </div>
+      
+      <div class="settings-section">
+        <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+          <input type="checkbox" id="resetSettings" style="width: 20px; height: 20px;" />
+          <span>Reset League Settings</span>
+        </label>
+      </div>
+      
+      <div style="display: flex; gap: 8px; margin-top: 24px;">
+        <button class="timer-btn" onclick="toggleResetModal(false)" style="flex: 1; background: var(--bg-secondary);">
+          Cancel
+        </button>
+        <button class="settings-save" onclick="confirmResetGame()" style="flex: 1; background: var(--error-color);">
+          Reset Game
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Settings Modal -->
+  <div id="settingsModal" class="settings-modal" style="display: none" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="settingsHeading">
+    <div class="settings-content">
+      <button id="settingsCloseButton" class="settings-close" onclick="toggleSettings(false)" type="button" aria-label="Close settings">
+        &times;
+      </button>
+      <h2 id="settingsHeading">Settings</h2>
+      <form id="settingsForm" onsubmit="event.preventDefault(); applySettings();">
+        <div class="settings-tabs" role="tablist">
+          <button type="button" class="settings-tab-button active" data-settings-tab="branding" id="settings-tab-branding" aria-controls="settings-panel-branding" aria-selected="true">Branding</button>
+          <button type="button" class="settings-tab-button" data-settings-tab="teams" id="settings-tab-teams" aria-controls="settings-panel-teams" aria-selected="false">Teams</button>
+          <button type="button" class="settings-tab-button" data-settings-tab="visibility" id="settings-tab-visibility" aria-controls="settings-panel-visibility" aria-selected="false">Visibility</button>
+          <button type="button" class="settings-tab-button" data-settings-tab="advanced" id="settings-tab-advanced" aria-controls="settings-panel-advanced" aria-selected="false">Advanced</button>
+        </div>
+
+        <div class="settings-tab-panels">
+          <div class="settings-tab-panel active" data-settings-panel="branding" id="settings-panel-branding" role="tabpanel" aria-labelledby="settings-tab-branding">
+            <div class="settings-section">
+              <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; justify-content: space-between;">
+                <span style="font-weight: 600; color: var(--text-secondary);">Theme</span>
+                <button id="themeToggleButtonInSettings" class="theme-toggle-inline" onclick="event.preventDefault(); toggleTheme();" title="Toggle Light/Dark Mode" aria-label="Toggle light or dark theme" type="button">
+                  <svg class="theme-icon sun-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="5"/>
+                    <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
+                  </svg>
+                  <svg class="theme-icon moon-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+                  </svg>
+                </button>
+              </label>
+            </div>
+
+            <div class="settings-section">
+              <label for="leagueNameInput">League Name</label>
+              <input type="text" id="leagueNameInput" class="settings-input" placeholder="Enter league name" />
+            </div>
+
+            <div class="settings-section">
+              <label for="leagueLogoInput">League Logo</label>
+              <div class="settings-field-row">
+                <button type="button" class="settings-save" onclick="openLogoGallery('league')" style="flex: 1; background: var(--accent-secondary);">
+                  📁 Choose from Gallery
+                </button>
+                <input type="file" accept="image/*" id="leagueLogoInput" class="settings-file" style="display: none;" />
+                <button type="button" class="settings-save" onclick="document.getElementById('leagueLogoInput').click()" style="flex: 1;">
+                  ⬆️ Upload New
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div class="settings-tab-panel" data-settings-panel="teams" id="settings-panel-teams" role="tabpanel" aria-labelledby="settings-tab-teams" aria-hidden="true">
+            <div class="settings-section">
+              <label for="teamANameInput">Home Team Name</label>
+              <input type="text" id="teamANameInput" class="settings-input" placeholder="Enter home team name" />
+            </div>
+
+            <div class="settings-section">
+              <label for="teamALogoInput">Home Team Logo</label>
+              <div class="settings-field-row">
+                <button type="button" class="settings-save" onclick="openLogoGallery('teamA')" style="flex: 1; background: var(--accent-secondary);">
+                  📁 Choose from Gallery
+                </button>
+                <input type="file" accept="image/*" id="teamALogoInput" class="settings-file" style="display: none;" />
+                <button type="button" class="settings-save" onclick="document.getElementById('teamALogoInput').click()" style="flex: 1;">
+                  ⬆️ Upload New
+                </button>
+              </div>
+            </div>
+
+            <div class="settings-section">
+              <label for="teamBNameInput">Away Team Name</label>
+              <input type="text" id="teamBNameInput" class="settings-input" placeholder="Enter away team name" />
+            </div>
+
+            <div class="settings-section">
+              <label for="teamBLogoInput">Away Team Logo</label>
+              <div class="settings-field-row">
+                <button type="button" class="settings-save" onclick="openLogoGallery('teamB')" style="flex: 1; background: var(--accent-secondary);">
+                  📁 Choose from Gallery
+                </button>
+                <input type="file" accept="image/*" id="teamBLogoInput" class="settings-file" style="display: none;" />
+                <button type="button" class="settings-save" onclick="document.getElementById('teamBLogoInput').click()" style="flex: 1;">
+                  ⬆️ Upload New
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div class="settings-tab-panel" data-settings-panel="visibility" id="settings-panel-visibility" role="tabpanel" aria-labelledby="settings-tab-visibility" aria-hidden="true">
+            <div class="settings-section">
+              <h3>Visibility Settings</h3>
+              <p class="settings-help" style="margin-bottom: var(--space-lg);">
+                Control which elements appear on the <strong>📋 Control Interface</strong> and the <strong>📺 Display Interface</strong>. Toggle them independently.
+              </p>
+
+              <div class="visibility-grid" id="visibilityGrid">
+                <!-- Cards injected here -->
+              </div>
+
+              <div class="visibility-tip">
+                <p>
+                  <strong>💡 Tip:</strong> Use display toggles to hide elements from the audience while keeping them on your controller.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div class="settings-tab-panel" data-settings-panel="advanced" id="settings-panel-advanced" role="tabpanel" aria-labelledby="settings-tab-advanced" aria-hidden="true">
+            <div class="settings-section">
+              <label for="defaultPeriodLengthInput">Default Period Length (minutes)</label>
+              <input type="number" id="defaultPeriodLengthInput" class="settings-input" min="1" max="60" step="1" placeholder="18" />
+              <p class="settings-help">Used when resetting the timer or creating new games.</p>
+            </div>
+
+            <div class="settings-section">
+              <label for="autoHornToggle" style="display: flex; align-items: center; gap: 8px;">
+                <input type="checkbox" id="autoHornToggle" class="settings-checkbox" />
+                <span>Auto buzzer each minute</span>
+              </label>
+              <p class="settings-help">Turn off if you only want buzzers at 0:00.</p>
+            </div>
+
+            <div class="settings-section">
+              <label for="syncPrecisionSelect">Timer Sync Precision</label>
+              <select id="syncPrecisionSelect" class="settings-input">
+                <option value="100">High (100ms updates)</option>
+                <option value="250">Balanced (250ms)</option>
+                <option value="500">Battery saver (500ms)</option>
+              </select>
+              <p class="settings-help">Higher precision keeps displays in tighter sync at the cost of more updates.</p>
+            </div>
+
+            <div class="settings-section">
+              <label>Game Management</label>
+              <div class="settings-field-row">
+                <button type="button" class="timer-btn" onclick="exportCurrentGame()" style="flex: 1;">
+                  💾 Export Game Data
+                </button>
+                <button type="button" class="timer-btn" onclick="showResetModal()" style="flex: 1; background: var(--error-color);">
+                  🔄 Reset Game
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <button type="submit" class="settings-save">Save Settings</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Fixed Navbar -->
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <img src="assets/images/juice_box.png" alt="League Logo" class="navbar-logo" id="navbarLeagueLogo" onerror="this.style.display='none'" />
+      <span class="navbar-title" id="navbarLeagueName">Juice Box Hockey</span>
+    </div>
+    <div class="navbar-game-id">
+      <span class="game-id-label">Game:</span>
+      <span class="game-id-display" id="currentGameId">MAIN</span>
+      <button class="game-btn" onclick="toggleGameModal(true)" title="Manage Game" aria-label="Manage game">
+        🎮
+      </button>
+    </div>
+    <div class="header-controls">
+      <!-- Viewer Count Badge -->
+      <div class="viewer-count-badge" id="viewerCountBadge" title="Active viewers">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+          <circle cx="12" cy="12" r="3"></circle>
+        </svg>
+        <span id="viewerCountText">0</span>
+      </div>
+      
+      <a href="view.html" class="navbar-link" title="Open Display View" aria-label="Open display view" target="_blank">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+          <line x1="8" y1="21" x2="16" y2="21"></line>
+          <line x1="12" y1="17" x2="12" y2="21"></line>
+        </svg>
+        <span class="navbar-link-text">Display</span>
+      </a>
+      <button id="settingsOpenButton" class="settings-open" onclick="toggleSettings(true)" title="Settings" aria-label="Open settings" type="button">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="3" />
+          <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 8 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 5 15.4a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 8a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 8 4.6a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09c0 .66.39 1.25 1 1.51a1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09c-.66 0-1.25.39-1.51 1z"/>
+        </svg>
+      </button>
+    </div>
+  </nav>
+
+  <!-- Main Scoreboard -->
+  <div class="scoreboard">
+
+    <!-- Timer Block -->
+    <div class="timer-block">
+      <!-- Period Controls -->
+      <div class="timer-controls">
+        <button class="timer-btn period-btn" onclick="changePeriod(-1)" aria-label="Decrease period">-</button>
+        <span class="period-label" id="periodLabel">Period 1</span>
+        <button class="timer-btn period-btn" onclick="changePeriod(1)" aria-label="Increase period">+</button>
+        <button class="timer-btn period-btn" onclick="advancePhase()" aria-label="Advance game phase" type="button">Advance Phase</button>
+      </div>
+
+      <!-- Timer Display -->
+      <div class="timer-outline">
+        <input type="text" id="timerDisplay" class="timer-display" value="18:00" maxlength="5" aria-describedby="timerLiveRegion" />
+        <span id="timerLiveRegion" class="visually-hidden" aria-live="polite">Timer set to 18 minutes</span>
+      </div>
+
+      <!-- Timer Controls -->
+      <div class="timer-controls">
+        <button class="timer-btn" onclick="startTimer()" aria-label="Start timer">Start</button>
+        <button class="timer-btn" onclick="stopTimer()" aria-label="Stop timer">Stop</button>
+        <button class="timer-btn" onclick="resetTimer()" aria-label="Reset timer">Reset</button>
+      </div>
+
+      <!-- Reset All -->
+      <div style="margin-top: 12px;">
+        <button class="timer-btn reset-all-btn" onclick="resetAll()" aria-label="Reset all scoreboard data">Reset All</button>
+      </div>
+    </div>
+
+    <!-- Scores Section -->
+    <div class="scores-section">
+      <!-- Home Team (Team A) -->
+      <div class="team-score">
+        <img src="" alt="Home Team Logo" class="team-logo" id="teamALogo" onerror="this.onerror=null;this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'200\' height=\'200\' viewBox=\'0 0 200 200\'><rect width=\'200\' height=\'200\' rx=\'32\' fill=\'%23e3e9f4\'/><text x=\'50%\' y=\'54%\' text-anchor=\'middle\' font-size=\'80\' fill=\'%2399aabb\' font-family=\'Arial, sans-serif\' dy=\'.3em\'>H</text></svg>'" />
+        <span class="team-name" id="teamAName">Home Team</span>
+        <div class="score-row">
+          <button class="score-btn" onclick="updateScore('A', -1)" aria-label="Decrease home team score">-</button>
+          <span class="score-value" id="teamAScore">0</span>
+          <button class="score-btn" onclick="updateScore('A', 1)" aria-label="Increase home team score">+</button>
+        </div>
+      </div>
+
+
+      <!-- Away Team (Team B) -->
+      <div class="team-score">
+        <img src="" alt="Away Team Logo" class="team-logo" id="teamBLogo" onerror="this.onerror=null;this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'200\' height=\'200\' viewBox=\'0 0 200 200\'><rect width=\'200\' height=\'200\' rx=\'32\' fill=\'%23e3e9f4\'/><text x=\'50%\' y=\'54%\' text-anchor=\'middle\' font-size=\'80\' fill=\'%2399aabb\' font-family=\'Arial, sans-serif\' dy=\'.3em\'>A</text></svg>'" />
+        <span class="team-name" id="teamBName">Away Team</span>
+        <div class="score-row">
+          <button class="score-btn" onclick="updateScore('B', -1)" aria-label="Decrease away team score">-</button>
+          <span class="score-value" id="teamBScore">0</span>
+          <button class="score-btn" onclick="updateScore('B', 1)" aria-label="Increase away team score">+</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Logo Gallery Modal -->
+  <div id="logoGalleryModal" class="settings-modal" style="display: none" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="logoGalleryHeading">
+    <div class="settings-content" style="max-width: 700px;">
+      <button class="settings-close" onclick="closeLogoGallery()" type="button" aria-label="Close logo gallery">
+        &times;
+      </button>
+      <h2 id="logoGalleryHeading">Choose Logo</h2>
+      
+      <div class="settings-section">
+        <div id="logoGalleryGrid" class="logo-gallery-grid">
+          <!-- Logo thumbnails will be dynamically inserted here -->
+        </div>
+        <p id="logoGalleryEmpty" style="text-align: center; color: var(--text-secondary); padding: 40px; display: none;">
+          No logos in gallery yet. Upload one to get started!
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Firebase Config -->
+  <script src="src/firebase-config.js"></script>
+  
+  <!-- Presence Tracking -->
+  <script src="src/presence.js"></script>
+  
+  <!-- Game History Manager -->
+  <script src="src/game-history.js"></script>
+  
+  <!-- Game Manager -->
+  <script src="src/game-manager.js"></script>
+  
+  <!-- QR Code Generator -->
+  <script src="src/qr-generator.js"></script>
+  
+  <!-- Game Cleanup -->
+  <script src="src/game-cleanup.js"></script>
+  
+  <!-- URL Shortener -->
+  <script src="src/url-shortener.js"></script>
+  
+  <!-- Scoreboard Logic -->
+  <script src="src/scoreboard.js"></script>
+  
+  <!-- Authentication Script -->
+  <script>
+    // Check authentication state on page load
+    firebase.auth().onAuthStateChanged((user) => {
+      const loginModal = document.getElementById('loginModal');
+      
+      if (user) {
+        // User is signed in
+        console.log('Authenticated as:', user.email || user.uid);
+        loginModal.style.display = 'none';
+        
+        // Show logout option in navbar (optional)
+        if (user.email) {
+          const navbar = document.querySelector('.header-controls');
+          if (navbar && !document.getElementById('logoutBtn')) {
+            const logoutBtn = document.createElement('button');
+            logoutBtn.id = 'logoutBtn';
+            logoutBtn.className = 'navbar-link';
+            logoutBtn.innerHTML = '🚪 Logout';
+            logoutBtn.title = 'Sign out: ' + user.email;
+            logoutBtn.onclick = handleLogout;
+            navbar.appendChild(logoutBtn);
+          }
+        }
+      } else {
+        // User is signed out - show login modal
+        loginModal.style.display = 'flex';
+        loginModal.setAttribute('aria-hidden', 'false');
+      }
+    });
+
+    // Handle login
+    async function handleLogin() {
+      const email = document.getElementById('loginEmail').value;
+      const password = document.getElementById('loginPassword').value;
+      const loginButton = document.getElementById('loginButton');
+      const loginError = document.getElementById('loginError');
+      
+      // Disable button and show loading
+      loginButton.disabled = true;
+      loginButton.textContent = 'Signing in...';
+      loginError.style.display = 'none';
+      
+      try {
+        await signInWithEmail(email, password);
+        // Success - modal will close automatically via onAuthStateChanged
+      } catch (error) {
+        console.error('Login error:', error);
+        
+        // Show user-friendly error message
+        let errorMessage = 'Login failed. ';
+        switch (error.code) {
+          case 'auth/invalid-email':
+            errorMessage += 'Invalid email address.';
+            break;
+          case 'auth/user-disabled':
+            errorMessage += 'This account has been disabled.';
+            break;
+          case 'auth/user-not-found':
+            errorMessage += 'No account found with this email.';
+            break;
+          case 'auth/wrong-password':
+            errorMessage += 'Incorrect password.';
+            break;
+          case 'auth/invalid-credential':
+            errorMessage += 'Invalid email or password.';
+            break;
+          default:
+            errorMessage += error.message;
+        }
+        
+        loginError.textContent = errorMessage;
+        loginError.style.display = 'block';
+      } finally {
+        // Re-enable button
+        loginButton.disabled = false;
+        loginButton.textContent = 'Login';
+      }
+    }
+
+    // Handle logout
+    async function handleLogout() {
+      if (confirm('Are you sure you want to sign out?')) {
+        try {
+          await signOut();
+          // Page will reload or show login modal
+        } catch (error) {
+          console.error('Logout error:', error);
+          alert('Failed to sign out: ' + error.message);
+        }
+      }
+    }
+  </script>
+
+</body>
+</html>
