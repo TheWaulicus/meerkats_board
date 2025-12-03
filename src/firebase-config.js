@@ -6,7 +6,7 @@
 const firebaseConfig = {
   apiKey: "AIzaSyAlH1akwhAgGwAN8ll2Q5Ytyg0izzVogsM",
   authDomain: "meerkats-74de5.firebaseapp.com",
-  databaseURL: "https://meerkats-74de5-default-rtdb.firebaseio.com",
+  databaseURL: "https://meerkats-74de5-default-rtdb.asia-southeast1.firebasedatabase.app",
   projectId: "meerkats-74de5",
   storageBucket: "meerkats-74de5.firebasestorage.app",
   messagingSenderId: "1035049140619",
