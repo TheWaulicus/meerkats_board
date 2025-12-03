@@ -55,15 +55,18 @@ if (!initializeStorage()) {
   }, 100);
 }
 
-// Initialize Firebase App Check (temporarily disabled)
+// Initialize Firebase App Check (production key)
 if (typeof firebase !== 'undefined' && firebase.appCheck) {
-  console.warn('⚠️ Firebase App Check temporarily disabled on hosting build');
-  // const appCheck = firebase.appCheck();
-  // appCheck.activate(
-  //   new firebase.appCheck.ReCaptchaV3Provider('6LfO1PsrAAAAAG1tPsUfbTFg-HW-hdozR4WD8yKJ'),
-  //   true // Auto-refresh tokens
-  // );
-  // console.log('✅ Firebase App Check activated - protection enabled');
+  try {
+    const appCheck = firebase.appCheck();
+    appCheck.activate(
+      new firebase.appCheck.ReCaptchaV3Provider('6Lcq3x8sAAAAAE6WzmGyli64QH1iE4_60__6PTkS'),
+      true
+    );
+    console.log('✅ Firebase App Check activated with reCAPTCHA v3');
+  } catch (error) {
+    console.error('❌ Error initializing App Check:', error);
+  }
 } else {
   console.warn('⚠️ Firebase App Check SDK not available');
 }
