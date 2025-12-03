@@ -174,6 +174,11 @@ If you map a custom domain, update your onboarding docs and ensure Firebase Auth
 - GitHub Actions workflow (`.github/workflows/firebase-hosting.yml`) handles dry-run previews for feature branches and full deploys on `main`
 - Operators without CI access can still deploy manually via `firebase deploy` if they have Firebase CLI access
 
+### Game picker behavior
+- The Game Manager modal now lists every game from the Firestore `scoreboards` collection (not just local history)
+- Make sure Firestore rules permit read access for operators or anonymous display users as needed
+- Favorites still sync locally; the star icon only affects your local history view for now
+
 ---
 
 ## 🐛 Troubleshooting
