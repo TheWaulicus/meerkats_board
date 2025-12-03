@@ -411,7 +411,6 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 
   setupSettingsTabs();
-  updateSyncInterval();
   initializeAdvancedSettingsForm();
 });
 
@@ -729,6 +728,18 @@ function populateVisibilityGrid() {
 
     grid.appendChild(card);
   });
+}
+
+function updateSyncInterval() {
+  if (window.__syncIntervalId) {
+    clearInterval(window.__syncIntervalId);
+  }
+
+  window.__syncIntervalId = setInterval(() => {
+    if (timerRunning) {
+      saveStateToFirestore();
+    }
+  }, advancedSettings.syncPrecisionMs);
 }
 
 /**
@@ -1139,7 +1150,6 @@ function loadStateFromSnapshot(snapshot, isFromCache = false) {
         timerSeconds = advancedSettings.defaultPeriodMinutes * 60;
         updateTimerDisplay();
       }
-      updateSyncInterval();
     }
   }
   
