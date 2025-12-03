@@ -2,20 +2,14 @@ name: Firebase Hosting CI
 
 on:
   push:
-    branches-ignore:
-      - main
+    branches:
+      - '**'
   pull_request:
     types: [opened, synchronize, reopened]
-    branches-ignore:
-      - main
-  push:
-    branches:
-      - main
-    types: [merged]
 
 jobs:
   preview:
-    if: github.event_name != 'push' || github.ref != 'refs/heads/main'
+    if: github.ref != 'refs/heads/main'
     runs-on: ubuntu-latest
 
     steps:
@@ -39,7 +33,7 @@ jobs:
           firebase hosting:channel:deploy preview-${{ github.run_id }} --project meerkats-74de5 --non-interactive --expires 7d --token "${{ secrets.FIREBASE_TOKEN }}"
 
   deploy_prod:
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
 
     steps:
