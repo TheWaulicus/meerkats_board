@@ -32,7 +32,7 @@ function setTeamLogoElement(elementId, logoUrl) {
   }
 }
 
-let leagueName = "Juicebox League";
+let leagueName = "Juicebox Hockey";
 let leagueLogo = "assets/images/juice_box.png";
 let advancedSettings = {
   defaultPeriodMinutes: 18,
@@ -1354,6 +1354,15 @@ function copyDisplayLink() {
   if (window.GameManager) {
     window.GameManager.copyGameUrl(gameId, true);
   }
+}
+
+function openDisplayView(event) {
+  if (event) {
+    event.preventDefault();
+  }
+  const gameId = window.GameManager ? window.GameManager.getCurrentGameId() : 'main';
+  const url = window.GameManager ? window.GameManager.getGameUrl(gameId, true) : `view.html?game=${gameId}`;
+  window.open(url, '_blank', 'noopener');
 }
 
 /**
