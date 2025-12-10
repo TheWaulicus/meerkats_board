@@ -17,22 +17,8 @@ const firebaseConfig = {
 // Initialize Firebase
 firebase.initializeApp(firebaseConfig);
 
-// Initialize Firebase App Check (skip on preview hosts)
-const shouldEnableAppCheck = typeof window !== 'undefined' && !window.location.hostname.includes('preview-');
-if (shouldEnableAppCheck && typeof firebase !== 'undefined' && firebase.appCheck) {
-  try {
-    const appCheck = firebase.appCheck();
-    appCheck.activate(
-      new firebase.appCheck.ReCaptchaV3Provider('6LcpLiAsAAAAACZdd-fwzYWPunKRLQXDTF9B4ufE'),
-      true
-    );
-    console.log('✅ Firebase App Check activated with reCAPTCHA v3');
-  } catch (error) {
-    console.error('❌ Error initializing App Check:', error);
-  }
-} else {
-  console.warn('⚠️ Firebase App Check disabled for this host (preview or SDK unavailable)');
-}
+// Firebase App Check disabled (pending reconfiguration)
+console.warn('⚠️ Firebase App Check temporarily disabled on all hosts');
 
 // Initialize Firestore
 const db = firebase.firestore();
