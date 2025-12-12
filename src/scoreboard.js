@@ -81,6 +81,8 @@ let isLocalUpdate = false;
 let lastBeepSecond = -1; // Track last beep to avoid duplicates
 let audioContext = null;
 let hasPlayedEndBuzzers = false;
+let lastBuzzerEventId = null;
+let lastSeenBuzzerEventId = null;
 
 // ============================================================================
 // AUDIO SYSTEM - Web Audio API
@@ -193,7 +195,7 @@ function loadAudioFiles() {
 /**
  * Play a traditional hockey buzzer sound (file or synthesized)
  */
-function playBuzzer() {
+function playBuzzer(triggerRemote = true) {
   console.log('playBuzzer called. buzzerAudio:', buzzerAudio, 'src:', buzzerAudio?.src);
   
   // Try to play audio file first
@@ -213,6 +215,10 @@ function playBuzzer() {
     console.log('Fallback: No audio file loaded, using synthesized buzzer');
     // Fallback to synthesized buzzer
     playSynthesizedBuzzer();
+  }
+
+  if (triggerRemote) {
+    broadcastBuzzerEvent();
   }
 }
 
@@ -246,6 +252,23 @@ function playSynthesizedBuzzer() {
   }
 }
 
+function generateBuzzerEventId() {
+  return `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+}
+
+function broadcastBuzzerEvent() {
+  if (!window.SCOREBOARD_DOC) return;
+  const newEventId = generateBuzzerEventId();
+  lastBuzzerEventId = newEventId;
+  const payload = {
+    buzzerEventId: newEventId,
+    lastUpdate: firebase.firestore.FieldValue.serverTimestamp()
+  };
+  window.SCOREBOARD_DOC.set(payload, { merge: true }).catch((error) => {
+    console.error('Failed to broadcast buzzer event:', error);
+  });
+}
+
 /**
  * Play the end-of-period sequence (3 hockey buzzers)
  */
@@ -255,8 +278,8 @@ function playEndSequence() {
   
   // Three hockey horn blasts with 1.5 second gaps
   playBuzzer();
-  setTimeout(() => playBuzzer(), 1500);
-  setTimeout(() => playBuzzer(), 3000);
+  setTimeout(() => playBuzzer(false), 1500);
+  setTimeout(() => playBuzzer(false), 3000);
 }
 
 /**
@@ -1014,6 +1037,10 @@ function saveStateToFirestore() {
     advancedSettings,
     lastUpdate: firebase.firestore.FieldValue.serverTimestamp()
   };
+
+  if (lastBuzzerEventId) {
+    state.buzzerEventId = lastBuzzerEventId;
+  }
   
   isLocalUpdate = true;
   window.SCOREBOARD_DOC.set(state).catch((error) => {
@@ -1104,6 +1131,13 @@ function loadStateFromSnapshot(snapshot, isFromCache = false) {
         startTimer();
       } else if (!state.timerRunning && timerRunning) {
         stopTimer();
+      }
+    }
+
+    if (state.buzzerEventId && state.buzzerEventId !== lastSeenBuzzerEventId) {
+      lastSeenBuzzerEventId = state.buzzerEventId;
+      if (state.buzzerEventId !== lastBuzzerEventId) {
+        playBuzzer(false);
       }
     }
     

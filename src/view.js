@@ -57,6 +57,7 @@ let visibilitySettings = {
 let displayInterval = null;
 let lastSyncTime = Date.now();
 let localTimerSeconds = 20 * 60;
+let lastBuzzerEventId = null;
 
 // ============================================================================
 // DISPLAY UPDATE FUNCTIONS
@@ -321,6 +322,11 @@ function loadStateFromSnapshot(snapshot) {
   // Update theme
   const theme = state.theme || "dark";
   updateTheme(theme);
+  
+  if (state.buzzerEventId && state.buzzerEventId !== lastBuzzerEventId) {
+    lastBuzzerEventId = state.buzzerEventId;
+    playBuzzer();
+  }
   
   // Update visibility settings
   if (state.visibilitySettings) {
