@@ -298,6 +298,9 @@ function loadStateFromSnapshot(snapshot) {
       } else {
         stopDisplayTimer();
       }
+    } else if (timerRunning && !displayInterval) {
+      // Catch case where timer IS running but display loop died or wasn't started
+      startDisplayTimer();
     }
     
     updateTimerDisplay();
